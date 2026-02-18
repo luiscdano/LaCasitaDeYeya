@@ -244,20 +244,24 @@ main {
 }
 
 body.home-view .hero {
-  grid-template-columns: minmax(0, 1.06fr) minmax(350px, 0.94fr);
-  gap: clamp(0.3rem, 1.4vw, 1rem);
+  grid-template-columns: minmax(0, 1fr) minmax(430px, 0.9fr);
+  gap: clamp(0.05rem, 0.55vw, 0.36rem);
+  align-items: start;
 }
 
 body.home-view .hero-copy {
-  max-width: 700px;
+  max-width: 680px;
 }
 
 body.home-view .hero-media {
   justify-self: start;
+  align-self: start;
+  margin-left: clamp(-3.3rem, -4.7vw, -1.25rem);
+  margin-top: clamp(-0.4rem, -0.9vw, -0.15rem);
 }
 
 body.home-view .hero-welcome {
-  margin: 0 0 0.7rem;
+  margin: 0 0 clamp(1.2rem, 1.9vw, 1.75rem);
   font-family: "Amatic SC", cursive;
   font-size: clamp(3.45rem, 8.3vw, 6.5rem);
   line-height: 0.9;
@@ -333,8 +337,8 @@ p {
 }
 
 body.home-view .hero-media img {
-  width: min(760px, 117%);
-  transform: translateX(clamp(-2.9rem, -3.8vw, -1rem));
+  width: min(840px, 132%);
+  transform: translateX(clamp(-4.2rem, -6.1vw, -1.75rem)) translateY(clamp(-0.35rem, -0.75vw, -0.1rem));
   filter: drop-shadow(0 20px 34px rgba(8, 32, 119, 0.22));
 }
 
@@ -1209,6 +1213,8 @@ body.menu-view .menu-book-controls-bottom {
 
   body.home-view .hero-media {
     justify-self: center;
+    margin-left: 0;
+    margin-top: 0;
   }
 
   body.home-view .hero-media img {
