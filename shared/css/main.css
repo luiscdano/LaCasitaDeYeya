@@ -256,12 +256,13 @@ body.home-view .hero-copy {
 body.home-view .hero-media {
   justify-self: start;
   align-self: start;
-  margin-left: clamp(-3.3rem, -4.7vw, -1.25rem);
+  margin-left: clamp(-1rem, -1.6vw, -0.18rem);
   margin-top: clamp(-0.4rem, -0.9vw, -0.15rem);
 }
 
 body.home-view .hero-welcome {
   margin: 0 0 clamp(1.2rem, 1.9vw, 1.75rem);
+  margin-left: clamp(3.1rem, 5.8vw, 5.2rem);
   font-family: "Amatic SC", cursive;
   font-size: clamp(3.45rem, 8.3vw, 6.5rem);
   line-height: 0.9;
@@ -338,7 +339,7 @@ p {
 
 body.home-view .hero-media img {
   width: min(840px, 132%);
-  transform: translateX(clamp(-4.2rem, -6.1vw, -1.75rem)) translateY(clamp(-0.35rem, -0.75vw, -0.1rem));
+  transform: translateX(clamp(-1.55rem, -2.3vw, -0.18rem)) translateY(clamp(-0.35rem, -0.75vw, -0.1rem));
   filter: drop-shadow(0 20px 34px rgba(8, 32, 119, 0.22));
 }
 
@@ -1205,6 +1206,10 @@ body.menu-view .menu-book-controls-bottom {
 
   body.home-view .hero {
     gap: 1.1rem;
+  }
+
+  body.home-view .hero-welcome {
+    margin-left: 0;
   }
 
   body.home-view .hero-description {
