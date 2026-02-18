@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Menú oficial de La Casita de Yeya en formato libro interactivo." />
+    <title>La Casita de Yeya | Menú</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Barlow+Condensed:wght@400;500;600;700&family=Bree+Serif&family=Nunito+Sans:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../shared/css/main.css?v=20260217k" />
+  </head>
+  <body class="menu-view">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a href="../index.html" class="brand" aria-label="Ir a inicio">
+          <img src="../shared/img/log.png?v=20260217" alt="Logo de La Casita de Yeya" />
+          <span>
+            <strong>DOMINICAN FOOD</strong>
+          </span>
+        </a>
+
+        <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-label="Abrir navegación">Menu</button>
+
+        <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+          <ul class="nav-list">
+            <li class="nav-group">
+              <details>
+                <summary>Localidad</summary>
+                <ul class="submenu">
+                  <li><a href="../localidad/village/index.html">Village</a></li>
+                  <li><a href="../localidad/downtown/index.html">Downtown</a></li>
+                  <li><a href="../localidad/los-corales/index.html">Lo Corales</a></li>
+                </ul>
+              </details>
+            </li>
+            <li><a class="nav-link is-active" href="index.html">Menú</a></li>
+            <li class="nav-group">
+              <details>
+                <summary>Sobre</summary>
+                <ul class="submenu">
+                  <li><a href="../sobre/descripcion-general/index.html">Descripción General</a></li>
+                  <li><a href="../sobre/nuestra-huella/index.html">Nuestra Huella</a></li>
+                </ul>
+              </details>
+            </li>
+            <li><a class="nav-link" href="../abastecimiento/index.html">Abastecimiento</a></li>
+            <li><a class="nav-link" href="../reserva/index.html">Reserva</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="menu-main">
+      <section class="menu-book-shell">
+        <div class="menu-book-frame" data-menu-book>
+          <div class="menu-book-controls menu-book-controls-top" aria-label="Controles de navegación superior">
+            <button type="button" class="menu-nav-btn" data-menu-prev aria-label="Página anterior">‹</button>
+            <button type="button" class="menu-nav-btn" data-menu-next aria-label="Página siguiente">›</button>
+          </div>
+
+          <div class="menu-book-pages" aria-live="polite">
+            <article class="menu-page theme-cover is-active" data-menu-page>
+              <div class="menu-page-body menu-cover-center">
+                <h2 class="menu-cover-title">MENÚ</h2>
+                <img src="../shared/img/logo.png?v=20260217" alt="La Casita de Yeya" class="menu-cover-logo" />
+              </div>
+            </article>
+
+            <article class="menu-page theme-yellow" data-menu-page>
+              <div class="menu-page-body">
+                <h2 class="menu-page-title">Bebidas / Drinks</h2>
+
+                <section class="menu-section-block">
+                  <h3 class="menu-section-title">Jugos Naturales de Estación / Natural Seasonal Juice</h3>
+                  <ul class="menu-list">
+                    <li class="menu-line"><span>Chinola / Passion Fruit</span><strong>RD$175.00</strong></li>
+                    <li class="menu-line"><span>Piña / Pineapple</span><strong>RD$175.00</strong></li>
+                    <li class="menu-line"><span>Limón / Lemon</span><strong>RD$250.00</strong></li>
+                    <li class="menu-line"><span>Tamarindo / Tamarind</span><strong>RD$175.00</strong></li>
+                    <li class="menu-line"><span>Fresa / Strawberry</span><strong>RD$250.00</strong></li>
+                    <li class="menu-line"><span>Morir Soñando / Milk & Orange Juice Drink</span><strong>RD$300.00</strong></li>
+                  </ul>
+                </section>
+
+                <section class="menu-section-block two-col-on-wide">
+                  <div>
+                    <h3 class="menu-section-title">Cervezas / Beer</h3>
+                    <ul class="menu-list">
+                      <li class="menu-line"><span>Presidente Original</span><strong>RD$225.00</strong></li>
+                      <li class="menu-line"><span>Presidente Light</span><strong>RD$225.00</strong></li>
+                      <li class="menu-line"><span>Corona</span><strong>RD$300.00</strong></li>
+                      <li class="menu-line"><span>Modelo</span><strong>RD$300.00</strong></li>
+                      <li class="menu-line"><span>Canita</span><strong>RD$225.00</strong></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 class="menu-section-title">Aguas y Refrescos / Soft Drinks and Water</h3>
+                    <ul class="menu-list">
+                      <li class="menu-line"><span>Dasani</span><strong>RD$100.00</strong></li>
+                      <li class="menu-line"><span>Panna</span><strong>RD$325.00</strong></li>
+                      <li class="menu-line"><span>San Pellegrino</span><strong>RD$325.00</strong></li>
+                      <li class="menu-line"><span>Gaseosas / Sodas</span><strong>RD$100.00</strong></li>
+                    </ul>
+                  </div>
+                </section>
+
+                <section class="menu-section-block">
+                  <h3 class="menu-section-title">Café y Té / Coffee and Tea</h3>
+                  <ul class="menu-list two-col-menu">
+                    <li class="menu-line"><span>Expreso / Espresso</span><strong>RD$75.00</strong></li>
+                    <li class="menu-line"><span>Americano / American</span><strong>RD$75.00</strong></li>
+                    <li class="menu-line"><span>Cortadito / Cuban Espresso</span><strong>RD$125.00</strong></li>
+                    <li class="menu-line"><span>Capuchino / Cappuccino</span><strong>RD$150.00</strong></li>
+                    <li class="menu-line"><span>Café con Leche / Latte</span><strong>RD$150.00</strong></li>
+                    <li class="menu-line"><span>Té / Tea</span><strong>RD$100.00</strong></li>
+                    <li class="menu-line"><span>Té con Leche / Tea with Milk</span><strong>RD$150.00</strong></li>
+                    <li class="menu-line"><span>Chocolate</span><strong>RD$150.00</strong></li>
+                  </ul>
+                </section>
+
+                <section class="menu-section-block">
+                  <h3 class="menu-section-title">Cócteles / Cocktails</h3>
+                  <ul class="menu-list two-col-menu">
+                    <li class="menu-line"><span>Margarita</span><strong>RD$375.00</strong></li>
+                    <li class="menu-line"><span>Daiquirí</span><strong>RD$375.00</strong></li>
+                    <li class="menu-line"><span>Caipiriña</span><strong>RD$375.00</strong></li>
+                    <li class="menu-line"><span>Piña Colada</span><strong>RD$400.00</strong></li>
+                    <li class="menu-line"><span>Coco Loco</span><strong>RD$350.00</strong></li>
+                    <li class="menu-line"><span>Mojito (Diferentes Sabores)</span><strong>RD$375.00</strong></li>
+                    <li class="menu-line"><span>Sangría</span><strong>RD$375.00</strong></li>
+                    <li class="menu-line"><span>Gin Tonic</span><strong>RD$375.00</strong></li>
+                    <li class="menu-line"><span>Vodka Tonic</span><strong>RD$375.00</strong></li>
+                    <li class="menu-line"><span>Aperol Spritz</span><strong>RD$430.00</strong></li>
+                    <li class="menu-line"><span>Whisky Sour</span><strong>RD$400.00</strong></li>
+                    <li class="menu-line"><span>Tequila Sunrise</span><strong>RD$375.00</strong></li>
+                    <li class="menu-line"><span>Bloody Mary</span><strong>RD$450.00</strong></li>
+                    <li class="menu-line"><span>Espresso Martini</span><strong>RD$450.00</strong></li>
+                  </ul>
+                </section>
+              </div>
+            </article>
+
+            <article class="menu-page theme-red" data-menu-page>
+              <div class="menu-page-body">
+                <h2 class="menu-page-title">Entradas / Appetizers</h2>
+                <ul class="menu-list">
+                  <li class="menu-line"><span>Ceviche</span><strong>RD$600.00</strong></li>
+                  <li class="menu-line"><span>Salpicón de Mariscos / Seafood Salad</span><strong>RD$750.00</strong></li>
+                  <li class="menu-line"><span>Calamares Fritos / Fried Squid</span><strong>RD$500.00</strong></li>
+                  <li class="menu-line"><span>Longanizas Cibaeñas / Dominican Sausage</span><strong>RD$450.00</strong></li>
+                  <li class="menu-line"><span>Arepitas de Yuca / Cassava Fritters</span><strong>RD$300.00</strong></li>
+                  <li class="menu-line"><span>Casabe Taíno / Cassava "Taíno"</span><strong>RD$400.00</strong></li>
+                  <li class="menu-line"><span>Canasticas de Plátano Verde (chivo, pollo, res, longaniza)</span><strong>RD$425.00</strong></li>
+                  <li class="menu-line"><span>Canasticas de Plátano Verde de Camarón</span><strong>RD$500.00</strong></li>
+                  <li class="menu-line"><span>Yaroas</span><strong>RD$450.00</strong></li>
+                  <li class="menu-line"><span>Croquetas de Pollo / Chicken Croquettes</span><strong>RD$400.00</strong></li>
+                  <li class="menu-line"><span>Quipes</span><strong>RD$100.00</strong></li>
+                  <li class="menu-line"><span>Alitas de Pollo / Chicken Wings</span><strong>RD$400.00</strong></li>
+                  <li class="menu-line"><span>Nachos Aplatanados / Dominican Style Nachos</span><strong>RD$450.00</strong></li>
+                  <li class="menu-line"><span>Quesadilla (pollo, res o queso)</span><strong>RD$400.00</strong></li>
+                  <li class="menu-line"><span>Burrito (pollo, res o vegetales)</span><strong>RD$625.00</strong></li>
+                  <li class="menu-line"><span>Los Tres Golpes / The Three Blows</span><strong>RD$700.00</strong></li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="menu-page theme-blue" data-menu-page>
+              <div class="menu-page-body">
+                <section class="menu-section-block">
+                  <h2 class="menu-page-title">Empanadas / Dominican Patty</h2>
+                  <ul class="menu-list">
+                    <li class="menu-line"><span>Queso, Pollo guisado, Res molida guisada o Vegetales salteados</span><strong>RD$160.00</strong></li>
+                    <li class="menu-line"><span>Longaniza guisada / Dominican Sausage</span><strong>RD$200.00</strong></li>
+                    <li class="menu-line"><span>Camarones guisados / Shrimp</span><strong>RD$250.00</strong></li>
+                  </ul>
+                </section>
+
+                <section class="menu-section-block">
+                  <h2 class="menu-page-title">Caldos / Soups & Stews</h2>
+                  <ul class="menu-list">
+                    <li class="menu-line"><span>Cocido de Garbanzos / Chickpea Stew</span><strong>RD$595.00</strong></li>
+                    <li class="menu-note">Delicioso caldo de garbanzo con ahumados, chorizo, pollo y papa.</li>
+                    <li class="menu-line"><span>Cocido de Guandules / Green Pigeon Peas Stew</span><strong>RD$550.00</strong></li>
+                    <li class="menu-note">Delicioso caldo de guandules con carnes ahumadas, pollo y yuca.</li>
+                    <li class="menu-line"><span>Mondongo Nistido / Tripe Stew</span><strong>RD$595.00</strong></li>
+                    <li class="menu-note">Considerado uno de los mejores mondongos del mundo.</li>
+                    <li class="menu-line"><span>Sancocho Cibaeño / Dominican Stew Sancocho</span><strong>RD$595.00</strong></li>
+                    <li class="menu-note">Caldo criollo de res, cerdo, pollo y víveres.</li>
+                    <li class="menu-line"><span>Asopao de Camarones / Shrimp and Rice Pottage</span><strong>RD$750.00</strong></li>
+                    <li class="menu-note">Arroz con camarones en salsa de tomates frescos.</li>
+                    <li class="menu-line"><span>Sopa de Pollo / Chicken Soup</span><strong>RD$325.00</strong></li>
+                    <li class="menu-line"><span>Sopa de Pescado / Fish Soup</span><strong>RD$375.00</strong></li>
+                  </ul>
+                </section>
+              </div>
+            </article>
+
+            <article class="menu-page theme-yellow" data-menu-page>
+              <div class="menu-page-body">
+                <section class="menu-section-block">
+                  <h2 class="menu-page-title">Mofongos / Mofongos</h2>
+                  <p class="menu-note">Plátanos verdes fritos majados con ajo y chicharrón de cerdo.</p>
+                  <ul class="menu-list">
+                    <li class="menu-line"><span>Carnitas Fritas o Pechuga de Pollo</span><strong>RD$600.00</strong></li>
+                    <li class="menu-line"><span>Longaniza frita</span><strong>RD$675.00</strong></li>
+                    <li class="menu-line"><span>Chicharrón de cerdo</span><strong>RD$675.00</strong></li>
+                    <li class="menu-line"><span>Camarón con ajo o crema</span><strong>RD$695.00</strong></li>
+                    <li class="menu-line"><span>Tradicional</span><strong>RD$400.00</strong></li>
+                  </ul>
+                </section>
+
+                <section class="menu-section-block">
+                  <h2 class="menu-page-title">Pescados y Mariscos / Fish & Seafood</h2>
+                  <ul class="menu-list">
+                    <li class="menu-line"><span>Pulpo al Carbón / Octopus</span><strong>RD$1300.00</strong></li>
+                    <li class="menu-line"><span>Filete de Dorado a la Plancha</span><strong>RD$750.00</strong></li>
+                    <li class="menu-line"><span>Filete de Dorado al Ajillo o Coco</span><strong>RD$800.00</strong></li>
+                    <li class="menu-line"><span>Filete de Salmón / Salmon Filet</span><strong>RD$900.00</strong></li>
+                    <li class="menu-line"><span>Pescado Samaná (por libra)</span><strong>RD$1350.00</strong></li>
+                    <li class="menu-line"><span>Pescado Frito (por libra)</span><strong>RD$1300.00</strong></li>
+                    <li class="menu-line"><span>Pesca del Día (por libra)</span><strong>RD$1900.00</strong></li>
+                    <li class="menu-line"><span>Camarones en salsa (ajillo/criolla)</span><strong>RD$750.00</strong></li>
+                    <li class="menu-line"><span>Camarones en salsa de coco</span><strong>RD$800.00</strong></li>
+                    <li class="menu-line"><span>Langosta Caribeña (ajillo/criolla) por libra</span><strong>RD$1800.00</strong></li>
+                    <li class="menu-line"><span>Langosta Caribeña al coco por libra</span><strong>RD$1900.00</strong></li>
+                    <li class="menu-line"><span>Lambí de Temporada</span><strong>RD$850.00</strong></li>
+                  </ul>
+                </section>
+              </div>
+            </article>
+
+            <article class="menu-page theme-red" data-menu-page>
+              <div class="menu-page-body">
+                <section class="menu-section-block">
+                  <h2 class="menu-page-title">Tajos / Meats</h2>
+                  <ul class="menu-list">
+                    <li class="menu-line"><span>Rib Eye Angus</span><strong>RD$1995.00</strong></li>
+                    <li class="menu-line"><span>Filete (Res) Encebollado / Steak with Onions</span><strong>RD$1075.00</strong></li>
+                    <li class="menu-line"><span>Filete de Cerdo / Pork Fillet</span><strong>RD$650.00</strong></li>
+                    <li class="menu-line"><span>Costillas de Cerdo / Pork Ribs</span><strong>RD$725.00</strong></li>
+                    <li class="menu-line"><span>Chivo al Ron / Goat in Rum</span><strong>RD$995.00</strong></li>
+                  </ul>
+                </section>
+
+                <section class="menu-section-block">
+                  <h2 class="menu-page-title">Fajitas</h2>
+                  <ul class="menu-list">
+                    <li class="menu-line"><span>Pollo o Cerdo</span><strong>RD$675.00</strong></li>
+                    <li class="menu-line"><span>Filete de Res / Beef Tenderloin</span><strong>RD$1125.00</strong></li>
+                    <li class="menu-line"><span>Pechuga al Grill / Grilled Chicken Breast</span><strong>RD$600.00</strong></li>
+                    <li class="menu-line"><span>Pechuga Rellena / Stuffed Chicken Breast</span><strong>RD$650.00</strong></li>
+                    <li class="menu-line"><span>Chicharrón de Pollo / Crispy Fried Chicken Bites</span><strong>RD$525.00</strong></li>
+                    <li class="menu-line"><span>Pechurrina de Pollo / Chicken Nuggets</span><strong>RD$525.00</strong></li>
+                  </ul>
+                </section>
+              </div>
+            </article>
+
+            <article class="menu-page theme-blue" data-menu-page>
+              <div class="menu-page-body">
+                <section class="menu-section-block two-col-on-wide">
+                  <div>
+                    <h2 class="menu-page-title">Ensaladas</h2>
+                    <ul class="menu-list">
+                      <li class="menu-line"><span>Pollo / Chicken</span><strong>RD$600.00</strong></li>
+                      <li class="menu-line"><span>Camarones / Shrimp</span><strong>RD$675.00</strong></li>
+                    </ul>
+
+                    <h2 class="menu-page-title">Hamburguesas</h2>
+                    <ul class="menu-list">
+                      <li class="menu-line"><span>Tradicional / Traditional</span><strong>RD$500.00</strong></li>
+                      <li class="menu-line"><span>Full</span><strong>RD$650.00</strong></li>
+                    </ul>
+
+                    <h2 class="menu-page-title">Pastas Criollas / Creole Pastas</h2>
+                    <ul class="menu-list">
+                      <li class="menu-line"><span>Macao Style</span><strong>RD$650.00</strong></li>
+                      <li class="menu-line"><span>Al Ron / Rum Style</span><strong>RD$575.00</strong></li>
+                    </ul>
+
+                    <h2 class="menu-page-title">Postres / Desserts</h2>
+                    <ul class="menu-list">
+                      <li class="menu-line"><span>Flan de Leche y Caramelo</span><strong>RD$275.00</strong></li>
+                      <li class="menu-line"><span>Coco Horneado / Baked Coconut</span><strong>RD$275.00</strong></li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h2 class="menu-page-title">Guarniciones / Side Orders</h2>
+                    <p class="menu-note">Completar su plato por ración / To complete your dish</p>
+                    <ul class="menu-list">
+                      <li class="menu-line"><span>Habichuelas (Frijoles) / Beans</span><strong>RD$150.00</strong></li>
+                      <li class="menu-line"><span>Arroz / Rice</span><strong>RD$100.00</strong></li>
+                      <li class="menu-line"><span>Tostones</span><strong>RD$175.00</strong></li>
+                      <li class="menu-line"><span>Papas fritas / French Fries</span><strong>RD$175.00</strong></li>
+                      <li class="menu-line"><span>Papas salteadas / Sautéed Potatoes</span><strong>RD$175.00</strong></li>
+                      <li class="menu-line"><span>Plátano maduro / Fried Ripe Plantain</span><strong>RD$175.00</strong></li>
+                      <li class="menu-line"><span>Vegetales al grill / Grilled Vegetables</span><strong>RD$175.00</strong></li>
+                      <li class="menu-line"><span>Ensalada de la casa / House Salad</span><strong>RD$175.00</strong></li>
+                      <li class="menu-line"><span>Aguacate / Avocado</span><strong>RD$175.00</strong></li>
+                      <li class="menu-line"><span>Salsa de coco / Coconut Sauce</span><strong>RD$175.00</strong></li>
+                      <li class="menu-line"><span>Pan casero / Homemade Bread</span><strong>RD$125.00</strong></li>
+                    </ul>
+                  </div>
+                </section>
+              </div>
+            </article>
+
+            <article class="menu-page theme-back" data-menu-page>
+              <div class="menu-page-body menu-back-center">
+                <img src="../shared/img/logo.png?v=20260217" alt="La Casita de Yeya" class="menu-back-logo" />
+                <p>© 2026 La Casita de Yeya - Todos los derechos reservados</p>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner footer-powered">
+        <div class="footer-left">
+          <p>© 2026 La Casita de Yeya - Todos los derechos reservados</p>
+        </div>
+        <div class="footer-center">
+          <span>Powered by</span>
+          <a class="footer-cmlayer-link" href="https://cmlayer.com" target="_blank" rel="noopener noreferrer" aria-label="Ir a CmLayer">
+            <span class="footer-cmlayer-logo" aria-hidden="true"></span>
+            <span>CmLayer</span>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+
+
+    <script src="../shared/js/main.js"></script>
+  </body>
+</html>

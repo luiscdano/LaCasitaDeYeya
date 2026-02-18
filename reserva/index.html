@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Reserva: formulario para reservas en Village, Downtown y Lo Corales." />
+    <title>La Casita de Yeya | Reserva</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Nunito+Sans:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../shared/css/main.css?v=20260217k" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a href="../index.html" class="brand" aria-label="Ir a inicio">
+          <img src="../shared/img/log.png?v=20260217" alt="Logo de La Casita de Yeya" />
+          <span>
+            <strong>DOMINICAN FOOD</strong>
+          </span>
+        </a>
+
+        <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-label="Abrir navegación">Menu</button>
+
+        <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+          <ul class="nav-list">
+            <li class="nav-group">
+              <details>
+                <summary>Localidad</summary>
+                <ul class="submenu">
+                  <li><a href="../localidad/village/index.html">Village</a></li>
+                  <li><a href="../localidad/downtown/index.html">Downtown</a></li>
+                  <li><a href="../localidad/los-corales/index.html">Lo Corales</a></li>
+                </ul>
+              </details>
+            </li>
+            <li><a class="nav-link" href="../menu/index.html">Menú</a></li>
+            <li class="nav-group">
+              <details>
+                <summary>Sobre</summary>
+                <ul class="submenu">
+                  <li><a href="../sobre/descripcion-general/index.html">Descripción General</a></li>
+                  <li><a href="../sobre/nuestra-huella/index.html">Nuestra Huella</a></li>
+                </ul>
+              </details>
+            </li>
+            <li><a class="nav-link" href="../abastecimiento/index.html">Abastecimiento</a></li>
+            <li><a class="nav-link is-active" href="index.html">Reserva</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="container section-block">
+        <p class="kicker">Reserva</p>
+        <h1>Reserva tu mesa</h1>
+        <p>Formulario base para centralizar solicitudes. Puedes conectarlo luego a correo, WhatsApp o backend.</p>
+
+        <form class="form" action="#" method="post">
+          <label>
+            Nombre completo
+            <input type="text" name="nombre" required />
+          </label>
+          <label>
+            Teléfono
+            <input type="tel" name="telefono" required />
+          </label>
+          <label>
+            Correo electrónico
+            <input type="email" name="correo" required />
+          </label>
+          <label>
+            Localidad
+            <select name="localidad" required>
+              <option value="">Selecciona una opción</option>
+              <option value="village">Village</option>
+              <option value="downtown">Downtown</option>
+              <option value="lo-corales">Lo Corales</option>
+            </select>
+          </label>
+          <label>
+            Fecha
+            <input type="date" name="fecha" required />
+          </label>
+          <label>
+            Hora
+            <input type="time" name="hora" required />
+          </label>
+          <label>
+            Personas
+            <input type="number" min="1" max="30" name="personas" required />
+          </label>
+          <label class="full">
+            Comentarios
+            <textarea name="comentarios" placeholder="Escribe aquí cualquier detalle adicional"></textarea>
+          </label>
+          <div class="full actions">
+            <button class="btn btn-primary" type="submit">Enviar solicitud</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner footer-powered">
+        <div class="footer-left">
+          <p>© 2026 La Casita de Yeya - Todos los derechos reservados</p>
+        </div>
+        <div class="footer-center">
+          <span>Powered by</span>
+          <a class="footer-cmlayer-link" href="https://cmlayer.com" target="_blank" rel="noopener noreferrer" aria-label="Ir a CmLayer">
+            <span class="footer-cmlayer-logo" aria-hidden="true"></span>
+            <span>CmLayer</span>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+
+
+    <script src="../shared/js/main.js"></script>
+  </body>
+</html>
