@@ -1,0 +1,34 @@
+name: LaCasita Instagram Sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 */6 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-instagram-feed:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update Instagram feed JSON
+        run: ./scripts/update_instagram_feed.sh
+
+      - name: Commit and push if feed changed
+        run: |
+          if git diff --quiet -- shared/data/instagram-feed.json shared/data/instagram; then
+            echo "No hay cambios en el feed"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A shared/data/instagram-feed.json shared/data/instagram
+          git commit -m "chore: sincronizar feed de Instagram"
+          git push

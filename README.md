@@ -3,7 +3,7 @@
 Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
 
 ## Enlace principal
-- `https://luiscdano.github.io/PersonalProjects/LaCasitaDeYeya/index.html`
+- `https://luiscdano.github.io/LaCasitaDeYeya/`
 
 ## Estructura
 - `index.html` (inicio)
@@ -63,4 +63,4 @@ Abrir:
 ./scripts/update_instagram_feed.sh
 ```
 - Sincronización automática:
-  - Workflow en `../.github/workflows/lacasita-instagram-sync.yml` (cada 6 horas + manual).
+  - Workflow en `.github/workflows/lacasita-instagram-sync.yml` (cada 6 horas + manual).
