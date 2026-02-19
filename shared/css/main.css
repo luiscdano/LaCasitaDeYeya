@@ -1121,9 +1121,13 @@ body.menu-view .menu-book-controls-bottom {
 }
 
 .theme-cover {
-  background:
-    radial-gradient(circle at 84% 12%, rgba(255, 223, 130, 0.32) 0, rgba(255, 223, 130, 0) 28%),
-    repeating-linear-gradient(0deg, #f2f2ed 0 42px, #e7e6df 42px 44px);
+  color: #19386e;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(244, 248, 255, 0.34)),
+    url("../../menu/img/f2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .theme-cover::before,
@@ -1135,9 +1139,12 @@ body.menu-view .menu-book-controls-bottom {
 
 .theme-yellow {
   color: #173066;
-  background:
-    linear-gradient(180deg, rgba(254, 220, 103, 0.97), rgba(247, 214, 98, 0.95)),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.1) 0 34px, rgba(19, 48, 102, 0.03) 34px 35px);
+  background-image:
+    linear-gradient(180deg, rgba(255, 246, 209, 0.24), rgba(240, 214, 151, 0.3)),
+    url("../../menu/img/f1.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .theme-yellow::before,
@@ -1147,9 +1154,12 @@ body.menu-view .menu-book-controls-bottom {
 
 .theme-blue {
   color: #f2f6ff;
-  background:
-    linear-gradient(180deg, rgba(28, 79, 162, 0.99), rgba(17, 53, 112, 0.98)),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 34px, rgba(255, 255, 255, 0.01) 34px 35px);
+  background-image:
+    linear-gradient(180deg, rgba(11, 30, 67, 0.24), rgba(10, 28, 62, 0.34)),
+    url("../../menu/img/f3.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .theme-blue::before,
@@ -1159,9 +1169,12 @@ body.menu-view .menu-book-controls-bottom {
 
 .theme-red {
   color: #fff4f4;
-  background:
-    linear-gradient(180deg, rgba(188, 43, 52, 0.99), rgba(143, 28, 37, 0.98)),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 34px, rgba(255, 255, 255, 0.01) 34px 35px);
+  background-image:
+    linear-gradient(180deg, rgba(112, 15, 21, 0.22), rgba(91, 12, 18, 0.32)),
+    url("../../menu/img/f4.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .theme-red::before,
@@ -1170,9 +1183,13 @@ body.menu-view .menu-book-controls-bottom {
 }
 
 .theme-back {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(245, 246, 243, 0.88)),
-    repeating-linear-gradient(0deg, #f2f2ed 0 42px, #e7e6df 42px 44px);
+  color: #1a3262;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(244, 248, 255, 0.34)),
+    url("../../menu/img/f2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .menu-cover-center,
