@@ -598,6 +598,9 @@ body.home-view .section-block {
 .instagram-title {
   margin: 0;
   padding: 0 1rem 1rem;
+  font-family: "Bree Serif", serif;
+  font-weight: 700;
+  line-height: 1;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.03em;
