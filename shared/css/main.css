@@ -397,14 +397,16 @@ body.home-view .actions {
 }
 
 .home-specials {
-  margin-top: clamp(1.2rem, 2.1vw, 2.2rem);
+  margin-top: 0;
 }
 
 body.home-view .home-specials {
-  --home-specials-flow-gap: clamp(2.45rem, 6.1vw, 5.5rem);
+  --home-specials-flow-gap: clamp(3.1rem, 6.1vw, 5.5rem);
   width: min(1400px, 96vw);
-  margin-top: var(--home-specials-flow-gap);
-  margin-bottom: var(--home-specials-flow-gap);
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: var(--home-specials-flow-gap);
+  padding-bottom: var(--home-specials-flow-gap);
 }
 
 .home-specials-title {
@@ -416,10 +418,12 @@ body.home-view .home-specials {
   letter-spacing: 0.035em;
   text-transform: uppercase;
   color: #e6422e;
+  transform: translateY(-1px);
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.75),
-    0 8px 14px rgba(8, 32, 119, 0.18),
-    0 16px 28px rgba(230, 66, 46, 0.2);
+    0 2px 0 rgba(255, 255, 255, 0.82),
+    0 10px 18px rgba(8, 32, 119, 0.24),
+    0 18px 30px rgba(8, 32, 119, 0.21),
+    0 28px 42px rgba(230, 66, 46, 0.18);
 }
 
 .home-specials-grid {
@@ -1513,7 +1517,7 @@ body.menu-view .menu-book-controls-bottom {
 
 @media (max-width: 520px) {
   body.home-view .home-specials {
-    --home-specials-flow-gap: clamp(2.45rem, 12vw, 3.6rem);
+    --home-specials-flow-gap: clamp(2.45rem, 12vw, 4.2rem);
   }
 
   .home-specials-title {
