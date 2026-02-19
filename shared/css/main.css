@@ -1216,7 +1216,9 @@ body.menu-view .menu-book-controls-bottom {
 
 .menu-book-pages > .menu-page:nth-child(2) {
   --menu-corner-image: url("../../menu/img/c2.png");
-  --menu-corner-size: auto 102%;
+  --menu-corner-size: auto 158%;
+  --menu-corner-bleed-x: 6%;
+  --menu-corner-bleed-y: 12%;
 }
 
 .menu-book-pages > .menu-page:nth-child(3) {
@@ -1652,6 +1654,10 @@ body.menu-view .menu-book-controls-bottom {
     --menu-corner-size: auto 86%;
   }
 
+  .menu-book-pages > .menu-page:nth-child(2) {
+    --menu-corner-size: auto 133%;
+  }
+
   .menu-book-pages > .menu-page:nth-child(3) {
     --menu-corner-size: auto 73%;
   }
@@ -1711,6 +1717,10 @@ body.menu-view .menu-book-controls-bottom {
   .menu-book-pages > .menu-page:nth-child(4),
   .menu-book-pages > .menu-page:nth-child(6) {
     --menu-corner-size: auto 73%;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2) {
+    --menu-corner-size: auto 113%;
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
