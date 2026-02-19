@@ -401,17 +401,25 @@ body.home-view .actions {
 }
 
 body.home-view .home-specials {
+  --home-specials-flow-gap: clamp(2.45rem, 6.1vw, 5.5rem);
   width: min(1400px, 96vw);
+  margin-top: var(--home-specials-flow-gap);
+  margin-bottom: var(--home-specials-flow-gap);
 }
 
 .home-specials-title {
   margin: 0 0 clamp(0.95rem, 1.8vw, 1.7rem);
+  display: inline-block;
   font-family: "Amatic SC", cursive;
   font-size: clamp(3.1rem, 6.1vw, 5.5rem);
   line-height: 0.92;
   letter-spacing: 0.035em;
   text-transform: uppercase;
   color: #e6422e;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.75),
+    0 8px 14px rgba(8, 32, 119, 0.18),
+    0 16px 28px rgba(230, 66, 46, 0.2);
 }
 
 .home-specials-grid {
@@ -835,6 +843,7 @@ body.home-view {
 
 body.home-view .instagram-section {
   margin-bottom: 0;
+  padding-top: 0;
   padding-bottom: 0;
 }
 
@@ -1503,6 +1512,10 @@ body.menu-view .menu-book-controls-bottom {
 }
 
 @media (max-width: 520px) {
+  body.home-view .home-specials {
+    --home-specials-flow-gap: clamp(2.45rem, 12vw, 3.6rem);
+  }
+
   .home-specials-title {
     font-size: clamp(2.45rem, 12vw, 3.6rem);
   }
