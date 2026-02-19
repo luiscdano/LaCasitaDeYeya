@@ -869,6 +869,10 @@ body.home-view .section-block {
   text-decoration: none;
 }
 
+.footer-cmlayer-link > span:last-child {
+  margin-left: -0.34rem;
+}
+
 .footer-cmlayer-link:hover,
 .footer-cmlayer-link:focus,
 .footer-cmlayer-link:active {
