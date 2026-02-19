@@ -1217,8 +1217,10 @@ body.menu-view .menu-book-controls-bottom {
 .menu-book-pages > .menu-page:nth-child(2) {
   --menu-corner-image: url("../../menu/img/c2.png");
   --menu-corner-size: auto 158%;
-  --menu-corner-bleed-x: 6%;
-  --menu-corner-bleed-y: 12%;
+  --menu-corner-bleed-x: 8%;
+  --menu-corner-bleed-y: 22%;
+  --menu-body-pad-right: clamp(10.5rem, 42vw, 24rem);
+  --menu-body-pad-bottom: clamp(13rem, 34vh, 20rem);
 }
 
 .menu-book-pages > .menu-page:nth-child(3) {
@@ -1354,7 +1356,11 @@ body.menu-view .menu-book-controls-bottom {
   grid-column: 2;
   align-self: end;
   margin-bottom: 0.12em;
-  border-bottom: 2px dotted rgba(29, 63, 126, 0.45);
+  border-bottom: 2px dotted rgba(29, 63, 126, 0.58);
+}
+
+.menu-book-pages > .menu-page:nth-child(2) .menu-line::after {
+  border-bottom-color: rgba(22, 56, 122, 0.72);
 }
 
 .menu-line > span::after {
@@ -1655,7 +1661,11 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(2) {
-    --menu-corner-size: auto 133%;
+    --menu-corner-size: auto 128%;
+    --menu-corner-bleed-x: 9%;
+    --menu-corner-bleed-y: 18%;
+    --menu-body-pad-right: clamp(7.8rem, 46vw, 13.5rem);
+    --menu-body-pad-bottom: clamp(9.2rem, 30vh, 14.2rem);
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
@@ -1720,7 +1730,11 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(2) {
-    --menu-corner-size: auto 113%;
+    --menu-corner-size: auto 108%;
+    --menu-corner-bleed-x: 11%;
+    --menu-corner-bleed-y: 16%;
+    --menu-body-pad-right: clamp(6.2rem, 48vw, 9.5rem);
+    --menu-body-pad-bottom: clamp(7.4rem, 27vh, 11rem);
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
