@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-02-17T19:14:59Z",
+  "fetched_at": "2026-02-19T03:16:25Z",
   "posts": [
+    {
+      "id": "3835380375170949611",
+      "shortcode": "DU6AiFokaHr",
+      "permalink": "https://www.instagram.com/p/DU6AiFokaHr/",
+      "image": "shared/data/instagram/DU6AiFokaHr.jpg",
+      "caption": "El Meloso: Arroz meloso de guandules con chicharrón de cerdo, un tropiezo de platano maduro al caldero\ny águacate.\n\nDisponible en la casita de Yeya del village. \n#dominicanfood",
+      "is_video": false,
+      "taken_at_timestamp": 1771433125
+    },
     {
       "id": "3831077157418902876",
       "shortcode": "DUquGBzESVc",
@@ -83,15 +92,6 @@
       "caption": "No nos podíamos quedar atrás con la tendencia del 2016🥹🏡\nTenemos más de 10 años guayando la yuca para ofrecerles la mejor comida y experiencia dominicana 🇩🇴\nQue emoción ver todos estos recuerdos… Seguimos pa’ alante!! \n\n#puntacanarestaurant #dominicanfoood",
       "is_video": true,
       "taken_at_timestamp": 1768833498
-    },
-    {
-      "id": "3812953791369657187",
-      "shortcode": "DTqVUV3kTtj",
-      "permalink": "https://www.instagram.com/p/DTqVUV3kTtj/",
-      "image": "shared/data/instagram/DTqVUV3kTtj.jpg",
-      "caption": "Cocido de guandules 🇩🇴\nUna ricura pa’ disfrutar y si lo pides con un servicio de concon ahí es que prende!\n\n#cocidodeguandules",
-      "is_video": false,
-      "taken_at_timestamp": 1768759534
     }
   ]
 }
