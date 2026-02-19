@@ -268,7 +268,9 @@ body.home-view .hero-welcome {
   line-height: 0.9;
   letter-spacing: 0.03em;
   color: #1f4ea7;
-  text-shadow: 0 6px 14px rgba(8, 32, 119, 0.16);
+  text-shadow:
+    0 5px 10px rgba(255, 255, 255, 0.38),
+    0 12px 24px rgba(8, 32, 119, 0.3);
 }
 
 body.home-view .hero-description {
