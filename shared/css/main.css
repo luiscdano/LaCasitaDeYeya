@@ -1041,8 +1041,8 @@ body.menu-view .menu-book-controls-bottom {
 
 .menu-book-pages {
   position: relative;
-  height: min(77vh, 860px);
-  min-height: 650px;
+  height: min(80vh, 920px);
+  min-height: 690px;
   border-radius: 24px;
   border: 1px solid rgba(8, 32, 119, 0.17);
   overflow: hidden;
@@ -1057,6 +1057,8 @@ body.menu-view .menu-book-controls-bottom {
   inset: 0;
   --menu-corner-image: none;
   --menu-corner-size: auto 0%;
+  --menu-body-pad-right: clamp(4rem, 14vw, 11.5rem);
+  --menu-body-pad-bottom: clamp(6.2rem, 16vh, 9.2rem);
   padding: 1rem;
   opacity: 0;
   pointer-events: none;
@@ -1105,8 +1107,8 @@ body.menu-view .menu-book-controls-bottom {
   max-width: 100%;
   margin-inline: 0;
   padding-left: clamp(0.25rem, 0.9vw, 0.9rem);
-  padding-right: clamp(4rem, 14vw, 11.5rem);
-  padding-bottom: clamp(6.2rem, 16vh, 9.2rem);
+  padding-right: var(--menu-body-pad-right);
+  padding-bottom: var(--menu-body-pad-bottom);
 }
 
 .menu-page-body::-webkit-scrollbar {
@@ -1130,7 +1132,7 @@ body.menu-view .menu-book-controls-bottom {
     linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(244, 248, 255, 0.34)),
     url("../../menu/img/f2.jpg");
   background-size: var(--menu-corner-size), cover, cover;
-  background-position: right bottom, center, center;
+  background-position: calc(100% + 0.18rem) calc(100% + 0.12rem), center, center;
   background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
@@ -1148,7 +1150,7 @@ body.menu-view .menu-book-controls-bottom {
     linear-gradient(180deg, rgba(255, 246, 209, 0.24), rgba(240, 214, 151, 0.3)),
     url("../../menu/img/f1.png");
   background-size: var(--menu-corner-size), cover, cover;
-  background-position: right bottom, center, center;
+  background-position: calc(100% + 0.18rem) calc(100% + 0.12rem), center, center;
   background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
@@ -1164,7 +1166,7 @@ body.menu-view .menu-book-controls-bottom {
     linear-gradient(180deg, rgba(11, 30, 67, 0.24), rgba(10, 28, 62, 0.34)),
     url("../../menu/img/f3.png");
   background-size: var(--menu-corner-size), cover, cover;
-  background-position: right bottom, center, center;
+  background-position: calc(100% + 0.18rem) calc(100% + 0.12rem), center, center;
   background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
@@ -1180,7 +1182,7 @@ body.menu-view .menu-book-controls-bottom {
     linear-gradient(180deg, rgba(112, 15, 21, 0.22), rgba(91, 12, 18, 0.32)),
     url("../../menu/img/f4.png");
   background-size: var(--menu-corner-size), cover, cover;
-  background-position: right bottom, center, center;
+  background-position: calc(100% + 0.18rem) calc(100% + 0.12rem), center, center;
   background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
@@ -1196,38 +1198,48 @@ body.menu-view .menu-book-controls-bottom {
     linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(244, 248, 255, 0.34)),
     url("../../menu/img/f2.jpg");
   background-size: var(--menu-corner-size), cover, cover;
-  background-position: right bottom, center, center;
+  background-position: calc(100% + 0.18rem) calc(100% + 0.12rem), center, center;
   background-repeat: no-repeat, no-repeat, no-repeat;
+}
+
+.menu-book-pages > .menu-page:nth-child(2),
+.menu-book-pages > .menu-page:nth-child(3),
+.menu-book-pages > .menu-page:nth-child(4),
+.menu-book-pages > .menu-page:nth-child(5),
+.menu-book-pages > .menu-page:nth-child(6),
+.menu-book-pages > .menu-page:nth-child(7) {
+  --menu-body-pad-right: clamp(8.2rem, 31vw, 18rem);
+  --menu-body-pad-bottom: clamp(11.4rem, 29vh, 15.8rem);
 }
 
 .menu-book-pages > .menu-page:nth-child(2) {
   --menu-corner-image: url("../../menu/img/c2.png");
-  --menu-corner-size: auto 45%;
+  --menu-corner-size: auto 62%;
 }
 
 .menu-book-pages > .menu-page:nth-child(3) {
   --menu-corner-image: url("../../menu/img/c3.png");
-  --menu-corner-size: auto 33%;
+  --menu-corner-size: auto 52%;
 }
 
 .menu-book-pages > .menu-page:nth-child(4) {
   --menu-corner-image: url("../../menu/img/c5.png");
-  --menu-corner-size: auto 44%;
+  --menu-corner-size: auto 62%;
 }
 
 .menu-book-pages > .menu-page:nth-child(5) {
   --menu-corner-image: url("../../menu/img/c4.png");
-  --menu-corner-size: auto 36%;
+  --menu-corner-size: auto 58%;
 }
 
 .menu-book-pages > .menu-page:nth-child(6) {
   --menu-corner-image: url("../../menu/img/c1.png");
-  --menu-corner-size: auto 44%;
+  --menu-corner-size: auto 62%;
 }
 
 .menu-book-pages > .menu-page:nth-child(7) {
   --menu-corner-image: url("../../menu/img/c4.png");
-  --menu-corner-size: auto 36%;
+  --menu-corner-size: auto 58%;
 }
 
 .menu-cover-center,
@@ -1487,7 +1499,7 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages {
-    min-height: 610px;
+    min-height: 650px;
   }
 }
 
@@ -1610,8 +1622,8 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages {
-    height: min(78vh, 820px);
-    min-height: 560px;
+    height: min(80vh, 860px);
+    min-height: 610px;
     border-radius: 20px;
   }
 
@@ -1626,20 +1638,25 @@ body.menu-view .menu-book-controls-bottom {
   .menu-page:not(.theme-cover):not(.theme-back) .menu-page-body {
     max-width: 100%;
     padding-left: 0.1rem;
-    padding-right: clamp(3.7rem, 20vw, 6.2rem);
-    padding-bottom: clamp(5.3rem, 14vh, 7.4rem);
+    --menu-body-pad-right: clamp(5.8rem, 34vw, 9.8rem);
+    --menu-body-pad-bottom: clamp(7.8rem, 25vh, 11.3rem);
+    padding-right: var(--menu-body-pad-right);
+    padding-bottom: var(--menu-body-pad-bottom);
   }
 
   .menu-book-pages > .menu-page:nth-child(2),
   .menu-book-pages > .menu-page:nth-child(4),
   .menu-book-pages > .menu-page:nth-child(6) {
-    --menu-corner-size: auto 35%;
+    --menu-corner-size: auto 52%;
   }
 
-  .menu-book-pages > .menu-page:nth-child(3),
+  .menu-book-pages > .menu-page:nth-child(3) {
+    --menu-corner-size: auto 44%;
+  }
+
   .menu-book-pages > .menu-page:nth-child(5),
   .menu-book-pages > .menu-page:nth-child(7) {
-    --menu-corner-size: auto 30%;
+    --menu-corner-size: auto 48%;
   }
 
   .two-col-menu,
@@ -1679,8 +1696,28 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages {
-    height: min(76vh, 760px);
-    min-height: 510px;
+    height: min(79vh, 800px);
+    min-height: 560px;
+  }
+
+  .menu-page:not(.theme-cover):not(.theme-back) .menu-page-body {
+    --menu-body-pad-right: clamp(4.8rem, 36vw, 7rem);
+    --menu-body-pad-bottom: clamp(6.2rem, 23vh, 8.4rem);
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2),
+  .menu-book-pages > .menu-page:nth-child(4),
+  .menu-book-pages > .menu-page:nth-child(6) {
+    --menu-corner-size: auto 44%;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(3) {
+    --menu-corner-size: auto 37%;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(5),
+  .menu-book-pages > .menu-page:nth-child(7) {
+    --menu-corner-size: auto 40%;
   }
 
   .menu-nav-btn {
