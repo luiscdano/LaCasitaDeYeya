@@ -1216,7 +1216,7 @@ body.menu-view .menu-book-controls-bottom {
 
 .menu-book-pages > .menu-page:nth-child(2) {
   --menu-corner-image: url("../../menu/img/c2.png");
-  --menu-corner-size: auto 158%;
+  --menu-corner-size: auto 142%;
   --menu-corner-bleed-x: 8%;
   --menu-corner-bleed-y: 22%;
   --menu-body-pad-right: clamp(10.5rem, 42vw, 24rem);
@@ -1421,6 +1421,18 @@ body.menu-view .menu-book-controls-bottom {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.95rem 1.25rem;
+}
+
+.menu-drinks-top-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1rem;
+  align-items: start;
+}
+
+.menu-juices-list .menu-line {
+  grid-template-columns: auto minmax(0.35rem, 1fr) auto;
+  column-gap: 0.18rem;
 }
 
 @media (max-width: 1260px) {
@@ -1662,7 +1674,7 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(2) {
-    --menu-corner-size: auto 128%;
+    --menu-corner-size: auto 115%;
     --menu-corner-bleed-x: 9%;
     --menu-corner-bleed-y: 18%;
     --menu-body-pad-right: clamp(7.8rem, 46vw, 13.5rem);
@@ -1682,6 +1694,11 @@ body.menu-view .menu-book-controls-bottom {
   .two-col-menu,
   .two-col-on-wide {
     grid-template-columns: 1fr;
+  }
+
+  .menu-drinks-top-grid {
+    grid-template-columns: 1fr;
+    gap: 0.82rem;
   }
 }
 
@@ -1732,7 +1749,7 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(2) {
-    --menu-corner-size: auto 108%;
+    --menu-corner-size: auto 97%;
     --menu-corner-bleed-x: 11%;
     --menu-corner-bleed-y: 16%;
     --menu-body-pad-right: clamp(6.2rem, 48vw, 9.5rem);
