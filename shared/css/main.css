@@ -1231,12 +1231,13 @@ body.menu-view .menu-book-controls-bottom {
   --menu-corner-bleed-y: 22%;
   --menu-body-pad-right: clamp(10.5rem, 42vw, 24rem);
   --menu-body-pad-bottom: clamp(13rem, 34vh, 20rem);
-  background-position: right calc(-5% - 9rem) bottom -10%, center, center;
+  background-position: right calc(-5% - 9rem) bottom -15%, center, center;
 }
 
 .menu-book-pages > .menu-page:nth-child(4) {
   --menu-corner-image: url("../../menu/img/c5.png");
-  --menu-corner-size: auto 102%;
+  --menu-corner-size: auto 128%;
+  background-position: right -5% bottom -15%, center, center;
 }
 
 .menu-book-pages > .menu-page:nth-child(5) {
@@ -1698,7 +1699,12 @@ body.menu-view .menu-book-controls-bottom {
     --menu-corner-bleed-y: 18%;
     --menu-body-pad-right: clamp(7.8rem, 46vw, 13.5rem);
     --menu-body-pad-bottom: clamp(9.2rem, 30vh, 14.2rem);
-    background-position: right calc(-5% - 7rem) bottom -10%, center, center;
+    background-position: right calc(-5% - 7rem) bottom -15%, center, center;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(4) {
+    --menu-corner-size: auto 108%;
+    background-position: right -5% bottom -15%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(5),
@@ -1783,7 +1789,12 @@ body.menu-view .menu-book-controls-bottom {
     --menu-corner-bleed-y: 16%;
     --menu-body-pad-right: clamp(6.2rem, 48vw, 9.5rem);
     --menu-body-pad-bottom: clamp(7.4rem, 27vh, 11rem);
-    background-position: right calc(-5% - 4.4rem) bottom -10%, center, center;
+    background-position: right calc(-5% - 4.4rem) bottom -15%, center, center;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(4) {
+    --menu-corner-size: auto 91%;
+    background-position: right -5% bottom -15%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(5),
