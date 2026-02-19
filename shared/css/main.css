@@ -1221,7 +1221,7 @@ body.menu-view .menu-book-controls-bottom {
   --menu-corner-bleed-y: 22%;
   --menu-body-pad-right: clamp(10.5rem, 42vw, 24rem);
   --menu-body-pad-bottom: clamp(13rem, 34vh, 20rem);
-  background-position: right -9rem bottom -15rem, center, center;
+  background-position: right calc(15% - 9rem) bottom -15rem, center, center;
 }
 
 .menu-book-pages > .menu-page:nth-child(3) {
@@ -1667,7 +1667,7 @@ body.menu-view .menu-book-controls-bottom {
     --menu-corner-bleed-y: 18%;
     --menu-body-pad-right: clamp(7.8rem, 46vw, 13.5rem);
     --menu-body-pad-bottom: clamp(9.2rem, 30vh, 14.2rem);
-    background-position: right -7rem bottom -12rem, center, center;
+    background-position: right calc(15% - 7rem) bottom -12rem, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
@@ -1737,7 +1737,7 @@ body.menu-view .menu-book-controls-bottom {
     --menu-corner-bleed-y: 16%;
     --menu-body-pad-right: clamp(6.2rem, 48vw, 9.5rem);
     --menu-body-pad-bottom: clamp(7.4rem, 27vh, 11rem);
-    background-position: right -4.4rem bottom -8rem, center, center;
+    background-position: right calc(15% - 4.4rem) bottom -8rem, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
