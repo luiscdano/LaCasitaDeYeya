@@ -1055,6 +1055,8 @@ body.menu-view .menu-book-controls-bottom {
 .menu-page {
   position: absolute;
   inset: 0;
+  --menu-corner-image: none;
+  --menu-corner-size: auto 0%;
   padding: 1rem;
   opacity: 0;
   pointer-events: none;
@@ -1104,6 +1106,7 @@ body.menu-view .menu-book-controls-bottom {
   margin-inline: 0;
   padding-left: clamp(0.25rem, 0.9vw, 0.9rem);
   padding-right: clamp(4rem, 14vw, 11.5rem);
+  padding-bottom: clamp(6.2rem, 16vh, 9.2rem);
 }
 
 .menu-page-body::-webkit-scrollbar {
@@ -1123,11 +1126,12 @@ body.menu-view .menu-book-controls-bottom {
 .theme-cover {
   color: #19386e;
   background-image:
+    var(--menu-corner-image),
     linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(244, 248, 255, 0.34)),
     url("../../menu/img/f2.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: var(--menu-corner-size), cover, cover;
+  background-position: right bottom, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
 .theme-cover::before,
@@ -1140,11 +1144,12 @@ body.menu-view .menu-book-controls-bottom {
 .theme-yellow {
   color: #173066;
   background-image:
+    var(--menu-corner-image),
     linear-gradient(180deg, rgba(255, 246, 209, 0.24), rgba(240, 214, 151, 0.3)),
     url("../../menu/img/f1.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: var(--menu-corner-size), cover, cover;
+  background-position: right bottom, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
 .theme-yellow::before,
@@ -1155,11 +1160,12 @@ body.menu-view .menu-book-controls-bottom {
 .theme-blue {
   color: #f2f6ff;
   background-image:
+    var(--menu-corner-image),
     linear-gradient(180deg, rgba(11, 30, 67, 0.24), rgba(10, 28, 62, 0.34)),
     url("../../menu/img/f3.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: var(--menu-corner-size), cover, cover;
+  background-position: right bottom, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
 .theme-blue::before,
@@ -1170,11 +1176,12 @@ body.menu-view .menu-book-controls-bottom {
 .theme-red {
   color: #fff4f4;
   background-image:
+    var(--menu-corner-image),
     linear-gradient(180deg, rgba(112, 15, 21, 0.22), rgba(91, 12, 18, 0.32)),
     url("../../menu/img/f4.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: var(--menu-corner-size), cover, cover;
+  background-position: right bottom, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
 .theme-red::before,
@@ -1185,11 +1192,42 @@ body.menu-view .menu-book-controls-bottom {
 .theme-back {
   color: #1a3262;
   background-image:
+    var(--menu-corner-image),
     linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(244, 248, 255, 0.34)),
     url("../../menu/img/f2.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: var(--menu-corner-size), cover, cover;
+  background-position: right bottom, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+
+.menu-book-pages > .menu-page:nth-child(2) {
+  --menu-corner-image: url("../../menu/img/c2.png");
+  --menu-corner-size: auto 45%;
+}
+
+.menu-book-pages > .menu-page:nth-child(3) {
+  --menu-corner-image: url("../../menu/img/c3.png");
+  --menu-corner-size: auto 33%;
+}
+
+.menu-book-pages > .menu-page:nth-child(4) {
+  --menu-corner-image: url("../../menu/img/c5.png");
+  --menu-corner-size: auto 44%;
+}
+
+.menu-book-pages > .menu-page:nth-child(5) {
+  --menu-corner-image: url("../../menu/img/c4.png");
+  --menu-corner-size: auto 36%;
+}
+
+.menu-book-pages > .menu-page:nth-child(6) {
+  --menu-corner-image: url("../../menu/img/c1.png");
+  --menu-corner-size: auto 44%;
+}
+
+.menu-book-pages > .menu-page:nth-child(7) {
+  --menu-corner-image: url("../../menu/img/c4.png");
+  --menu-corner-size: auto 36%;
 }
 
 .menu-cover-center,
@@ -1299,8 +1337,8 @@ body.menu-view .menu-book-controls-bottom {
   content: "";
   grid-column: 2;
   align-self: end;
-  margin-bottom: 0.13em;
-  border-bottom: 3px dotted rgba(29, 63, 126, 0.52);
+  margin-bottom: 0.12em;
+  border-bottom: 2px dotted rgba(29, 63, 126, 0.45);
 }
 
 .menu-line > span::after {
@@ -1318,7 +1356,7 @@ body.menu-view .menu-book-controls-bottom {
 
 .theme-blue .menu-line::after,
 .theme-red .menu-line::after {
-  border-bottom-color: rgba(255, 255, 255, 0.56);
+  border-bottom-color: rgba(255, 255, 255, 0.5);
 }
 
 .menu-line strong {
@@ -1588,7 +1626,20 @@ body.menu-view .menu-book-controls-bottom {
   .menu-page:not(.theme-cover):not(.theme-back) .menu-page-body {
     max-width: 100%;
     padding-left: 0.1rem;
-    padding-right: 0.9rem;
+    padding-right: clamp(3.7rem, 20vw, 6.2rem);
+    padding-bottom: clamp(5.3rem, 14vh, 7.4rem);
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2),
+  .menu-book-pages > .menu-page:nth-child(4),
+  .menu-book-pages > .menu-page:nth-child(6) {
+    --menu-corner-size: auto 35%;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(3),
+  .menu-book-pages > .menu-page:nth-child(5),
+  .menu-book-pages > .menu-page:nth-child(7) {
+    --menu-corner-size: auto 30%;
   }
 
   .two-col-menu,
