@@ -396,6 +396,82 @@ body.home-view .actions {
   text-shadow: 0 6px 16px rgba(8, 32, 119, 0.08);
 }
 
+.home-specials {
+  margin-top: clamp(1.2rem, 2.1vw, 2.2rem);
+}
+
+body.home-view .home-specials {
+  width: min(1400px, 96vw);
+}
+
+.home-specials-title {
+  margin: 0 0 clamp(0.95rem, 1.8vw, 1.7rem);
+  font-family: "Amatic SC", cursive;
+  font-size: clamp(3.1rem, 6.1vw, 5.5rem);
+  line-height: 0.92;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  color: #e6422e;
+}
+
+.home-specials-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.2rem, 2.7vw, 2.7rem) clamp(1.3rem, 2.4vw, 3rem);
+}
+
+.home-special-item {
+  margin: 0;
+}
+
+.home-special-item.is-wide {
+  grid-column: 1 / -1;
+}
+
+.home-special-line {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0.75rem, 1fr) auto;
+  align-items: end;
+  column-gap: 0.28rem;
+  font-family: "Amatic SC", cursive;
+  font-size: clamp(2.25rem, 3.25vw, 3.35rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.home-special-product {
+  color: #1f4ea7;
+}
+
+.home-special-dots {
+  align-self: end;
+  height: 0.36em;
+  margin-bottom: 0.18em;
+  background-image:
+    radial-gradient(circle, #1f4ea7 1.4px, transparent 1.7px),
+    radial-gradient(circle, #e6422e 1.4px, transparent 1.7px);
+  background-size: 16px 8px, 16px 8px;
+  background-position: 0 50%, 8px 50%;
+  background-repeat: repeat-x;
+}
+
+.home-special-price {
+  color: #e6422e;
+  white-space: nowrap;
+}
+
+.home-special-description {
+  margin: 0.14rem 0 0;
+  color: #1f4ea7;
+  font-family: "Amatic SC", cursive;
+  font-size: clamp(2rem, 2.9vw, 3.02rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
 .home-food-showcase {
   margin-top: clamp(0.5rem, 1vw, 1rem);
 }
@@ -1236,6 +1312,15 @@ body.menu-view .menu-book-controls-bottom {
     grid-template-rows: repeat(2, minmax(210px, 44vw));
   }
 
+  .home-specials-grid {
+    grid-template-columns: 1fr;
+    gap: 1.05rem;
+  }
+
+  .home-special-item.is-wide {
+    grid-column: auto;
+  }
+
   .home-food-item.item-1,
   .home-food-item.item-2,
   .home-food-item.item-3,
@@ -1418,6 +1503,23 @@ body.menu-view .menu-book-controls-bottom {
 }
 
 @media (max-width: 520px) {
+  .home-specials-title {
+    font-size: clamp(2.45rem, 12vw, 3.6rem);
+  }
+
+  .home-special-line {
+    font-size: clamp(1.86rem, 8.7vw, 2.52rem);
+  }
+
+  .home-special-dots {
+    background-size: 12px 7px, 12px 7px;
+    background-position: 0 50%, 6px 50%;
+  }
+
+  .home-special-description {
+    font-size: clamp(1.7rem, 8.1vw, 2.35rem);
+  }
+
   body.home-view .hero-welcome {
     font-size: clamp(2.85rem, 18vw, 4.1rem);
   }
