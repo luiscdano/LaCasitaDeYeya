@@ -26,10 +26,33 @@ function truncateText(value, max = 120) {
   return `${value.slice(0, max - 1)}…`;
 }
 
+function getInstagramPostUrl(post, profileUrl) {
+  const shortcode = typeof post?.shortcode === 'string' ? post.shortcode.trim() : '';
+  const permalink = typeof post?.permalink === 'string' ? post.permalink.trim() : '';
+
+  if (shortcode) {
+    // Reels can redirect to profile on some clients; /p/{shortcode}/ stays stable.
+    const canonicalPostUrl = `https://www.instagram.com/p/${shortcode}/`;
+    if (post?.is_video || permalink.includes('/reel/')) {
+      return canonicalPostUrl;
+    }
+  }
+
+  if (permalink) {
+    return permalink;
+  }
+
+  if (shortcode) {
+    return `https://www.instagram.com/p/${shortcode}/`;
+  }
+
+  return profileUrl;
+}
+
 function buildInstagramCard(post, profileUrl) {
   const card = document.createElement('a');
   card.className = 'instagram-post';
-  card.href = post.permalink || profileUrl;
+  card.href = getInstagramPostUrl(post, profileUrl);
   card.target = '_blank';
   card.rel = 'noopener noreferrer';
   card.ariaLabel = 'Abrir publicación de Instagram';
