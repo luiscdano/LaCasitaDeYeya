@@ -60,7 +60,13 @@
         <h1>Reserva tu mesa</h1>
         <p>Formulario base para centralizar solicitudes. Puedes conectarlo luego a correo, WhatsApp o backend.</p>
 
-        <form class="form" method="post" data-reservation-form data-reservation-endpoint="/api/reservations" data-reservation-timeout="12000">
+        <form
+          class="form"
+          method="post"
+          data-reservation-form
+          data-reservation-endpoint="https://lacasita-reservations-api.lacasita-yeya.workers.dev/api/reservations"
+          data-reservation-timeout="12000"
+        >
           <label>
             Nombre completo
             <input type="text" name="nombre" required />
