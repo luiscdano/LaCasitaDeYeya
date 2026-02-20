@@ -10,14 +10,13 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
 - `shared/` (recursos globales)
   - `css/main.css`
   - `js/main.js`
-  - `img/logo.png`
+  - `img/`
   - `data/instagram-feed.json`
   - `data/instagram/` (miniaturas locales del feed)
 - `scripts/`
   - `update_instagram_feed.sh`
 - `localidad/`
   - `index.html`
-  - `img/`
   - `village/index.html`
   - `downtown/index.html`
   - `los-corales/index.html`
@@ -26,21 +25,18 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
   - `img/`
 - `sobre/`
   - `index.html`
-  - `img/`
   - `descripcion-general/index.html`
   - `nuestra-huella/index.html`
 - `abastecimiento/`
   - `index.html`
-  - `img/`
 - `reserva/`
   - `index.html`
-  - `img/`
 
 ## Navegación principal
 - Localidad
   - Village
   - Downtown
-  - Lo Corales
+  - Los Corales
 - Menú
 - Sobre
   - Descripción General

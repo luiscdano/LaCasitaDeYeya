@@ -148,17 +148,11 @@ function initMenuBook() {
   const pages = Array.from(book.querySelectorAll('[data-menu-page]'));
   const prevButtons = Array.from(book.querySelectorAll('[data-menu-prev]'));
   const nextButtons = Array.from(book.querySelectorAll('[data-menu-next]'));
-  const currentIndicators = Array.from(book.querySelectorAll('[data-menu-current]'));
-  const totalIndicators = Array.from(book.querySelectorAll('[data-menu-total]'));
 
   if (!pages.length) return;
 
   let currentIndex = 0;
   const total = pages.length;
-
-  totalIndicators.forEach((indicator) => {
-    indicator.textContent = String(total);
-  });
 
   function render() {
     pages.forEach((page, index) => {
@@ -171,10 +165,6 @@ function initMenuBook() {
           pageBody.scrollTop = 0;
         }
       }
-    });
-
-    currentIndicators.forEach((indicator) => {
-      indicator.textContent = String(currentIndex + 1);
     });
 
     const isSinglePage = total <= 1;
