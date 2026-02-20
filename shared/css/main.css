@@ -1231,19 +1231,19 @@ body.menu-view .menu-book-controls-bottom {
   --menu-corner-bleed-y: 22%;
   --menu-body-pad-right: clamp(10.5rem, 42vw, 24rem);
   --menu-body-pad-bottom: clamp(13rem, 34vh, 20rem);
-  background-position: right calc(-5% - 9rem) bottom -18%, center, center;
+  background-position: right calc(-5% - 9rem) bottom -35%, center, center;
 }
 
 .menu-book-pages > .menu-page:nth-child(4) {
   --menu-corner-image: url("../../menu/img/c5.png");
   --menu-corner-size: auto 128%;
-  background-position: right -5% bottom -30%, center, center;
+  background-position: right -5% bottom -52%, center, center;
 }
 
 .menu-book-pages > .menu-page:nth-child(5) {
   --menu-corner-image: url("../../menu/img/c4.png");
   --menu-corner-size: auto 96%;
-  --menu-corner-bleed-y: 8%;
+  --menu-corner-bleed-y: 20%;
 }
 
 .menu-book-pages > .menu-page:nth-child(6) {
@@ -1255,7 +1255,7 @@ body.menu-view .menu-book-controls-bottom {
 .menu-book-pages > .menu-page:nth-child(7) {
   --menu-corner-image: url("../../menu/img/c4.png");
   --menu-corner-size: auto 96%;
-  --menu-corner-bleed-y: 8%;
+  --menu-corner-bleed-y: 20%;
 }
 
 .menu-cover-center,
@@ -1289,7 +1289,7 @@ body.menu-view .menu-book-controls-bottom {
 }
 
 .menu-cover-copy {
-  margin-top: 1em;
+  margin-top: 2em;
   max-width: min(930px, 94%);
 }
 
@@ -1720,17 +1720,18 @@ body.menu-view .menu-book-controls-bottom {
     --menu-corner-bleed-y: 14%;
     --menu-body-pad-right: clamp(5.8rem, 33vw, 9.4rem);
     --menu-body-pad-bottom: clamp(7.2rem, 24vh, 11rem);
-    background-position: right calc(-4% - 5rem) bottom -16%, center, center;
+    background-position: right calc(-4% - 5rem) bottom -30%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
     --menu-corner-size: auto 101%;
-    background-position: right -2% bottom -26%, center, center;
+    background-position: right -2% bottom -44%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(5),
   .menu-book-pages > .menu-page:nth-child(7) {
     --menu-corner-size: auto 74%;
+    --menu-corner-bleed-y: 18%;
   }
 
   .two-col-menu,
@@ -1850,17 +1851,18 @@ body.menu-view .menu-book-controls-bottom {
     --menu-corner-bleed-y: 11%;
     --menu-body-pad-right: clamp(2.8rem, 19vw, 4rem);
     --menu-body-pad-bottom: clamp(4.4rem, 17vh, 6.2rem);
-    background-position: right calc(-3% - 3rem) bottom -14%, center, center;
+    background-position: right calc(-3% - 3rem) bottom -28%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
     --menu-corner-size: auto 80%;
-    background-position: right -2% bottom -23%, center, center;
+    background-position: right -2% bottom -40%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(5),
   .menu-book-pages > .menu-page:nth-child(7) {
     --menu-corner-size: auto 58%;
+    --menu-corner-bleed-y: 16%;
   }
 
   .menu-book-pages > .menu-page:nth-child(2) .menu-drinks-top-grid {
