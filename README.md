@@ -15,6 +15,10 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
   - `data/instagram/` (miniaturas locales del feed)
 - `scripts/`
   - `update_instagram_feed.sh`
+- `docs/`
+  - `STACK_ROADMAP.md`
+- `infra/`
+  - `cloudflare/reservations-worker/`
 - `localidad/`
   - `index.html`
   - `village/index.html`
@@ -60,3 +64,18 @@ Abrir:
 ```
 - Sincronización automática:
   - Workflow en `.github/workflows/lacasita-instagram-sync.yml` (cada 6 horas + manual).
+
+## Optimizacion de imagenes
+- Se agregaron variantes `.webp` para assets visuales principales de `menu/`, `shared/` y `localidad/`.
+- Los HTML/CSS ya consumen `.webp` para reducir tiempo de carga en clientes moviles.
+- Los originales (`.png` / `.jpg`) se mantienen como respaldo de edicion.
+
+## API de reservas (Cloudflare)
+- Base de API serverless en:
+  - `infra/cloudflare/reservations-worker/`
+- Incluye:
+  - `wrangler.toml` (config Worker + D1)
+  - `schema.sql` (esquema de base de datos)
+  - `src/index.js` (endpoints `/api/health` y `/api/reservations`)
+- Guia de despliegue:
+  - `infra/cloudflare/reservations-worker/README.md`

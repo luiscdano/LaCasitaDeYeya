@@ -1,6 +1,6 @@
 const menuToggle = document.querySelector('[data-menu-toggle]');
 const mainNav = document.querySelector('#main-nav');
-const FALLBACK_INSTAGRAM_IMAGE = 'shared/img/logo.png?v=20260217';
+const FALLBACK_INSTAGRAM_IMAGE = 'shared/img/logo.webp?v=20260220opt1';
 
 function initMobileMenu() {
   if (!menuToggle || !mainNav) return;
@@ -224,6 +224,136 @@ function initMenuBook() {
   }
 }
 
+function setReservationStatus(element, type, message) {
+  if (!element) return;
+  element.classList.remove('is-success', 'is-error');
+  if (!message) {
+    element.textContent = '';
+    return;
+  }
+  element.textContent = message;
+  if (type) {
+    element.classList.add(type === 'success' ? 'is-success' : 'is-error');
+  }
+}
+
+function getTodayIsoDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function initReservationForm() {
+  const form = document.querySelector('[data-reservation-form]');
+  if (!form) return;
+
+  const statusElement = form.querySelector('[data-reservation-status]');
+  const submitButton = form.querySelector('[data-reservation-submit]');
+  const dateInput = form.querySelector('input[name="fecha"]');
+  const endpoint = (form.dataset.reservationEndpoint || '').trim();
+  const timeoutMs = Number.parseInt(form.dataset.reservationTimeout || '12000', 10);
+
+  if (dateInput) {
+    dateInput.min = getTodayIsoDate();
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    setReservationStatus(statusElement, '', '');
+
+    if (!form.reportValidity()) return;
+
+    const formData = new FormData(form);
+    const honeypot = String(formData.get('empresa') || '').trim();
+    if (honeypot) {
+      setReservationStatus(statusElement, 'success', 'Solicitud enviada. Te confirmaremos la reserva pronto.');
+      form.reset();
+      if (dateInput) {
+        dateInput.min = getTodayIsoDate();
+      }
+      return;
+    }
+
+    if (!endpoint) {
+      setReservationStatus(statusElement, 'error', 'Reservas temporalmente no disponibles. Intenta nuevamente en breve.');
+      return;
+    }
+
+    const payload = {
+      full_name: String(formData.get('nombre') || '').trim(),
+      phone: String(formData.get('telefono') || '').trim(),
+      email: String(formData.get('correo') || '').trim(),
+      location: String(formData.get('localidad') || '').trim(),
+      reservation_date: String(formData.get('fecha') || '').trim(),
+      reservation_time: String(formData.get('hora') || '').trim(),
+      guests: Number.parseInt(String(formData.get('personas') || '0'), 10),
+      comments: String(formData.get('comentarios') || '').trim(),
+      source: 'website',
+    };
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), Number.isFinite(timeoutMs) ? timeoutMs : 12000);
+    const initialButtonText = submitButton?.textContent || '';
+
+    try {
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.classList.add('is-loading');
+        submitButton.textContent = 'Enviando...';
+      }
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+
+      let responsePayload = null;
+      try {
+        responsePayload = await response.json();
+      } catch (parseError) {
+        responsePayload = null;
+      }
+
+      if (!response.ok || !responsePayload?.ok) {
+        const errorMessage =
+          responsePayload?.error || `No se pudo enviar la reserva (${response.status}). Intenta de nuevo.`;
+        throw new Error(errorMessage);
+      }
+
+      form.reset();
+      if (dateInput) {
+        dateInput.min = getTodayIsoDate();
+      }
+      setReservationStatus(
+        statusElement,
+        'success',
+        'Solicitud enviada. Te contactaremos para confirmar disponibilidad.',
+      );
+    } catch (error) {
+      const isAbort = error instanceof DOMException && error.name === 'AbortError';
+      const message = isAbort
+        ? 'La solicitud tardó demasiado. Revisa tu conexión e intenta nuevamente.'
+        : error?.message || 'No se pudo enviar la reserva. Intenta nuevamente.';
+      setReservationStatus(statusElement, 'error', message);
+    } finally {
+      window.clearTimeout(timeout);
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.classList.remove('is-loading');
+        submitButton.textContent = initialButtonText || 'Enviar solicitud';
+      }
+    }
+  });
+}
+
 initMobileMenu();
 initMenuBook();
 initInstagramFeed();
+initReservationForm();
