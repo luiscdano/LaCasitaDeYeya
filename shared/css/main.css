@@ -1231,28 +1231,31 @@ body.menu-view .menu-book-controls-bottom {
   --menu-corner-bleed-y: 22%;
   --menu-body-pad-right: clamp(10.5rem, 42vw, 24rem);
   --menu-body-pad-bottom: clamp(13rem, 34vh, 20rem);
-  background-position: right calc(-5% - 9rem) bottom -15%, center, center;
+  background-position: right calc(-5% - 9rem) bottom -18%, center, center;
 }
 
 .menu-book-pages > .menu-page:nth-child(4) {
   --menu-corner-image: url("../../menu/img/c5.png");
   --menu-corner-size: auto 128%;
-  background-position: right -5% bottom -15%, center, center;
+  background-position: right -5% bottom -30%, center, center;
 }
 
 .menu-book-pages > .menu-page:nth-child(5) {
   --menu-corner-image: url("../../menu/img/c4.png");
   --menu-corner-size: auto 96%;
+  --menu-corner-bleed-y: 8%;
 }
 
 .menu-book-pages > .menu-page:nth-child(6) {
   --menu-corner-image: url("../../menu/img/c1.png");
   --menu-corner-size: auto 102%;
+  --menu-corner-bleed-x: 0%;
 }
 
 .menu-book-pages > .menu-page:nth-child(7) {
   --menu-corner-image: url("../../menu/img/c4.png");
   --menu-corner-size: auto 96%;
+  --menu-corner-bleed-y: 8%;
 }
 
 .menu-cover-center,
@@ -1283,6 +1286,24 @@ body.menu-view .menu-book-controls-bottom {
   color: #1b4584;
   letter-spacing: 0.015em;
   line-height: 0.92;
+}
+
+.menu-cover-copy {
+  margin-top: 1em;
+  max-width: min(930px, 94%);
+}
+
+.menu-cover-copy p {
+  margin: 0;
+  font-family: "Amatic SC", cursive;
+  font-size: clamp(1.45rem, 2.8vw, 2.15rem);
+  color: #1b4584;
+  letter-spacing: 0.015em;
+  line-height: 1.08;
+}
+
+.menu-cover-copy p + p {
+  margin-top: 0.72em;
 }
 
 .menu-back-logo {
@@ -1656,8 +1677,8 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages {
-    height: min(80vh, 860px);
-    min-height: 610px;
+    height: min(83vh, 900px);
+    min-height: 640px;
     border-radius: 20px;
   }
 
@@ -1672,8 +1693,8 @@ body.menu-view .menu-book-controls-bottom {
   .menu-page:not(.theme-cover):not(.theme-back) .menu-page-body {
     max-width: 100%;
     padding-left: 0.1rem;
-    --menu-body-pad-right: clamp(5.8rem, 34vw, 9.8rem);
-    --menu-body-pad-bottom: clamp(7.8rem, 25vh, 11.3rem);
+    --menu-body-pad-right: clamp(4.4rem, 27vw, 7.2rem);
+    --menu-body-pad-bottom: clamp(6.4rem, 22vh, 9.6rem);
     padding-right: var(--menu-body-pad-right);
     padding-bottom: var(--menu-body-pad-bottom);
   }
@@ -1685,31 +1706,31 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(2) {
-    --menu-corner-size: auto 127%;
-    --menu-corner-bleed-x: 9%;
-    --menu-corner-bleed-y: 18%;
-    --menu-body-pad-right: clamp(7.8rem, 46vw, 13.5rem);
-    --menu-body-pad-bottom: clamp(9.2rem, 30vh, 14.2rem);
-    background-position: right calc(15% - 7rem) bottom -12rem, center, center;
+    --menu-corner-size: auto 116%;
+    --menu-corner-bleed-x: 8%;
+    --menu-corner-bleed-y: 14%;
+    --menu-body-pad-right: clamp(5.8rem, 33vw, 9.4rem);
+    --menu-body-pad-bottom: clamp(7.2rem, 24vh, 11rem);
+    background-position: right calc(15% - 5.2rem) bottom -9.3rem, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 88%;
-    --menu-corner-bleed-x: 9%;
-    --menu-corner-bleed-y: 18%;
-    --menu-body-pad-right: clamp(7.8rem, 46vw, 13.5rem);
-    --menu-body-pad-bottom: clamp(9.2rem, 30vh, 14.2rem);
-    background-position: right calc(-5% - 7rem) bottom -15%, center, center;
+    --menu-corner-size: auto 82%;
+    --menu-corner-bleed-x: 8%;
+    --menu-corner-bleed-y: 14%;
+    --menu-body-pad-right: clamp(5.8rem, 33vw, 9.4rem);
+    --menu-body-pad-bottom: clamp(7.2rem, 24vh, 11rem);
+    background-position: right calc(-4% - 5rem) bottom -16%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
-    --menu-corner-size: auto 108%;
-    background-position: right -5% bottom -15%, center, center;
+    --menu-corner-size: auto 101%;
+    background-position: right -2% bottom -26%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(5),
   .menu-book-pages > .menu-page:nth-child(7) {
-    --menu-corner-size: auto 79%;
+    --menu-corner-size: auto 74%;
   }
 
   .two-col-menu,
@@ -1725,6 +1746,18 @@ body.menu-view .menu-book-controls-bottom {
   .menu-book-pages > .menu-page:nth-child(2) .menu-drinks-top-grid {
     width: 100%;
     margin-right: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem 0.9rem;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2) .two-col-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.52rem 0.75rem;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(7) .two-col-on-wide {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.58rem 0.8rem;
   }
 }
 
@@ -1759,13 +1792,41 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages {
-    height: min(79vh, 800px);
-    min-height: 560px;
+    height: min(84vh, 880px);
+    min-height: 600px;
   }
 
   .menu-page:not(.theme-cover):not(.theme-back) .menu-page-body {
-    --menu-body-pad-right: clamp(4.8rem, 36vw, 7rem);
-    --menu-body-pad-bottom: clamp(6.2rem, 23vh, 8.4rem);
+    --menu-body-pad-right: clamp(2.8rem, 20vw, 4.2rem);
+    --menu-body-pad-bottom: clamp(4.4rem, 17vh, 6rem);
+  }
+
+  .menu-page-title {
+    margin-bottom: 0.3rem;
+    font-size: clamp(1.64rem, 7.6vw, 2.08rem);
+  }
+
+  .menu-section-title {
+    font-size: clamp(1.24rem, 5.8vw, 1.52rem);
+  }
+
+  .menu-section-block {
+    margin-top: 0.62rem;
+  }
+
+  .menu-line {
+    font-size: clamp(1rem, 4.3vw, 1.22rem);
+    padding: 0.08rem 0;
+  }
+
+  .menu-list:not(.two-col-menu) .menu-line + .menu-line {
+    margin-top: 0.38rem;
+  }
+
+  .menu-note {
+    margin: 0.1rem 0 0.2rem;
+    font-size: clamp(0.92rem, 3.5vw, 1.14rem);
+    line-height: 1.12;
   }
 
   .menu-book-pages > .menu-page:nth-child(2),
@@ -1775,31 +1836,62 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(2) {
-    --menu-corner-size: auto 107%;
-    --menu-corner-bleed-x: 11%;
-    --menu-corner-bleed-y: 16%;
-    --menu-body-pad-right: clamp(6.2rem, 48vw, 9.5rem);
-    --menu-body-pad-bottom: clamp(7.4rem, 27vh, 11rem);
-    background-position: right calc(15% - 4.4rem) bottom -8rem, center, center;
+    --menu-corner-size: auto 90%;
+    --menu-corner-bleed-x: 8%;
+    --menu-corner-bleed-y: 11%;
+    --menu-body-pad-right: clamp(2.8rem, 19vw, 4rem);
+    --menu-body-pad-bottom: clamp(4.4rem, 17vh, 6.2rem);
+    background-position: right calc(15% - 3.2rem) bottom -5.8rem, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 73%;
-    --menu-corner-bleed-x: 11%;
-    --menu-corner-bleed-y: 16%;
-    --menu-body-pad-right: clamp(6.2rem, 48vw, 9.5rem);
-    --menu-body-pad-bottom: clamp(7.4rem, 27vh, 11rem);
-    background-position: right calc(-5% - 4.4rem) bottom -15%, center, center;
+    --menu-corner-size: auto 65%;
+    --menu-corner-bleed-x: 8%;
+    --menu-corner-bleed-y: 11%;
+    --menu-body-pad-right: clamp(2.8rem, 19vw, 4rem);
+    --menu-body-pad-bottom: clamp(4.4rem, 17vh, 6.2rem);
+    background-position: right calc(-3% - 3rem) bottom -14%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
-    --menu-corner-size: auto 91%;
-    background-position: right -5% bottom -15%, center, center;
+    --menu-corner-size: auto 80%;
+    background-position: right -2% bottom -23%, center, center;
   }
 
   .menu-book-pages > .menu-page:nth-child(5),
   .menu-book-pages > .menu-page:nth-child(7) {
-    --menu-corner-size: auto 66%;
+    --menu-corner-size: auto 58%;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2) .menu-drinks-top-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.48rem 0.72rem;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2) .two-col-menu {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(7) .two-col-on-wide {
+    grid-template-columns: 1fr;
+    gap: 0.42rem;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2) .menu-page-title {
+    font-size: clamp(1.5rem, 7vw, 1.9rem);
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2) .menu-section-title {
+    font-size: clamp(1.1rem, 5.1vw, 1.35rem);
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2) .menu-section-block {
+    margin-top: 0.5rem;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(2) .menu-line {
+    font-size: clamp(0.9rem, 3.8vw, 1.08rem);
   }
 
   .menu-nav-btn {
@@ -1810,5 +1902,10 @@ body.menu-view .menu-book-controls-bottom {
 
   .menu-cover-title {
     margin-bottom: 1em;
+  }
+
+  .menu-cover-copy p {
+    font-size: clamp(0.96rem, 4.5vw, 1.24rem);
+    line-height: 1.14;
   }
 }
