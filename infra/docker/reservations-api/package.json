@@ -1,0 +1,22 @@
+{
+  "name": "lacasita-reservations-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Reservations API for La Casita de Yeya (Docker runtime)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "check": "node --check src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemailer": "^6.10.1",
+    "pg": "^8.13.3",
+    "zod": "^3.24.2"
+  }
+}

@@ -1,0 +1,58 @@
+services:
+  reservations-db:
+    image: postgres:16-alpine
+    container_name: lacasita-reservations-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-lacasita_reservations}
+      POSTGRES_USER: ${POSTGRES_USER:-lacasita}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lacasita_dev_password}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - reservations-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-lacasita} -d ${POSTGRES_DB:-lacasita_reservations}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  reservations-api:
+    build:
+      context: ./docker/reservations-api
+    container_name: lacasita-reservations-api
+    restart: unless-stopped
+    depends_on:
+      reservations-db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 8789
+      DATABASE_URL: ${DATABASE_URL:-postgresql://lacasita:lacasita_dev_password@reservations-db:5432/lacasita_reservations}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://127.0.0.1:8080,https://luiscdano.github.io}
+      EMAIL_NOTIFICATIONS_ENABLED: ${EMAIL_NOTIFICATIONS_ENABLED:-false}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      EMAIL_TO: ${EMAIL_TO:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      WHATSAPP_NOTIFICATIONS_ENABLED: ${WHATSAPP_NOTIFICATIONS_ENABLED:-false}
+      WABA_PHONE_NUMBER_ID: ${WABA_PHONE_NUMBER_ID:-}
+      WABA_ACCESS_TOKEN: ${WABA_ACCESS_TOKEN:-}
+      WABA_TO_NUMBER: ${WABA_TO_NUMBER:-}
+      WABA_API_VERSION: ${WABA_API_VERSION:-v21.0}
+    ports:
+      - "${RESERVATIONS_API_PORT:-8789}:8789"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: lacasita-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  reservations-db-data:

@@ -1,2 +1,4 @@
 .DS_Store
 .wrangler/
+infra/docker/reservations-api/.env
+infra/docker/reservations-api/node_modules/

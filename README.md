@@ -17,8 +17,11 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
   - `update_instagram_feed.sh`
 - `docs/`
   - `STACK_ROADMAP.md`
+  - `CLIENTA_CHECKLIST_CANALES.md`
 - `infra/`
   - `cloudflare/reservations-worker/`
+  - `docker-compose.reservations.yml`
+  - `docker/reservations-api/`
 - `localidad/`
   - `index.html`
   - `village/index.html`
@@ -54,6 +57,13 @@ python3 -m http.server 8080
 ```
 Abrir:
 - `http://localhost:8080/index.html`
+
+## API de reservas (Docker)
+- Stack local/servidor en:
+  - `infra/docker-compose.reservations.yml`
+  - `infra/docker/reservations-api/`
+- Guia:
+  - `infra/docker/reservations-api/README.md`
 
 ## Feed de Instagram
 - Home incluye sección `Síguenos en Instagram` cargada desde `shared/data/instagram-feed.json`.
