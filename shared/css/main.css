@@ -1793,12 +1793,24 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 82%;
+    --menu-corner-size: auto 70%;
     --menu-corner-bleed-x: 8%;
     --menu-corner-bleed-y: 14%;
-    --menu-body-pad-right: clamp(5.8rem, 33vw, 9.4rem);
+    --menu-body-pad-right: clamp(7rem, 36vw, 10.5rem);
     --menu-body-pad-bottom: clamp(7.2rem, 24vh, 11rem);
-    --menu-corner-position: right calc(-4% - 5rem) bottom 0;
+    --menu-corner-position: right calc(-12% - 4.8rem) bottom -0.2rem;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(3) .menu-page-body {
+    background: linear-gradient(90deg, rgba(112, 15, 21, 0) 0%, rgba(112, 15, 21, 0) 60%, rgba(28, 8, 13, 0.34) 100%);
+  }
+
+  .menu-book-pages > .menu-page:nth-child(3) .menu-line {
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.42);
+  }
+
+  .menu-book-pages > .menu-page:nth-child(3) .menu-line strong {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.62);
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
@@ -1924,12 +1936,16 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 65%;
+    --menu-corner-size: auto 54%;
     --menu-corner-bleed-x: 8%;
     --menu-corner-bleed-y: 11%;
-    --menu-body-pad-right: clamp(2.8rem, 19vw, 4rem);
+    --menu-body-pad-right: clamp(5.2rem, 31vw, 7rem);
     --menu-body-pad-bottom: clamp(4.4rem, 17vh, 6.2rem);
-    --menu-corner-position: right calc(-3% - 3rem) bottom 0;
+    --menu-corner-position: right -22% bottom 0;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(3) .menu-page-body {
+    background: linear-gradient(90deg, rgba(112, 15, 21, 0) 0%, rgba(112, 15, 21, 0) 55%, rgba(28, 8, 13, 0.48) 100%);
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
