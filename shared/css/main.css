@@ -25,10 +25,16 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   font-family: "Nunito Sans", sans-serif;
   color: var(--ink-900);
+  min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -56,12 +62,14 @@ a {
   position: sticky;
   top: 0;
   z-index: 100;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   background: linear-gradient(120deg, rgba(8, 32, 119, 0.95), rgba(15, 86, 174, 0.95));
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 body.menu-view .topbar {
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   background: linear-gradient(120deg, rgba(8, 32, 119, 0.95), rgba(15, 86, 174, 0.95));
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
@@ -304,6 +312,7 @@ body.home-view .hero-description {
   font-weight: 600;
   line-height: 1.55;
   text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 
 body.home-view .hero-description-secondary {
@@ -680,6 +689,7 @@ body.home-view .section-block {
   font-weight: 800;
   padding: 0.22rem 0.45rem;
   border: 1px solid rgba(255, 255, 255, 0.34);
+  -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
 }
 
@@ -952,6 +962,7 @@ body.home-view main {
 }
 
 body.home-view {
+  min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -969,6 +980,7 @@ body.home-view .instagram-grid-full {
 }
 
 body.menu-view {
+  min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -1714,6 +1726,12 @@ body.menu-view .menu-book-controls-bottom {
   .grid,
   .form {
     grid-template-columns: 1fr;
+  }
+
+  .form input,
+  .form select,
+  .form textarea {
+    font-size: 16px;
   }
 
   .instagram-grid {

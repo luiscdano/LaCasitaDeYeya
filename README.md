@@ -15,9 +15,11 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
   - `data/instagram/` (miniaturas locales del feed)
 - `scripts/`
   - `update_instagram_feed.sh`
+  - `qa_cross_browser_screenshots.sh`
 - `docs/`
   - `STACK_ROADMAP.md`
   - `CLIENTA_CHECKLIST_CANALES.md`
+  - `BROWSER_COMPATIBILITY.md`
 - `infra/`
   - `cloudflare/reservations-worker/`
   - `docker-compose.reservations.yml`
