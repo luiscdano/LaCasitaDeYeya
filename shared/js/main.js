@@ -8,6 +8,7 @@ function initMobileMenu() {
   menuToggle.addEventListener('click', () => {
     const isOpen = mainNav.classList.toggle('is-open');
     menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    menuToggle.setAttribute('aria-label', isOpen ? 'Cerrar navegación' : 'Abrir navegación');
   });
 
   mainNav.querySelectorAll('a').forEach((link) => {
@@ -15,6 +16,7 @@ function initMobileMenu() {
       if (window.innerWidth <= 860) {
         mainNav.classList.remove('is-open');
         menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Abrir navegación');
       }
     });
   });

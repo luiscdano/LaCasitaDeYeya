@@ -119,13 +119,35 @@ body.menu-view .topbar {
 
 .menu-toggle {
   display: none;
+  position: relative;
+  align-items: center;
+  justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.1);
   color: #f2f6ff;
   border-radius: 12px;
-  padding: 0.46rem 0.76rem;
-  font-weight: 800;
+  width: 46px;
+  height: 42px;
+  padding: 0;
+  font-size: 0;
+  line-height: 0;
   cursor: pointer;
+}
+
+.menu-toggle::before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow:
+    0 -6px 0 currentColor,
+    0 6px 0 currentColor;
+}
+
+.menu-toggle[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .main-nav {
@@ -1515,6 +1537,7 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   body.home-view .hero {
+    grid-template-columns: 1fr;
     gap: 1.1rem;
   }
 
@@ -1617,6 +1640,7 @@ body.menu-view .menu-book-controls-bottom {
 
   .menu-toggle {
     display: inline-flex;
+    flex: 0 0 auto;
   }
 
   .main-nav {
