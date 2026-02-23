@@ -22,3 +22,12 @@ CREATE INDEX IF NOT EXISTS idx_reservations_location_date
 
 CREATE INDEX IF NOT EXISTS idx_reservations_created_at
   ON reservations (created_at);
+
+CREATE INDEX IF NOT EXISTS idx_reservations_client_ip_created_at
+  ON reservations (client_ip, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_reservations_email_created_at
+  ON reservations (email, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_reservations_duplicate_guard
+  ON reservations (email, location, reservation_date, reservation_time, created_at);

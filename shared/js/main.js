@@ -247,6 +247,33 @@ function getTodayIsoDate() {
   return `${year}-${month}-${day}`;
 }
 
+function getReservationErrorMessage(status, payload) {
+  const apiMessage = typeof payload?.error === 'string' ? payload.error.trim() : '';
+
+  if (status === 429) {
+    const retryAfter = Number.parseInt(String(payload?.retry_after_seconds ?? ''), 10);
+    if (Number.isInteger(retryAfter) && retryAfter > 0) {
+      const retryMinutes = Math.max(1, Math.ceil(retryAfter / 60));
+      return `Demasiadas solicitudes en poco tiempo. Intenta nuevamente en ${retryMinutes} minuto(s).`;
+    }
+    return apiMessage || 'Demasiadas solicitudes en poco tiempo. Intenta nuevamente en unos minutos.';
+  }
+
+  if (status === 409) {
+    return apiMessage || 'Ya recibimos una solicitud similar recientemente.';
+  }
+
+  if (status === 422) {
+    return apiMessage || 'Revisa los datos del formulario antes de enviarlo.';
+  }
+
+  if (status === 503) {
+    return apiMessage || 'Reservas temporalmente no disponibles. Intenta nuevamente en breve.';
+  }
+
+  return apiMessage || `No se pudo enviar la reserva (${status}). Intenta de nuevo.`;
+}
+
 function initReservationForm() {
   const form = document.querySelector('[data-reservation-form]');
   if (!form) return;
@@ -295,6 +322,11 @@ function initReservationForm() {
       source: 'website',
     };
 
+    if (payload.reservation_date && payload.reservation_date < getTodayIsoDate()) {
+      setReservationStatus(statusElement, 'error', 'La fecha de reserva no puede ser anterior a hoy.');
+      return;
+    }
+
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), Number.isFinite(timeoutMs) ? timeoutMs : 12000);
     const initialButtonText = submitButton?.textContent || '';
@@ -324,8 +356,7 @@ function initReservationForm() {
       }
 
       if (!response.ok || !responsePayload?.ok) {
-        const errorMessage =
-          responsePayload?.error || `No se pudo enviar la reserva (${response.status}). Intenta de nuevo.`;
+        const errorMessage = getReservationErrorMessage(response.status, responsePayload);
         throw new Error(errorMessage);
       }
 
@@ -336,7 +367,7 @@ function initReservationForm() {
       setReservationStatus(
         statusElement,
         'success',
-        'Solicitud enviada. Te contactaremos para confirmar disponibilidad.',
+        responsePayload?.message || 'Solicitud enviada. Te contactaremos para confirmar disponibilidad.',
       );
     } catch (error) {
       const isAbort = error instanceof DOMException && error.name === 'AbortError';

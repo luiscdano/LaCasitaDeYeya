@@ -64,3 +64,25 @@ wrangler deploy
 ## Origenes permitidos
 
 Configurar `ALLOWED_ORIGINS` en `wrangler.toml` (lista separada por comas).
+
+## Anti-spam y limites
+
+El Worker incluye protecciones base:
+
+- Rate limit por IP en ventana corta.
+- Rate limit por correo por dia.
+- Bloqueo de solicitudes duplicadas recientes (mismo correo/localidad/fecha/hora).
+- Honeypot server-side (`empresa`, `website`, `company`).
+
+Variables configurables en `wrangler.toml`:
+
+- `RATE_LIMIT_WINDOW_SECONDS` (default: `600`)
+- `RATE_LIMIT_MAX_PER_IP` (default: `4`)
+- `RATE_LIMIT_MAX_PER_EMAIL_DAY` (default: `8`)
+- `DUPLICATE_WINDOW_SECONDS` (default: `900`)
+
+Respuestas clave:
+
+- `201` reserva creada
+- `409` solicitud duplicada reciente
+- `429` limite excedido (`retry_after_seconds`)

@@ -89,5 +89,6 @@ Abrir:
   - `wrangler.toml` (config Worker + D1)
   - `schema.sql` (esquema de base de datos)
   - `src/index.js` (endpoints `/api/health` y `/api/reservations`)
+  - validaciones server-side + anti-spam/rate-limit base para preproduccion
 - Guia de despliegue:
   - `infra/cloudflare/reservations-worker/README.md`

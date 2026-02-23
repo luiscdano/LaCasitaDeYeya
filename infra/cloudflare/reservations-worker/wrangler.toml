@@ -6,6 +6,10 @@ preview_urls = true
 
 [vars]
 ALLOWED_ORIGINS = "https://lacasitadeyeya.com,https://www.lacasitadeyeya.com,https://luiscdano.github.io,http://localhost:8080,http://127.0.0.1:8080"
+RATE_LIMIT_WINDOW_SECONDS = "600"
+RATE_LIMIT_MAX_PER_IP = "4"
+RATE_LIMIT_MAX_PER_EMAIL_DAY = "8"
+DUPLICATE_WINDOW_SECONDS = "900"
 
 [[d1_databases]]
 binding = "DB"
