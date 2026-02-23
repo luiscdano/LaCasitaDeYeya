@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-02-22T13:13:09Z",
+  "fetched_at": "2026-02-23T19:32:30Z",
   "posts": [
+    {
+      "id": "3838982061244129641",
+      "shortcode": "DVGzdhLjaFp",
+      "permalink": "https://www.instagram.com/p/DVGzdhLjaFp/",
+      "image": "shared/data/instagram/DVGzdhLjaFp.jpg",
+      "caption": "Full con to’: Hamburgersa con aguacate, plátano maduro y hasta un huevito Pa’ rematar. \n\n#domincanfood #dominicanburger",
+      "is_video": false,
+      "taken_at_timestamp": 1771862414
+    },
     {
       "id": "3835380375170949611",
       "shortcode": "DU6AiFokaHr",
@@ -83,15 +92,6 @@
       "caption": "Del mar Caribe con orgullo 🇩🇴🌊\nPescado fresco por manos de pescadores locales directo para nuestras casitas.\n\n#lacasitadeyeya #dominicanfood #pescadodomicilio",
       "is_video": false,
       "taken_at_timestamp": 1768928666
-    },
-    {
-      "id": "3813572950633556565",
-      "shortcode": "DTsiGS3jSpV",
-      "permalink": "https://www.instagram.com/reel/DTsiGS3jSpV/",
-      "image": "shared/data/instagram/DTsiGS3jSpV.jpg",
-      "caption": "No nos podíamos quedar atrás con la tendencia del 2016🥹🏡\nTenemos más de 10 años guayando la yuca para ofrecerles la mejor comida y experiencia dominicana 🇩🇴\nQue emoción ver todos estos recuerdos… Seguimos pa’ alante!! \n\n#puntacanarestaurant #dominicanfoood",
-      "is_video": true,
-      "taken_at_timestamp": 1768833498
     }
   ]
 }
