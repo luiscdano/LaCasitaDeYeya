@@ -1692,22 +1692,24 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .footer-inner {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
-    gap: 0.52rem;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "copyright copyright"
+      "social powered";
+    align-items: center;
+    text-align: left;
+    gap: 0.18rem 0.55rem;
   }
 
   .footer-left {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-    row-gap: 0.26rem;
+    display: contents;
   }
 
   .footer-left p {
+    grid-area: copyright;
     width: 100%;
-    font-size: clamp(0.72rem, 2.8vw, 0.86rem);
+    font-size: clamp(0.62rem, 2vw, 0.8rem);
     white-space: nowrap;
     overflow: visible;
     text-overflow: clip;
@@ -1715,15 +1717,38 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .footer-social {
+    grid-area: social;
     margin-left: 0;
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-start;
   }
 
   .footer-center {
-    grid-column: auto;
-    justify-self: center;
+    grid-area: powered;
+    align-self: center;
+    justify-self: end;
     margin-right: 0;
+    gap: 0.05rem;
+    font-size: 0.9rem;
+  }
+
+  .footer-center > span {
+    margin-right: 0;
+  }
+
+  .footer-cmlayer-link {
+    margin-left: 0;
+    gap: 0.1rem;
+  }
+
+  .footer-cmlayer-link > span:last-child {
+    margin-left: 0;
+  }
+
+  .footer-cmlayer-logo {
+    width: 38px;
+    height: 38px;
+    margin-right: -0.1rem;
   }
 
   .grid,
@@ -1796,12 +1821,12 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 56%;
+    --menu-corner-size: auto 50%;
     --menu-corner-bleed-x: 8%;
     --menu-corner-bleed-y: 12%;
-    --menu-body-pad-right: clamp(7.4rem, 38vw, 10.8rem);
+    --menu-body-pad-right: clamp(8rem, 41vw, 11.2rem);
     --menu-body-pad-bottom: clamp(7.6rem, 25vh, 11.4rem);
-    --menu-corner-position: right calc(-22% - 4.8rem) bottom -0.1rem;
+    --menu-corner-position: right calc(-32% - 4.6rem) bottom -0.8rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
@@ -1937,12 +1962,12 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 40%;
+    --menu-corner-size: auto 34%;
     --menu-corner-bleed-x: 8%;
     --menu-corner-bleed-y: 10%;
-    --menu-body-pad-right: clamp(5.8rem, 34vw, 7.6rem);
+    --menu-body-pad-right: clamp(6.2rem, 37vw, 8rem);
     --menu-body-pad-bottom: clamp(4.8rem, 18vh, 6.8rem);
-    --menu-corner-position: right -38% bottom -0.1rem;
+    --menu-corner-position: right -52% bottom -1rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
