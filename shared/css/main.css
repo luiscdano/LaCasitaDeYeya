@@ -1771,8 +1771,8 @@ body.menu-view .menu-book-controls-bottom {
   .menu-page:not(.theme-cover):not(.theme-back) .menu-page-body {
     max-width: 100%;
     padding-left: 0.1rem;
-    --menu-body-pad-right: clamp(4.4rem, 27vw, 7.2rem);
-    --menu-body-pad-bottom: clamp(6.4rem, 22vh, 9.6rem);
+    --menu-body-pad-right: clamp(5.4rem, 30vw, 8.6rem);
+    --menu-body-pad-bottom: clamp(6.8rem, 23vh, 10rem);
     padding-right: var(--menu-body-pad-right);
     padding-bottom: var(--menu-body-pad-bottom);
   }
@@ -1780,48 +1780,46 @@ body.menu-view .menu-book-controls-bottom {
   .menu-book-pages > .menu-page:nth-child(2),
   .menu-book-pages > .menu-page:nth-child(4),
   .menu-book-pages > .menu-page:nth-child(6) {
-    --menu-corner-size: auto 86%;
+    --menu-corner-size: auto 80%;
   }
 
   .menu-book-pages > .menu-page:nth-child(2) {
-    --menu-corner-size: auto 116%;
+    --menu-corner-size: auto 102%;
     --menu-corner-bleed-x: 8%;
-    --menu-corner-bleed-y: 14%;
-    --menu-body-pad-right: clamp(5.8rem, 33vw, 9.4rem);
-    --menu-body-pad-bottom: clamp(7.2rem, 24vh, 11rem);
-    --menu-corner-position: right calc(15% - 5.2rem) bottom -9.3rem;
+    --menu-corner-bleed-y: 12%;
+    --menu-body-pad-right: clamp(6.2rem, 34vw, 9.2rem);
+    --menu-body-pad-bottom: clamp(7.6rem, 25vh, 11.4rem);
+    --menu-corner-position: right calc(14% - 5.8rem) bottom -8.4rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 70%;
+    --menu-corner-size: auto 62%;
     --menu-corner-bleed-x: 8%;
-    --menu-corner-bleed-y: 14%;
-    --menu-body-pad-right: clamp(7rem, 36vw, 10.5rem);
-    --menu-body-pad-bottom: clamp(7.2rem, 24vh, 11rem);
-    --menu-corner-position: right calc(-12% - 4.8rem) bottom -0.2rem;
-  }
-
-  .menu-book-pages > .menu-page:nth-child(3) .menu-page-body {
-    background: linear-gradient(90deg, rgba(112, 15, 21, 0) 0%, rgba(112, 15, 21, 0) 60%, rgba(28, 8, 13, 0.34) 100%);
-  }
-
-  .menu-book-pages > .menu-page:nth-child(3) .menu-line {
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.42);
-  }
-
-  .menu-book-pages > .menu-page:nth-child(3) .menu-line strong {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.62);
+    --menu-corner-bleed-y: 12%;
+    --menu-body-pad-right: clamp(6.8rem, 36vw, 10rem);
+    --menu-body-pad-bottom: clamp(7.6rem, 25vh, 11.4rem);
+    --menu-corner-position: right calc(-16% - 4.8rem) bottom -0.2rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
-    --menu-corner-size: auto 101%;
-    --menu-corner-position: right -2% bottom -7rem;
+    --menu-corner-size: auto 84%;
+    --menu-body-pad-right: clamp(6.4rem, 34vw, 9.4rem);
+    --menu-corner-position: right -10% bottom -6.8rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(5),
   .menu-book-pages > .menu-page:nth-child(7) {
+    --menu-corner-size: auto 64%;
+    --menu-corner-bleed-y: 16%;
+    --menu-body-pad-right: clamp(6rem, 31vw, 8.8rem);
+    --menu-corner-position: right -10% bottom -3.4rem;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(6) {
     --menu-corner-size: auto 74%;
-    --menu-corner-bleed-y: 18%;
+    --menu-corner-bleed-x: 0%;
+    --menu-body-pad-right: clamp(5.8rem, 30vw, 8.6rem);
+    --menu-corner-position: right -7% bottom -1.8rem;
   }
 
   .two-col-menu,
@@ -1888,8 +1886,8 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-page:not(.theme-cover):not(.theme-back) .menu-page-body {
-    --menu-body-pad-right: clamp(2.8rem, 20vw, 4.2rem);
-    --menu-body-pad-bottom: clamp(4.4rem, 17vh, 6rem);
+    --menu-body-pad-right: clamp(4.2rem, 24vw, 6.2rem);
+    --menu-body-pad-bottom: clamp(4.8rem, 18vh, 6.6rem);
   }
 
   .menu-page-title {
@@ -1923,40 +1921,46 @@ body.menu-view .menu-book-controls-bottom {
   .menu-book-pages > .menu-page:nth-child(2),
   .menu-book-pages > .menu-page:nth-child(4),
   .menu-book-pages > .menu-page:nth-child(6) {
-    --menu-corner-size: auto 73%;
+    --menu-corner-size: auto 64%;
   }
 
   .menu-book-pages > .menu-page:nth-child(2) {
-    --menu-corner-size: auto 90%;
+    --menu-corner-size: auto 76%;
     --menu-corner-bleed-x: 8%;
-    --menu-corner-bleed-y: 11%;
-    --menu-body-pad-right: clamp(2.8rem, 19vw, 4rem);
-    --menu-body-pad-bottom: clamp(4.4rem, 17vh, 6.2rem);
-    --menu-corner-position: right calc(15% - 3.2rem) bottom -5.8rem;
+    --menu-corner-bleed-y: 10%;
+    --menu-body-pad-right: clamp(4.8rem, 29vw, 6.8rem);
+    --menu-body-pad-bottom: clamp(4.8rem, 18vh, 6.8rem);
+    --menu-corner-position: right calc(14% - 3.9rem) bottom -4.8rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 54%;
+    --menu-corner-size: auto 48%;
     --menu-corner-bleed-x: 8%;
-    --menu-corner-bleed-y: 11%;
-    --menu-body-pad-right: clamp(5.2rem, 31vw, 7rem);
-    --menu-body-pad-bottom: clamp(4.4rem, 17vh, 6.2rem);
-    --menu-corner-position: right -22% bottom 0;
-  }
-
-  .menu-book-pages > .menu-page:nth-child(3) .menu-page-body {
-    background: linear-gradient(90deg, rgba(112, 15, 21, 0) 0%, rgba(112, 15, 21, 0) 55%, rgba(28, 8, 13, 0.48) 100%);
+    --menu-corner-bleed-y: 10%;
+    --menu-body-pad-right: clamp(5rem, 30vw, 7rem);
+    --menu-body-pad-bottom: clamp(4.8rem, 18vh, 6.8rem);
+    --menu-corner-position: right -28% bottom -0.1rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
-    --menu-corner-size: auto 80%;
-    --menu-corner-position: right -2% bottom -6rem;
+    --menu-corner-size: auto 64%;
+    --menu-body-pad-right: clamp(4.9rem, 29vw, 6.9rem);
+    --menu-corner-position: right -9% bottom -5.4rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(5),
   .menu-book-pages > .menu-page:nth-child(7) {
+    --menu-corner-size: auto 50%;
+    --menu-corner-bleed-y: 14%;
+    --menu-body-pad-right: clamp(4.7rem, 27vw, 6.5rem);
+    --menu-corner-position: right -11% bottom -2.4rem;
+  }
+
+  .menu-book-pages > .menu-page:nth-child(6) {
     --menu-corner-size: auto 58%;
-    --menu-corner-bleed-y: 16%;
+    --menu-corner-bleed-x: 0%;
+    --menu-body-pad-right: clamp(4.5rem, 25vw, 6.2rem);
+    --menu-corner-position: right -9% bottom -1.2rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(2) .menu-drinks-top-grid {
