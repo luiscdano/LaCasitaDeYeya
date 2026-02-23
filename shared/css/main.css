@@ -1700,21 +1700,24 @@ body.menu-view .menu-book-controls-bottom {
 
   .footer-left {
     width: 100%;
-    justify-content: flex-start;
+    justify-content: center;
     flex-wrap: wrap;
     row-gap: 0.26rem;
   }
 
   .footer-left p {
-    font-size: 0.86rem;
-    white-space: normal;
+    width: 100%;
+    font-size: clamp(0.72rem, 2.8vw, 0.86rem);
+    white-space: nowrap;
     overflow: visible;
     text-overflow: clip;
-    text-align: left;
+    text-align: center;
   }
 
   .footer-social {
     margin-left: 0;
+    width: 100%;
+    justify-content: center;
   }
 
   .footer-center {
@@ -1793,12 +1796,12 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 62%;
+    --menu-corner-size: auto 56%;
     --menu-corner-bleed-x: 8%;
     --menu-corner-bleed-y: 12%;
-    --menu-body-pad-right: clamp(6.8rem, 36vw, 10rem);
+    --menu-body-pad-right: clamp(7.4rem, 38vw, 10.8rem);
     --menu-body-pad-bottom: clamp(7.6rem, 25vh, 11.4rem);
-    --menu-corner-position: right calc(-16% - 4.8rem) bottom -0.2rem;
+    --menu-corner-position: right calc(-22% - 4.8rem) bottom -0.1rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
@@ -1934,12 +1937,12 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .menu-book-pages > .menu-page:nth-child(3) {
-    --menu-corner-size: auto 48%;
+    --menu-corner-size: auto 40%;
     --menu-corner-bleed-x: 8%;
     --menu-corner-bleed-y: 10%;
-    --menu-body-pad-right: clamp(5rem, 30vw, 7rem);
+    --menu-body-pad-right: clamp(5.8rem, 34vw, 7.6rem);
     --menu-body-pad-bottom: clamp(4.8rem, 18vh, 6.8rem);
-    --menu-corner-position: right -28% bottom -0.1rem;
+    --menu-corner-position: right -38% bottom -0.1rem;
   }
 
   .menu-book-pages > .menu-page:nth-child(4) {
