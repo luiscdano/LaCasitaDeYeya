@@ -1,6 +1,10 @@
 const LOCATION_VALUES = new Set(['village', 'downtown', 'los-corales']);
 const SOURCE_VALUES = new Set(['website', 'landing', 'admin', 'manual']);
 const STATUS_VALUES = new Set(['pending', 'confirmed', 'cancelled']);
+const NOTIFICATION_CHANNEL_VALUES = new Set(['email', 'whatsapp']);
+const NOTIFICATION_STATUS_VALUES = new Set(['queued', 'sent', 'failed']);
+const EMAIL_DELIVERY_MODE_VALUES = new Set(['mock', 'disabled', 'resend']);
+const WHATSAPP_DELIVERY_MODE_VALUES = new Set(['mock', 'disabled', 'meta']);
 
 const LOCATION_LABELS = {
   village: 'Village',
@@ -13,6 +17,8 @@ const STATUS_LABELS = {
   confirmed: 'Confirmada',
   cancelled: 'Cancelada',
 };
+
+const DEFAULT_NOTIFICATION_CHANNELS = ['email', 'whatsapp'];
 
 let schemaReadyPromise = null;
 
@@ -32,6 +38,21 @@ function toInteger(value, fallback = 0) {
   const parsed = Number.parseInt(String(value ?? ''), 10);
   if (!Number.isFinite(parsed)) return fallback;
   return parsed;
+}
+
+function parseBoolean(raw, fallback = false) {
+  if (raw == null || raw === '') return fallback;
+  if (typeof raw === 'boolean') return raw;
+  const normalized = String(raw).trim().toLowerCase();
+  if (['1', 'true', 'yes', 'on', 'si', 's'].includes(normalized)) return true;
+  if (['0', 'false', 'no', 'off', 'n'].includes(normalized)) return false;
+  return fallback;
+}
+
+function normalizeMode(raw, allowedModes, fallback) {
+  const normalized = normalizeText(raw || '', 24).toLowerCase();
+  if (!normalized || !allowedModes.has(normalized)) return fallback;
+  return normalized;
 }
 
 function getTodayIsoDate() {
@@ -83,6 +104,24 @@ function getSecurityConfig(env) {
     rateLimitMaxPerIp: parsePositiveInteger(env.RATE_LIMIT_MAX_PER_IP, 4),
     rateLimitMaxPerEmailDay: parsePositiveInteger(env.RATE_LIMIT_MAX_PER_EMAIL_DAY, 8),
     duplicateWindowSeconds: parsePositiveInteger(env.DUPLICATE_WINDOW_SECONDS, 900),
+  };
+}
+
+function getNotificationConfig(env) {
+  return {
+    maxAttempts: Math.min(parsePositiveInteger(env.NOTIFICATION_MAX_ATTEMPTS, 3), 10),
+    defaultDispatchLimit: Math.min(parsePositiveInteger(env.NOTIFICATION_DISPATCH_BATCH_LIMIT, 10), 50),
+    autoDispatchOnCreate: parseBoolean(env.NOTIFICATIONS_AUTO_DISPATCH_ON_CREATE, false),
+    autoDispatchOnStatusChange: parseBoolean(env.NOTIFICATIONS_AUTO_DISPATCH_ON_STATUS_CHANGE, false),
+    emailMode: normalizeMode(env.EMAIL_DELIVERY_MODE, EMAIL_DELIVERY_MODE_VALUES, 'mock'),
+    whatsappMode: normalizeMode(env.WHATSAPP_DELIVERY_MODE, WHATSAPP_DELIVERY_MODE_VALUES, 'mock'),
+    emailFrom: normalizeText(env.EMAIL_FROM || '', 180),
+    emailReplyTo: normalizeText(env.EMAIL_REPLY_TO || '', 180),
+    resendApiKey: normalizeText(env.RESEND_API_KEY || '', 320),
+    whatsappApiVersion: normalizeText(env.WABA_API_VERSION || 'v21.0', 20) || 'v21.0',
+    whatsappPhoneNumberId: normalizeText(env.WABA_PHONE_NUMBER_ID || '', 64),
+    whatsappAccessToken: normalizeText(env.WABA_ACCESS_TOKEN || '', 400),
+    whatsappFallbackTo: normalizeText(env.WABA_TO_NUMBER || '', 32),
   };
 }
 
@@ -141,6 +180,84 @@ function locationLabel(location) {
 
 function statusLabel(status) {
   return STATUS_LABELS[status] || status;
+}
+
+function channelMode(channel, notificationConfig) {
+  if (channel === 'email') return notificationConfig.emailMode;
+  if (channel === 'whatsapp') return notificationConfig.whatsappMode;
+  return 'disabled';
+}
+
+function channelProvider(channel, notificationConfig) {
+  const mode = channelMode(channel, notificationConfig);
+  if (channel === 'email') {
+    if (mode === 'resend') return 'resend';
+    if (mode === 'mock') return 'mock';
+    return 'disabled';
+  }
+  if (channel === 'whatsapp') {
+    if (mode === 'meta') return 'meta';
+    if (mode === 'mock') return 'mock';
+    return 'disabled';
+  }
+  return 'unknown';
+}
+
+function parseChannelList(rawChannels, fallback = DEFAULT_NOTIFICATION_CHANNELS) {
+  let values = [];
+
+  if (Array.isArray(rawChannels)) {
+    values = rawChannels;
+  } else if (typeof rawChannels === 'string') {
+    values = rawChannels.split(',');
+  }
+
+  if (values.length === 0) {
+    return { ok: true, value: [...fallback] };
+  }
+
+  const normalized = [];
+  for (const item of values) {
+    const channel = normalizeText(item, 20).toLowerCase();
+    if (!channel) continue;
+    if (!NOTIFICATION_CHANNEL_VALUES.has(channel)) {
+      return {
+        ok: false,
+        error: 'Canal de notificacion invalido. Usa email y/o whatsapp.',
+        code: 'invalid_notification_channel',
+      };
+    }
+    if (!normalized.includes(channel)) normalized.push(channel);
+  }
+
+  if (normalized.length === 0) {
+    return {
+      ok: false,
+      error: 'Debes enviar al menos un canal valido de notificacion.',
+      code: 'empty_notification_channels',
+    };
+  }
+
+  return { ok: true, value: normalized };
+}
+
+function safeParseJsonObject(raw) {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function stringFromJson(value, fallback = '{}') {
+  try {
+    return JSON.stringify(value ?? {});
+  } catch {
+    return fallback;
+  }
 }
 
 function validatePublicReservationPayload(payload) {
@@ -210,12 +327,122 @@ function validateStatusUpdatePayload(payload) {
     };
   }
 
+  const parsedChannels = parseChannelList(payload.channels, DEFAULT_NOTIFICATION_CHANNELS);
+  if (!parsedChannels.ok) return parsedChannels;
+
   return {
     ok: true,
     value: {
       status,
       updatedBy: updatedBy || 'operador',
       note,
+      channels: parsedChannels.value,
+      enqueueNotifications: parseBoolean(payload.enqueue_notifications, true),
+      dispatchNow: parseBoolean(payload.dispatch_now, false),
+    },
+  };
+}
+
+function validateManualNotifyPayload(payload, reservation) {
+  const rawStatus = normalizeText(payload.status || reservation.status || 'pending', 16).toLowerCase();
+  const note = normalizeText(payload.note || reservation.status_note || '', 350);
+  const trigger = normalizeText(payload.trigger || 'manual_resend', 40) || 'manual_resend';
+  const updatedBy = normalizeText(payload.updated_by || payload.updatedBy || 'operador', 80) || 'operador';
+
+  if (!STATUS_VALUES.has(rawStatus)) {
+    return {
+      ok: false,
+      error: 'Estado invalido para notificacion.',
+      code: 'invalid_status',
+    };
+  }
+
+  const parsedChannels = parseChannelList(payload.channels, DEFAULT_NOTIFICATION_CHANNELS);
+  if (!parsedChannels.ok) return parsedChannels;
+
+  return {
+    ok: true,
+    value: {
+      status: rawStatus,
+      note,
+      trigger,
+      updatedBy,
+      channels: parsedChannels.value,
+      dispatchNow: parseBoolean(payload.dispatch_now, false),
+    },
+  };
+}
+
+function parseNotificationListFilters(url) {
+  const status = normalizeText(url.searchParams.get('status') || '', 16).toLowerCase();
+  const channel = normalizeText(url.searchParams.get('channel') || '', 20).toLowerCase();
+  const reservationId = toInteger(url.searchParams.get('reservation_id'), 0);
+  const limit = Math.min(parsePositiveInteger(url.searchParams.get('limit'), 30), 100);
+  const offset = Math.max(toInteger(url.searchParams.get('offset'), 0), 0);
+
+  if (status && !NOTIFICATION_STATUS_VALUES.has(status)) {
+    return { ok: false, error: 'Filtro status invalido para notificaciones.' };
+  }
+  if (channel && !NOTIFICATION_CHANNEL_VALUES.has(channel)) {
+    return { ok: false, error: 'Filtro channel invalido para notificaciones.' };
+  }
+  if (reservationId < 0) {
+    return { ok: false, error: 'reservation_id invalido.' };
+  }
+
+  return {
+    ok: true,
+    value: {
+      status,
+      channel,
+      reservationId,
+      limit,
+      offset,
+    },
+  };
+}
+
+function parseNotificationDispatchPayload(payload, notificationConfig) {
+  const limit = Math.min(
+    parsePositiveInteger(payload?.limit, notificationConfig.defaultDispatchLimit),
+    50,
+  );
+  const reservationId = toInteger(payload?.reservation_id, 0);
+  const channel = normalizeText(payload?.channel || '', 20).toLowerCase();
+  const force = parseBoolean(payload?.force, false);
+
+  let ids = [];
+  if (Array.isArray(payload?.ids)) {
+    ids = payload.ids
+      .map((id) => toInteger(id, 0))
+      .filter((id) => id > 0)
+      .slice(0, 100);
+  }
+
+  if (channel && !NOTIFICATION_CHANNEL_VALUES.has(channel)) {
+    return {
+      ok: false,
+      error: 'Canal invalido para despacho.',
+      code: 'invalid_notification_channel',
+    };
+  }
+
+  if (reservationId < 0) {
+    return {
+      ok: false,
+      error: 'reservation_id invalido.',
+      code: 'invalid_reservation_id',
+    };
+  }
+
+  return {
+    ok: true,
+    value: {
+      limit,
+      reservationId,
+      channel,
+      force,
+      ids,
     },
   };
 }
@@ -306,6 +533,125 @@ async function ensureOperationalSchema(env) {
     await env.DB.prepare(
       `CREATE INDEX IF NOT EXISTS idx_reservations_status_updated_at
        ON reservations (status_updated_at)`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE TABLE IF NOT EXISTS reservation_notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        reservation_id INTEGER NOT NULL,
+        channel TEXT NOT NULL CHECK (channel IN ('email', 'whatsapp')),
+        recipient TEXT NOT NULL DEFAULT '',
+        subject TEXT NOT NULL DEFAULT '',
+        body TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued', 'sent', 'failed')),
+        provider TEXT NOT NULL DEFAULT 'mock',
+        provider_message_id TEXT NOT NULL DEFAULT '',
+        attempts INTEGER NOT NULL DEFAULT 0,
+        max_attempts INTEGER NOT NULL DEFAULT 3,
+        next_attempt_at TEXT NOT NULL DEFAULT (datetime('now')),
+        sent_at TEXT,
+        last_error TEXT NOT NULL DEFAULT '',
+        metadata_json TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (reservation_id) REFERENCES reservations(id) ON DELETE CASCADE
+      )`,
+    ).run();
+
+    const outboxInfo = await env.DB.prepare('PRAGMA table_info(reservation_notifications)').all();
+    const outboxColumns = new Set((outboxInfo?.results || []).map((column) => column.name));
+
+    await addColumnIfMissing(
+      env,
+      outboxColumns,
+      'provider',
+      "ALTER TABLE reservation_notifications ADD COLUMN provider TEXT NOT NULL DEFAULT 'mock'",
+    );
+    await addColumnIfMissing(
+      env,
+      outboxColumns,
+      'provider_message_id',
+      "ALTER TABLE reservation_notifications ADD COLUMN provider_message_id TEXT NOT NULL DEFAULT ''",
+    );
+    await addColumnIfMissing(
+      env,
+      outboxColumns,
+      'attempts',
+      "ALTER TABLE reservation_notifications ADD COLUMN attempts INTEGER NOT NULL DEFAULT 0",
+    );
+    await addColumnIfMissing(
+      env,
+      outboxColumns,
+      'max_attempts',
+      "ALTER TABLE reservation_notifications ADD COLUMN max_attempts INTEGER NOT NULL DEFAULT 3",
+    );
+    await addColumnIfMissing(
+      env,
+      outboxColumns,
+      'next_attempt_at',
+      'ALTER TABLE reservation_notifications ADD COLUMN next_attempt_at TEXT',
+    );
+    await addColumnIfMissing(
+      env,
+      outboxColumns,
+      'sent_at',
+      "ALTER TABLE reservation_notifications ADD COLUMN sent_at TEXT",
+    );
+    await addColumnIfMissing(
+      env,
+      outboxColumns,
+      'last_error',
+      "ALTER TABLE reservation_notifications ADD COLUMN last_error TEXT NOT NULL DEFAULT ''",
+    );
+    await addColumnIfMissing(
+      env,
+      outboxColumns,
+      'metadata_json',
+      "ALTER TABLE reservation_notifications ADD COLUMN metadata_json TEXT NOT NULL DEFAULT '{}'",
+    );
+    await addColumnIfMissing(
+      env,
+      outboxColumns,
+      'updated_at',
+      'ALTER TABLE reservation_notifications ADD COLUMN updated_at TEXT',
+    );
+
+    await env.DB.prepare(
+      `UPDATE reservation_notifications
+       SET status = 'queued'
+       WHERE status IS NULL OR TRIM(status) = ''`,
+    ).run();
+
+    await env.DB.prepare(
+      `UPDATE reservation_notifications
+       SET next_attempt_at = COALESCE(next_attempt_at, created_at, datetime('now'))
+       WHERE next_attempt_at IS NULL`,
+    ).run();
+
+    await env.DB.prepare(
+      `UPDATE reservation_notifications
+       SET updated_at = COALESCE(updated_at, created_at, datetime('now'))
+       WHERE updated_at IS NULL`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_reservation_notifications_status_next_attempt
+       ON reservation_notifications (status, next_attempt_at)`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_reservation_notifications_reservation_created
+       ON reservation_notifications (reservation_id, created_at)`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_reservation_notifications_channel_status
+       ON reservation_notifications (channel, status, created_at)`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_reservation_notifications_created_at
+       ON reservation_notifications (created_at)`,
     ).run();
   })().catch((error) => {
     schemaReadyPromise = null;
@@ -458,6 +804,29 @@ function rowToReservation(row) {
   };
 }
 
+function rowToNotification(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    reservation_id: row.reservation_id,
+    channel: row.channel,
+    recipient: row.recipient,
+    subject: row.subject || '',
+    body: row.body || '',
+    status: row.status,
+    provider: row.provider || 'mock',
+    provider_message_id: row.provider_message_id || '',
+    attempts: toInteger(row.attempts, 0),
+    max_attempts: toInteger(row.max_attempts, 3),
+    next_attempt_at: row.next_attempt_at || null,
+    sent_at: row.sent_at || null,
+    last_error: row.last_error || '',
+    metadata: safeParseJsonObject(row.metadata_json),
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  };
+}
+
 async function getReservationById(env, reservationId) {
   const row = await env.DB.prepare(
     `SELECT
@@ -483,6 +852,35 @@ async function getReservationById(env, reservationId) {
     .first();
 
   return rowToReservation(row);
+}
+
+async function getNotificationById(env, notificationId) {
+  const row = await env.DB.prepare(
+    `SELECT
+      id,
+      reservation_id,
+      channel,
+      recipient,
+      subject,
+      body,
+      status,
+      provider,
+      provider_message_id,
+      attempts,
+      max_attempts,
+      next_attempt_at,
+      sent_at,
+      last_error,
+      metadata_json,
+      created_at,
+      updated_at
+    FROM reservation_notifications
+    WHERE id = ?`,
+  )
+    .bind(notificationId)
+    .first();
+
+  return rowToNotification(row);
 }
 
 function buildNotificationTemplates(reservation, status, note = '') {
@@ -550,7 +948,7 @@ function buildNotificationTemplates(reservation, status, note = '') {
   };
 }
 
-function parseListFilters(url) {
+function parseReservationListFilters(url) {
   const status = normalizeText(url.searchParams.get('status') || '', 16).toLowerCase();
   const location = normalizeText(url.searchParams.get('location') || '', 32).toLowerCase();
   const dateFrom = normalizeText(url.searchParams.get('date_from') || '', 10);
@@ -644,7 +1042,535 @@ async function listInternalReservations(env, filters) {
   return { reservations, total };
 }
 
-async function updateReservationStatus(env, reservationId, payload) {
+async function listInternalNotifications(env, filters) {
+  const clauses = [];
+  const bindings = [];
+
+  if (filters.status) {
+    clauses.push('status = ?');
+    bindings.push(filters.status);
+  }
+  if (filters.channel) {
+    clauses.push('channel = ?');
+    bindings.push(filters.channel);
+  }
+  if (filters.reservationId > 0) {
+    clauses.push('reservation_id = ?');
+    bindings.push(filters.reservationId);
+  }
+
+  const whereSql = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+
+  const total = await queryCount(
+    env,
+    `SELECT COUNT(1) AS total
+     FROM reservation_notifications
+     ${whereSql}`,
+    bindings,
+  );
+
+  const listResult = await env.DB.prepare(
+    `SELECT
+      id,
+      reservation_id,
+      channel,
+      recipient,
+      subject,
+      body,
+      status,
+      provider,
+      provider_message_id,
+      attempts,
+      max_attempts,
+      next_attempt_at,
+      sent_at,
+      last_error,
+      metadata_json,
+      created_at,
+      updated_at
+    FROM reservation_notifications
+    ${whereSql}
+    ORDER BY created_at DESC
+    LIMIT ? OFFSET ?`,
+  )
+    .bind(...bindings, filters.limit, filters.offset)
+    .all();
+
+  return {
+    total,
+    notifications: (listResult?.results || []).map(rowToNotification),
+  };
+}
+
+async function enqueueReservationNotifications(env, reservation, notificationConfig, options = {}) {
+  const status = STATUS_VALUES.has(options.status) ? options.status : reservation.status || 'pending';
+  const note = normalizeText(options.note || '', 350);
+  const trigger = normalizeText(options.trigger || 'manual', 40) || 'manual';
+  const updatedBy = normalizeText(options.updatedBy || '', 80);
+  const maxAttempts = Math.max(1, Math.min(toInteger(options.maxAttempts, notificationConfig.maxAttempts), 10));
+
+  const parsedChannels = parseChannelList(options.channels, DEFAULT_NOTIFICATION_CHANNELS);
+  if (!parsedChannels.ok) {
+    return {
+      ok: false,
+      code: parsedChannels.code,
+      error: parsedChannels.error,
+      queued: 0,
+      notifications: [],
+    };
+  }
+
+  const channels = parsedChannels.value;
+  const templates = buildNotificationTemplates(reservation, status, note);
+  const queuedRows = [];
+
+  for (const channel of channels) {
+    const recipient = channel === 'email' ? reservation.email : reservation.phone;
+    if (!recipient) continue;
+
+    const subject = channel === 'email' ? templates.email.subject : '';
+    const body = channel === 'email' ? templates.email.body : templates.whatsapp.body;
+
+    const metadata = {
+      trigger,
+      reservation_status: status,
+      updated_by: updatedBy || '',
+      note,
+    };
+
+    const result = await env.DB.prepare(
+      `INSERT INTO reservation_notifications (
+        reservation_id,
+        channel,
+        recipient,
+        subject,
+        body,
+        status,
+        provider,
+        attempts,
+        max_attempts,
+        next_attempt_at,
+        metadata_json,
+        created_at,
+        updated_at
+      ) VALUES (?, ?, ?, ?, ?, 'queued', ?, 0, ?, datetime('now'), ?, datetime('now'), datetime('now'))`,
+    )
+      .bind(
+        reservation.id,
+        channel,
+        recipient,
+        subject,
+        body,
+        channelProvider(channel, notificationConfig),
+        maxAttempts,
+        stringFromJson(metadata),
+      )
+      .run();
+
+    queuedRows.push({
+      id: result?.meta?.last_row_id ?? null,
+      channel,
+      recipient,
+      status: 'queued',
+    });
+  }
+
+  return {
+    ok: true,
+    queued: queuedRows.length,
+    notifications: queuedRows,
+  };
+}
+
+async function sendEmailNotification(notification, notificationConfig) {
+  const mode = notificationConfig.emailMode;
+
+  if (mode === 'disabled') {
+    return {
+      ok: false,
+      retryable: false,
+      error: 'email_delivery_disabled',
+      provider: 'disabled',
+      messageId: '',
+    };
+  }
+
+  if (mode === 'mock') {
+    return {
+      ok: true,
+      retryable: false,
+      provider: 'mock',
+      messageId: `mock-email-${notification.id}-${Date.now()}`,
+    };
+  }
+
+  if (mode === 'resend') {
+    if (!notificationConfig.resendApiKey || !notificationConfig.emailFrom) {
+      return {
+        ok: false,
+        retryable: false,
+        error: 'resend_not_configured',
+        provider: 'resend',
+        messageId: '',
+      };
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${notificationConfig.resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: notificationConfig.emailFrom,
+        to: [notification.recipient],
+        subject: notification.subject || 'Notificacion de reserva',
+        text: notification.body,
+        ...(notificationConfig.emailReplyTo ? { reply_to: notificationConfig.emailReplyTo } : {}),
+      }),
+    });
+
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const detail = normalizeText(
+        payload?.message || payload?.error?.message || `Resend API error (${response.status})`,
+        300,
+      );
+      const retryable = response.status === 429 || response.status >= 500;
+      return {
+        ok: false,
+        retryable,
+        error: detail || 'resend_send_failed',
+        provider: 'resend',
+        messageId: '',
+      };
+    }
+
+    return {
+      ok: true,
+      retryable: false,
+      provider: 'resend',
+      messageId: normalizeText(payload?.id || '', 120),
+    };
+  }
+
+  return {
+    ok: false,
+    retryable: false,
+    error: 'unsupported_email_mode',
+    provider: 'unknown',
+    messageId: '',
+  };
+}
+
+async function sendWhatsAppNotification(notification, notificationConfig) {
+  const mode = notificationConfig.whatsappMode;
+
+  if (mode === 'disabled') {
+    return {
+      ok: false,
+      retryable: false,
+      error: 'whatsapp_delivery_disabled',
+      provider: 'disabled',
+      messageId: '',
+    };
+  }
+
+  if (mode === 'mock') {
+    return {
+      ok: true,
+      retryable: false,
+      provider: 'mock',
+      messageId: `mock-whatsapp-${notification.id}-${Date.now()}`,
+    };
+  }
+
+  if (mode === 'meta') {
+    const to = notification.recipient || notificationConfig.whatsappFallbackTo;
+    if (!notificationConfig.whatsappAccessToken || !notificationConfig.whatsappPhoneNumberId || !to) {
+      return {
+        ok: false,
+        retryable: false,
+        error: 'waba_not_configured',
+        provider: 'meta',
+        messageId: '',
+      };
+    }
+
+    const endpoint = `https://graph.facebook.com/${notificationConfig.whatsappApiVersion}/${notificationConfig.whatsappPhoneNumberId}/messages`;
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${notificationConfig.whatsappAccessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to,
+        type: 'text',
+        text: {
+          preview_url: false,
+          body: notification.body,
+        },
+      }),
+    });
+
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const detail = normalizeText(
+        payload?.error?.message || `WhatsApp API error (${response.status})`,
+        300,
+      );
+      const retryable = response.status === 429 || response.status >= 500;
+      return {
+        ok: false,
+        retryable,
+        error: detail || 'waba_send_failed',
+        provider: 'meta',
+        messageId: '',
+      };
+    }
+
+    const messageId = normalizeText(payload?.messages?.[0]?.id || '', 180);
+    return {
+      ok: true,
+      retryable: false,
+      provider: 'meta',
+      messageId,
+    };
+  }
+
+  return {
+    ok: false,
+    retryable: false,
+    error: 'unsupported_whatsapp_mode',
+    provider: 'unknown',
+    messageId: '',
+  };
+}
+
+function nextRetryDelaySeconds(nextAttemptNumber) {
+  const power = Math.max(0, nextAttemptNumber - 1);
+  return Math.min(60 * 2 ** power, 3600);
+}
+
+async function markNotificationSent(env, notificationId, provider, messageId) {
+  await env.DB.prepare(
+    `UPDATE reservation_notifications
+     SET status = 'sent',
+         provider = ?,
+         provider_message_id = ?,
+         attempts = attempts + 1,
+         sent_at = datetime('now'),
+         last_error = '',
+         updated_at = datetime('now')
+     WHERE id = ?`,
+  )
+    .bind(provider, messageId || '', notificationId)
+    .run();
+}
+
+async function markNotificationFailed(env, notification, provider, errorMessage, retryable) {
+  const nextAttemptNumber = toInteger(notification.attempts, 0) + 1;
+  const maxAttempts = Math.max(1, toInteger(notification.max_attempts, 3));
+  const safeError = normalizeText(errorMessage || 'notification_failed', 300) || 'notification_failed';
+
+  if (retryable && nextAttemptNumber < maxAttempts) {
+    const retryDelay = nextRetryDelaySeconds(nextAttemptNumber);
+    await env.DB.prepare(
+      `UPDATE reservation_notifications
+       SET status = 'queued',
+           provider = ?,
+           attempts = ?,
+           last_error = ?,
+           next_attempt_at = datetime('now', ?),
+           updated_at = datetime('now')
+       WHERE id = ?`,
+    )
+      .bind(provider, nextAttemptNumber, safeError, `+${retryDelay} seconds`, notification.id)
+      .run();
+
+    return { finalStatus: 'requeued', retryInSeconds: retryDelay, attempts: nextAttemptNumber };
+  }
+
+  await env.DB.prepare(
+    `UPDATE reservation_notifications
+     SET status = 'failed',
+         provider = ?,
+         attempts = ?,
+         last_error = ?,
+         updated_at = datetime('now')
+     WHERE id = ?`,
+  )
+    .bind(provider, nextAttemptNumber, safeError, notification.id)
+    .run();
+
+  return { finalStatus: 'failed', retryInSeconds: 0, attempts: nextAttemptNumber };
+}
+
+async function dispatchSingleNotification(env, notification, notificationConfig) {
+  let sendResult;
+
+  if (notification.channel === 'email') {
+    sendResult = await sendEmailNotification(notification, notificationConfig);
+  } else if (notification.channel === 'whatsapp') {
+    sendResult = await sendWhatsAppNotification(notification, notificationConfig);
+  } else {
+    sendResult = {
+      ok: false,
+      retryable: false,
+      error: 'unsupported_notification_channel',
+      provider: 'unknown',
+      messageId: '',
+    };
+  }
+
+  if (sendResult.ok) {
+    await markNotificationSent(env, notification.id, sendResult.provider, sendResult.messageId || '');
+    return {
+      id: notification.id,
+      channel: notification.channel,
+      status: 'sent',
+      provider: sendResult.provider,
+      provider_message_id: sendResult.messageId || '',
+    };
+  }
+
+  const failResult = await markNotificationFailed(
+    env,
+    notification,
+    sendResult.provider || channelProvider(notification.channel, notificationConfig),
+    sendResult.error || 'dispatch_failed',
+    Boolean(sendResult.retryable),
+  );
+
+  return {
+    id: notification.id,
+    channel: notification.channel,
+    status: failResult.finalStatus,
+    provider: sendResult.provider || channelProvider(notification.channel, notificationConfig),
+    error: normalizeText(sendResult.error || 'dispatch_failed', 300),
+    attempts: failResult.attempts,
+    retry_in_seconds: failResult.retryInSeconds,
+  };
+}
+
+async function selectQueuedNotificationsForDispatch(env, dispatchOptions) {
+  const clauses = ['status = ?'];
+  const bindings = ['queued'];
+
+  if (!dispatchOptions.force) {
+    clauses.push("next_attempt_at <= datetime('now')");
+  }
+
+  if (dispatchOptions.channel) {
+    clauses.push('channel = ?');
+    bindings.push(dispatchOptions.channel);
+  }
+
+  if (dispatchOptions.reservationId > 0) {
+    clauses.push('reservation_id = ?');
+    bindings.push(dispatchOptions.reservationId);
+  }
+
+  if (dispatchOptions.ids.length > 0) {
+    const placeholders = dispatchOptions.ids.map(() => '?').join(', ');
+    clauses.push(`id IN (${placeholders})`);
+    bindings.push(...dispatchOptions.ids);
+  }
+
+  const whereSql = `WHERE ${clauses.join(' AND ')}`;
+  const query = `SELECT
+      id,
+      reservation_id,
+      channel,
+      recipient,
+      subject,
+      body,
+      status,
+      provider,
+      provider_message_id,
+      attempts,
+      max_attempts,
+      next_attempt_at,
+      sent_at,
+      last_error,
+      metadata_json,
+      created_at,
+      updated_at
+    FROM reservation_notifications
+    ${whereSql}
+    ORDER BY created_at ASC
+    LIMIT ?`;
+
+  const rows = await env.DB.prepare(query)
+    .bind(...bindings, dispatchOptions.limit)
+    .all();
+
+  return (rows?.results || []).map(rowToNotification);
+}
+
+async function dispatchQueuedNotifications(env, notificationConfig, dispatchOptions) {
+  const notifications = await selectQueuedNotificationsForDispatch(env, dispatchOptions);
+
+  const details = [];
+  const summary = {
+    selected: notifications.length,
+    sent: 0,
+    failed: 0,
+    requeued: 0,
+  };
+
+  for (const notification of notifications) {
+    const result = await dispatchSingleNotification(env, notification, notificationConfig);
+    details.push(result);
+    if (result.status === 'sent') summary.sent += 1;
+    else if (result.status === 'requeued') summary.requeued += 1;
+    else summary.failed += 1;
+  }
+
+  return {
+    summary,
+    notifications: details,
+  };
+}
+
+async function retryNotification(env, notificationId) {
+  const existing = await getNotificationById(env, notificationId);
+  if (!existing) {
+    return {
+      status: 404,
+      body: {
+        ok: false,
+        code: 'notification_not_found',
+        error: 'Notificacion no encontrada.',
+      },
+    };
+  }
+
+  await env.DB.prepare(
+    `UPDATE reservation_notifications
+     SET status = 'queued',
+         attempts = 0,
+         last_error = '',
+         next_attempt_at = datetime('now'),
+         updated_at = datetime('now')
+     WHERE id = ?`,
+  )
+    .bind(notificationId)
+    .run();
+
+  const updated = await getNotificationById(env, notificationId);
+  return {
+    status: 200,
+    body: {
+      ok: true,
+      notification: updated,
+    },
+  };
+}
+
+async function updateReservationStatus(env, notificationConfig, reservationId, payload) {
   const validation = validateStatusUpdatePayload(payload || {});
   if (!validation.ok) {
     return {
@@ -661,7 +1587,7 @@ async function updateReservationStatus(env, reservationId, payload) {
     };
   }
 
-  const { status, updatedBy, note } = validation.value;
+  const { status, updatedBy, note, enqueueNotifications, dispatchNow, channels } = validation.value;
   await env.DB.prepare(
     `UPDATE reservations
      SET status = ?,
@@ -676,12 +1602,53 @@ async function updateReservationStatus(env, reservationId, payload) {
   const updated = await getReservationById(env, reservationId);
   const templates = buildNotificationTemplates(updated, status, note);
 
+  let queueResult = {
+    ok: true,
+    queued: 0,
+    notifications: [],
+  };
+
+  let dispatchResult = null;
+
+  if (enqueueNotifications) {
+    queueResult = await enqueueReservationNotifications(env, updated, notificationConfig, {
+      status,
+      note,
+      trigger: 'status_updated',
+      updatedBy,
+      channels,
+    });
+
+    if (queueResult.ok && queueResult.queued > 0 && (dispatchNow || notificationConfig.autoDispatchOnStatusChange)) {
+      const dispatchPayload = {
+        limit: queueResult.queued,
+        reservationId,
+        channel: '',
+        force: true,
+        ids: queueResult.notifications.map((item) => item.id).filter((id) => Number.isInteger(id) && id > 0),
+      };
+      dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, dispatchPayload);
+    }
+  }
+
   return {
     status: 200,
     body: {
       ok: true,
       reservation: updated,
       templates,
+      notifications: {
+        queued: queueResult.queued,
+        queued_items: queueResult.notifications,
+        ...(dispatchResult
+          ? {
+              dispatch: {
+                summary: dispatchResult.summary,
+                notifications: dispatchResult.notifications,
+              },
+            }
+          : {}),
+      },
     },
   };
 }
@@ -711,9 +1678,10 @@ async function handleInternalRoutes(request, env, path, url) {
   }
 
   await ensureOperationalSchema(env);
+  const notificationConfig = getNotificationConfig(env);
 
   if (path === '/api/internal/reservations' && request.method === 'GET') {
-    const parsedFilters = parseListFilters(url);
+    const parsedFilters = parseReservationListFilters(url);
     if (!parsedFilters.ok) {
       return jsonResponse(
         request,
@@ -733,6 +1701,119 @@ async function handleInternalRoutes(request, env, path, url) {
         limit: parsedFilters.value.limit,
         offset: parsedFilters.value.offset,
         reservations,
+      },
+      200,
+    );
+  }
+
+  if (path === '/api/internal/notifications' && request.method === 'GET') {
+    const parsedFilters = parseNotificationListFilters(url);
+    if (!parsedFilters.ok) {
+      return jsonResponse(
+        request,
+        env,
+        { ok: false, code: 'invalid_filters', error: parsedFilters.error },
+        422,
+      );
+    }
+
+    const listResult = await listInternalNotifications(env, parsedFilters.value);
+    return jsonResponse(
+      request,
+      env,
+      {
+        ok: true,
+        total: listResult.total,
+        limit: parsedFilters.value.limit,
+        offset: parsedFilters.value.offset,
+        notifications: listResult.notifications,
+      },
+      200,
+    );
+  }
+
+  if (path === '/api/internal/notifications/dispatch' && request.method === 'POST') {
+    let payload = {};
+    try {
+      payload = await request.json();
+    } catch {
+      payload = {};
+    }
+
+    const parsedPayload = parseNotificationDispatchPayload(payload, notificationConfig);
+    if (!parsedPayload.ok) {
+      return jsonResponse(
+        request,
+        env,
+        { ok: false, code: parsedPayload.code, error: parsedPayload.error },
+        422,
+      );
+    }
+
+    const dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, parsedPayload.value);
+    return jsonResponse(
+      request,
+      env,
+      {
+        ok: true,
+        delivery_modes: {
+          email: notificationConfig.emailMode,
+          whatsapp: notificationConfig.whatsappMode,
+        },
+        summary: dispatchResult.summary,
+        notifications: dispatchResult.notifications,
+      },
+      200,
+    );
+  }
+
+  const retryMatch = path.match(/^\/api\/internal\/notifications\/(\d+)\/retry$/);
+  if (retryMatch && request.method === 'POST') {
+    const notificationId = toInteger(retryMatch[1], 0);
+    if (notificationId <= 0) {
+      return jsonResponse(
+        request,
+        env,
+        { ok: false, code: 'invalid_notification_id', error: 'ID de notificacion invalido.' },
+        422,
+      );
+    }
+
+    const retryResult = await retryNotification(env, notificationId);
+    if (retryResult.status !== 200) {
+      return jsonResponse(request, env, retryResult.body, retryResult.status);
+    }
+
+    let payload = {};
+    try {
+      payload = await request.json();
+    } catch {
+      payload = {};
+    }
+
+    const dispatchNow = parseBoolean(payload.dispatch_now, false);
+    if (!dispatchNow) {
+      return jsonResponse(request, env, retryResult.body, retryResult.status);
+    }
+
+    const dispatchPayload = {
+      limit: 1,
+      reservationId: 0,
+      channel: '',
+      force: true,
+      ids: [notificationId],
+    };
+
+    const dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, dispatchPayload);
+    return jsonResponse(
+      request,
+      env,
+      {
+        ...retryResult.body,
+        dispatch: {
+          summary: dispatchResult.summary,
+          notifications: dispatchResult.notifications,
+        },
       },
       200,
     );
@@ -791,12 +1872,101 @@ async function handleInternalRoutes(request, env, path, url) {
     let payload;
     try {
       payload = await request.json();
-    } catch (error) {
+    } catch {
       return jsonResponse(request, env, { ok: false, code: 'invalid_json', error: 'JSON invalido.' }, 400);
     }
 
-    const updateResult = await updateReservationStatus(env, reservationId, payload || {});
+    const updateResult = await updateReservationStatus(env, notificationConfig, reservationId, payload || {});
     return jsonResponse(request, env, updateResult.body, updateResult.status);
+  }
+
+  const notifyMatch = path.match(/^\/api\/internal\/reservations\/(\d+)\/notify$/);
+  if (notifyMatch && request.method === 'POST') {
+    const reservationId = toInteger(notifyMatch[1], 0);
+    if (reservationId <= 0) {
+      return jsonResponse(
+        request,
+        env,
+        { ok: false, code: 'invalid_reservation_id', error: 'ID de reserva invalido.' },
+        422,
+      );
+    }
+
+    const reservation = await getReservationById(env, reservationId);
+    if (!reservation) {
+      return jsonResponse(
+        request,
+        env,
+        { ok: false, code: 'reservation_not_found', error: 'Reserva no encontrada.' },
+        404,
+      );
+    }
+
+    let payload = {};
+    try {
+      payload = await request.json();
+    } catch {
+      payload = {};
+    }
+
+    const validation = validateManualNotifyPayload(payload, reservation);
+    if (!validation.ok) {
+      return jsonResponse(
+        request,
+        env,
+        { ok: false, code: validation.code, error: validation.error },
+        422,
+      );
+    }
+
+    const queueResult = await enqueueReservationNotifications(env, reservation, notificationConfig, {
+      status: validation.value.status,
+      note: validation.value.note,
+      trigger: validation.value.trigger,
+      updatedBy: validation.value.updatedBy,
+      channels: validation.value.channels,
+    });
+
+    if (!queueResult.ok) {
+      return jsonResponse(
+        request,
+        env,
+        { ok: false, code: queueResult.code, error: queueResult.error },
+        422,
+      );
+    }
+
+    let dispatch = null;
+    if (validation.value.dispatchNow && queueResult.queued > 0) {
+      const dispatchPayload = {
+        limit: queueResult.queued,
+        reservationId,
+        channel: '',
+        force: true,
+        ids: queueResult.notifications.map((item) => item.id).filter((id) => Number.isInteger(id) && id > 0),
+      };
+      dispatch = await dispatchQueuedNotifications(env, notificationConfig, dispatchPayload);
+    }
+
+    return jsonResponse(
+      request,
+      env,
+      {
+        ok: true,
+        reservation_id: reservationId,
+        queued: queueResult.queued,
+        queued_items: queueResult.notifications,
+        ...(dispatch
+          ? {
+              dispatch: {
+                summary: dispatch.summary,
+                notifications: dispatch.notifications,
+              },
+            }
+          : {}),
+      },
+      200,
+    );
   }
 
   return jsonResponse(
@@ -838,6 +2008,7 @@ export default {
       try {
         await ensureOperationalSchema(env);
         await env.DB.prepare('SELECT 1 AS ok').first();
+        const notificationConfig = getNotificationConfig(env);
         return jsonResponse(
           request,
           env,
@@ -846,11 +2017,16 @@ export default {
             service: 'reservations-api',
             database: 'up',
             internal_api_configured: Boolean(normalizeText(env.INTERNAL_API_KEY || '', 10)),
+            notifications: {
+              email_mode: notificationConfig.emailMode,
+              whatsapp_mode: notificationConfig.whatsappMode,
+              max_attempts: notificationConfig.maxAttempts,
+            },
             timestamp: new Date().toISOString(),
           },
           200,
         );
-      } catch (error) {
+      } catch {
         return jsonResponse(
           request,
           env,
@@ -880,7 +2056,7 @@ export default {
     let payload;
     try {
       payload = await request.json();
-    } catch (error) {
+    } catch {
       return jsonResponse(request, env, { ok: false, code: 'invalid_json', error: 'JSON invalido.' }, 400);
     }
 
@@ -902,6 +2078,7 @@ export default {
     try {
       await ensureOperationalSchema(env);
       const securityConfig = getSecurityConfig(env);
+      const notificationConfig = getNotificationConfig(env);
       const metadata = {
         userAgent: getUserAgent(request),
         clientIp: getClientIp(request),
@@ -919,6 +2096,38 @@ export default {
       }
 
       const reservationId = await insertReservation(env, validation.value, metadata);
+      const reservation = await getReservationById(env, reservationId);
+
+      let queueResult = {
+        ok: true,
+        queued: 0,
+        notifications: [],
+      };
+
+      let dispatchResult = null;
+
+      if (reservation) {
+        queueResult = await enqueueReservationNotifications(env, reservation, notificationConfig, {
+          status: 'pending',
+          note: '',
+          trigger: 'reservation_created',
+          updatedBy: 'system',
+          channels: DEFAULT_NOTIFICATION_CHANNELS,
+        });
+
+        if (queueResult.ok && queueResult.queued > 0 && notificationConfig.autoDispatchOnCreate) {
+          dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, {
+            limit: queueResult.queued,
+            reservationId,
+            channel: '',
+            force: true,
+            ids: queueResult.notifications
+              .map((item) => item.id)
+              .filter((id) => Number.isInteger(id) && id > 0),
+          });
+        }
+      }
+
       return jsonResponse(
         request,
         env,
@@ -927,6 +2136,20 @@ export default {
           reservation_id: reservationId,
           status: 'pending',
           message: 'Solicitud enviada. Te contactaremos para confirmar disponibilidad.',
+          notifications: {
+            queued: queueResult.queued,
+            delivery_modes: {
+              email: notificationConfig.emailMode,
+              whatsapp: notificationConfig.whatsappMode,
+            },
+            ...(dispatchResult
+              ? {
+                  dispatch: {
+                    summary: dispatchResult.summary,
+                  },
+                }
+              : {}),
+          },
         },
         201,
       );

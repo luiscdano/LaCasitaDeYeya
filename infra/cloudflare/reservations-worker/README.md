@@ -1,16 +1,25 @@
 # Reservations Worker (Cloudflare + D1)
 
-API para registrar reservas desde `reserva/index.html`.
+API para registrar reservas desde `reserva/index.html` con flujo interno de estados y cola de notificaciones.
 
 ## Endpoints
 
+Publicos:
+
 - `GET /api/health`
 - `POST /api/reservations`
-- `GET /api/internal/reservations` (protegido)
-- `GET /api/internal/reservations/:id` (protegido)
-- `PATCH /api/internal/reservations/:id/status` (protegido)
 
-Body esperado (`application/json`):
+Internos (protegidos con `INTERNAL_API_KEY`):
+
+- `GET /api/internal/reservations`
+- `GET /api/internal/reservations/:id`
+- `PATCH /api/internal/reservations/:id/status`
+- `POST /api/internal/reservations/:id/notify` (reenvio manual)
+- `GET /api/internal/notifications` (outbox)
+- `POST /api/internal/notifications/dispatch` (procesar cola)
+- `POST /api/internal/notifications/:id/retry` (reintentar)
+
+Body esperado para `POST /api/reservations` (`application/json`):
 
 ```json
 {
@@ -91,12 +100,6 @@ Variables configurables en `wrangler.toml`:
 - `RATE_LIMIT_MAX_PER_EMAIL_DAY` (default: `8`)
 - `DUPLICATE_WINDOW_SECONDS` (default: `900`)
 
-Respuestas clave:
-
-- `201` reserva creada
-- `409` solicitud duplicada reciente
-- `429` limite excedido (`retry_after_seconds`)
-
 ## Flujo operativo interno
 
 Estados soportados:
@@ -105,7 +108,7 @@ Estados soportados:
 - `confirmed`
 - `cancelled`
 
-Actualizar estado:
+Actualizar estado (encola notificaciones por defecto):
 
 ```bash
 curl -X PATCH "https://<worker>/api/internal/reservations/123/status" \
@@ -114,7 +117,52 @@ curl -X PATCH "https://<worker>/api/internal/reservations/123/status" \
   -d '{"status":"confirmed","updated_by":"host","note":"Mesa lista 15 min antes"}'
 ```
 
-La respuesta incluye plantillas listas para:
+Reenviar notificacion manualmente:
 
-- correo (`templates.email.subject`, `templates.email.body`)
-- WhatsApp (`templates.whatsapp.body`)
+```bash
+curl -X POST "https://<worker>/api/internal/reservations/123/notify" \
+  -H "Authorization: Bearer <INTERNAL_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{"channels":["email","whatsapp"],"dispatch_now":true}'
+```
+
+Procesar cola outbox:
+
+```bash
+curl -X POST "https://<worker>/api/internal/notifications/dispatch" \
+  -H "Authorization: Bearer <INTERNAL_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{"limit":20}'
+```
+
+## Modo preparado (sin credenciales)
+
+Por defecto el Worker opera en `mock`:
+
+- `EMAIL_DELIVERY_MODE=mock`
+- `WHATSAPP_DELIVERY_MODE=mock`
+
+En este modo:
+
+- Las notificaciones se encolan en `reservation_notifications`.
+- El despacho marca `sent` sin tocar proveedores externos.
+- Puedes probar el flujo end-to-end sin correo ni WhatsApp Business reales.
+
+## Activar envio real luego
+
+Correo con Resend:
+
+1. `EMAIL_DELIVERY_MODE=resend`
+2. `EMAIL_FROM=reservas@tu-dominio.com`
+3. `wrangler secret put RESEND_API_KEY`
+
+WhatsApp Business API (Meta):
+
+1. `WHATSAPP_DELIVERY_MODE=meta`
+2. `WABA_PHONE_NUMBER_ID=<id>`
+3. `WABA_API_VERSION=v21.0` (o la version actual)
+4. `wrangler secret put WABA_ACCESS_TOKEN`
+
+Opcional para pruebas controladas:
+
+- `WABA_TO_NUMBER=<numero_destino>`

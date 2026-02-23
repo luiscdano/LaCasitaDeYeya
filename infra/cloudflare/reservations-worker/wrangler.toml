@@ -10,8 +10,22 @@ RATE_LIMIT_WINDOW_SECONDS = "600"
 RATE_LIMIT_MAX_PER_IP = "4"
 RATE_LIMIT_MAX_PER_EMAIL_DAY = "8"
 DUPLICATE_WINDOW_SECONDS = "900"
+NOTIFICATION_MAX_ATTEMPTS = "3"
+NOTIFICATION_DISPATCH_BATCH_LIMIT = "10"
+NOTIFICATIONS_AUTO_DISPATCH_ON_CREATE = "false"
+NOTIFICATIONS_AUTO_DISPATCH_ON_STATUS_CHANGE = "false"
+EMAIL_DELIVERY_MODE = "mock"
+WHATSAPP_DELIVERY_MODE = "mock"
+WABA_API_VERSION = "v21.0"
+# EMAIL_FROM = "reservas@dominio.com"
+# EMAIL_REPLY_TO = "reservas@dominio.com"
+# WABA_PHONE_NUMBER_ID = ""
+# WABA_TO_NUMBER = ""
 # INTERNAL_API_KEY debe configurarse como secreto:
 # npx wrangler secret put INTERNAL_API_KEY
+# RESEND_API_KEY y/o WABA_ACCESS_TOKEN tambien van como secretos:
+# npx wrangler secret put RESEND_API_KEY
+# npx wrangler secret put WABA_ACCESS_TOKEN
 
 [[d1_databases]]
 binding = "DB"

@@ -88,8 +88,9 @@ Abrir:
 - Incluye:
   - `wrangler.toml` (config Worker + D1)
   - `schema.sql` (esquema de base de datos)
-  - `src/index.js` (endpoints `/api/health` y `/api/reservations`)
+  - `src/index.js` (endpoints publicos + internos)
   - validaciones server-side + anti-spam/rate-limit base para preproduccion
   - flujo interno con estados (`pending/confirmed/cancelled`) y plantillas de confirmacion (correo/WhatsApp)
+  - outbox `reservation_notifications` con reintentos (`queued/sent/failed`) y despacho en modo `mock` por defecto
 - Guia de despliegue:
   - `infra/cloudflare/reservations-worker/README.md`

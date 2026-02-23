@@ -35,3 +35,36 @@ CREATE INDEX IF NOT EXISTS idx_reservations_email_created_at
 
 CREATE INDEX IF NOT EXISTS idx_reservations_duplicate_guard
   ON reservations (email, location, reservation_date, reservation_time, created_at);
+
+CREATE TABLE IF NOT EXISTS reservation_notifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  reservation_id INTEGER NOT NULL,
+  channel TEXT NOT NULL CHECK (channel IN ('email', 'whatsapp')),
+  recipient TEXT NOT NULL DEFAULT '',
+  subject TEXT NOT NULL DEFAULT '',
+  body TEXT NOT NULL DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued', 'sent', 'failed')),
+  provider TEXT NOT NULL DEFAULT 'mock',
+  provider_message_id TEXT NOT NULL DEFAULT '',
+  attempts INTEGER NOT NULL DEFAULT 0 CHECK (attempts >= 0),
+  max_attempts INTEGER NOT NULL DEFAULT 3 CHECK (max_attempts >= 1 AND max_attempts <= 10),
+  next_attempt_at TEXT NOT NULL DEFAULT (datetime('now')),
+  sent_at TEXT,
+  last_error TEXT NOT NULL DEFAULT '',
+  metadata_json TEXT NOT NULL DEFAULT '{}',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (reservation_id) REFERENCES reservations(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_reservation_notifications_status_next_attempt
+  ON reservation_notifications (status, next_attempt_at);
+
+CREATE INDEX IF NOT EXISTS idx_reservation_notifications_reservation_created
+  ON reservation_notifications (reservation_id, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_reservation_notifications_channel_status
+  ON reservation_notifications (channel, status, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_reservation_notifications_created_at
+  ON reservation_notifications (created_at);
