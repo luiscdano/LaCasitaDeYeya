@@ -20,6 +20,7 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
   - `STACK_ROADMAP.md`
   - `CLIENTA_CHECKLIST_CANALES.md`
   - `BROWSER_COMPATIBILITY.md`
+  - `RESERVATIONS_PANEL_OPERATIONS.md`
 - `infra/`
   - `cloudflare/reservations-worker/`
   - `docker-compose.reservations.yml`
@@ -40,6 +41,7 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
   - `index.html`
 - `reserva/`
   - `index.html`
+  - `panel/index.html` (panel interno operativo)
 
 ## Navegación principal
 - Localidad
@@ -92,5 +94,7 @@ Abrir:
   - validaciones server-side + anti-spam/rate-limit base para preproduccion
   - flujo interno con estados (`pending/confirmed/cancelled`) y plantillas de confirmacion (correo/WhatsApp)
   - outbox `reservation_notifications` con reintentos (`queued/sent/failed`) y despacho en modo `mock` por defecto
+  - hardening API (headers de seguridad, `X-Request-Id`, control opcional de origen interno)
+  - observabilidad operativa (`/api/internal/metrics/summary` + logs estructurados)
 - Guia de despliegue:
   - `infra/cloudflare/reservations-worker/README.md`

@@ -1,6 +1,6 @@
 # Reservations Worker (Cloudflare + D1)
 
-API para registrar reservas desde `reserva/index.html` con flujo interno de estados y cola de notificaciones.
+API para registrar reservas desde `reserva/index.html` con flujo interno de estados, outbox y monitoreo.
 
 ## Endpoints
 
@@ -18,6 +18,7 @@ Internos (protegidos con `INTERNAL_API_KEY`):
 - `GET /api/internal/notifications` (outbox)
 - `POST /api/internal/notifications/dispatch` (procesar cola)
 - `POST /api/internal/notifications/:id/retry` (reintentar)
+- `GET /api/internal/metrics/summary` (observabilidad)
 
 Body esperado para `POST /api/reservations` (`application/json`):
 
@@ -82,7 +83,10 @@ wrangler secret put INTERNAL_API_KEY
 
 ## Origenes permitidos
 
-Configurar `ALLOWED_ORIGINS` en `wrangler.toml` (lista separada por comas).
+- Publicos: `ALLOWED_ORIGINS`.
+- Internos (panel): `INTERNAL_ALLOWED_ORIGINS`.
+
+`INTERNAL_ALLOWED_ORIGINS` solo aplica si llega header `Origin` (navegador). Requests server-to-server/curl sin `Origin` siguen permitidos con llave valida.
 
 ## Anti-spam y limites
 
@@ -166,3 +170,9 @@ WhatsApp Business API (Meta):
 Opcional para pruebas controladas:
 
 - `WABA_TO_NUMBER=<numero_destino>`
+
+## Observabilidad
+
+- Header `X-Request-Id` en respuestas para trazabilidad.
+- Endpoint interno `GET /api/internal/metrics/summary`.
+- Logs estructurados en Worker (`http_request`, `reservation_created`, `notifications_dispatched`, etc.) controlados por `LOG_LEVEL`.

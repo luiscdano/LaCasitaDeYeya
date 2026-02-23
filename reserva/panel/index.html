@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="description" content="Panel interno para gestionar reservas y notificaciones de Los Corales." />
+    <title>La Casita de Yeya | Panel de Reservas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Nunito+Sans:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../shared/css/main.css?v=20260223ops1" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a href="../../index.html" class="brand" aria-label="Ir a inicio">
+          <img src="../../shared/img/log.webp?v=20260220opt1" alt="Logo de La Casita de Yeya" />
+          <span>
+            <strong>DOMINICAN FOOD</strong>
+          </span>
+        </a>
+
+        <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-label="Abrir navegación">Menu</button>
+
+        <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+          <ul class="nav-list">
+            <li class="nav-group">
+              <details>
+                <summary>Localidad</summary>
+                <ul class="submenu">
+                  <li><a href="../../localidad/village/index.html">Village</a></li>
+                  <li><a href="../../localidad/downtown/index.html">Downtown</a></li>
+                  <li><a href="../../localidad/los-corales/index.html">Los Corales</a></li>
+                </ul>
+              </details>
+            </li>
+            <li><a class="nav-link" href="../../menu/index.html">Menú</a></li>
+            <li class="nav-group">
+              <details>
+                <summary>Sobre</summary>
+                <ul class="submenu">
+                  <li><a href="../../sobre/descripcion-general/index.html">Descripción General</a></li>
+                  <li><a href="../../sobre/nuestra-huella/index.html">Nuestra Huella</a></li>
+                </ul>
+              </details>
+            </li>
+            <li><a class="nav-link" href="../../abastecimiento/index.html">Abastecimiento</a></li>
+            <li><a class="nav-link" href="../index.html">Reserva</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="container section-block admin-shell" data-admin-panel>
+        <p class="kicker">Panel interno</p>
+        <h1>Operaciones de reservas</h1>
+        <p>Acceso privado para gestionar estados, cola de notificaciones y monitoreo operativo.</p>
+
+        <section class="admin-card admin-connection" aria-label="Conexión interna">
+          <h2 class="admin-title">Conexión API interna</h2>
+          <div class="admin-connection-grid">
+            <label>
+              API base
+              <input
+                type="url"
+                data-admin-api-base
+                value="https://lacasita-reservations-api.lacasita-yeya.workers.dev"
+                placeholder="https://...workers.dev"
+                autocomplete="url"
+                required
+              />
+            </label>
+            <label>
+              Internal API Key
+              <input
+                type="password"
+                data-admin-api-key
+                placeholder="Pega aquí la llave interna"
+                autocomplete="off"
+                spellcheck="false"
+                required
+              />
+            </label>
+          </div>
+
+          <div class="admin-connection-actions">
+            <button class="btn btn-primary" type="button" data-admin-connect>Conectar</button>
+            <button class="btn btn-secondary" type="button" data-admin-disconnect>Desconectar</button>
+            <button class="btn btn-secondary" type="button" data-admin-refresh>Refrescar datos</button>
+          </div>
+
+          <p class="form-status" data-admin-connection-status aria-live="polite"></p>
+        </section>
+
+        <section class="admin-metrics" data-admin-metrics>
+          <article class="admin-metric-card">
+            <h3>Reservas pendientes</h3>
+            <p data-metric="reservations_pending">-</p>
+          </article>
+          <article class="admin-metric-card">
+            <h3>Reservas confirmadas</h3>
+            <p data-metric="reservations_confirmed">-</p>
+          </article>
+          <article class="admin-metric-card">
+            <h3>Reservas canceladas</h3>
+            <p data-metric="reservations_cancelled">-</p>
+          </article>
+          <article class="admin-metric-card">
+            <h3>Notificaciones en cola</h3>
+            <p data-metric="notifications_queued">-</p>
+          </article>
+          <article class="admin-metric-card">
+            <h3>Listas para despacho</h3>
+            <p data-metric="notifications_ready">-</p>
+          </article>
+          <article class="admin-metric-card">
+            <h3>Fallidas (24h)</h3>
+            <p data-metric="notifications_failed_24h">-</p>
+          </article>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-section-head">
+            <h2 class="admin-title">Reservas</h2>
+            <p data-admin-reservations-count>Total: 0</p>
+          </div>
+
+          <div class="admin-filters">
+            <label>
+              Estado
+              <select data-filter-res-status>
+                <option value="">Todos</option>
+                <option value="pending">Pendiente</option>
+                <option value="confirmed">Confirmada</option>
+                <option value="cancelled">Cancelada</option>
+              </select>
+            </label>
+            <label>
+              Localidad
+              <select data-filter-res-location>
+                <option value="">Todas</option>
+                <option value="village">Village</option>
+                <option value="downtown">Downtown</option>
+                <option value="los-corales">Los Corales</option>
+              </select>
+            </label>
+            <label>
+              Fecha desde
+              <input type="date" data-filter-res-date-from />
+            </label>
+            <label>
+              Fecha hasta
+              <input type="date" data-filter-res-date-to />
+            </label>
+            <div class="admin-inline-actions">
+              <button class="btn btn-secondary" type="button" data-admin-load-reservations>Aplicar</button>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table" data-admin-reservations-table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Cliente</th>
+                  <th>Contacto</th>
+                  <th>Fecha/Hora</th>
+                  <th>Localidad</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody data-admin-reservations-body>
+                <tr>
+                  <td colspan="7">Conecta el panel para cargar reservas.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-section-head">
+            <h2 class="admin-title">Outbox de notificaciones</h2>
+            <p data-admin-notifications-count>Total: 0</p>
+          </div>
+
+          <div class="admin-filters">
+            <label>
+              Estado
+              <select data-filter-notif-status>
+                <option value="">Todos</option>
+                <option value="queued">Queued</option>
+                <option value="sent">Sent</option>
+                <option value="failed">Failed</option>
+              </select>
+            </label>
+            <label>
+              Canal
+              <select data-filter-notif-channel>
+                <option value="">Todos</option>
+                <option value="email">Email</option>
+                <option value="whatsapp">WhatsApp</option>
+              </select>
+            </label>
+            <label>
+              Reserva ID
+              <input type="number" min="1" step="1" data-filter-notif-reservation-id placeholder="Ej: 145" />
+            </label>
+            <label>
+              Lote despacho
+              <input type="number" min="1" max="50" step="1" data-notif-dispatch-limit value="20" />
+            </label>
+            <div class="admin-inline-actions">
+              <button class="btn btn-secondary" type="button" data-admin-load-notifications>Aplicar</button>
+              <button class="btn btn-primary" type="button" data-admin-dispatch>Despachar cola</button>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table" data-admin-notifications-table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Reserva</th>
+                  <th>Canal</th>
+                  <th>Destino</th>
+                  <th>Estado</th>
+                  <th>Intentos</th>
+                  <th>Próximo intento</th>
+                  <th>Error</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody data-admin-notifications-body>
+                <tr>
+                  <td colspan="9">Conecta el panel para cargar notificaciones.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-card admin-observability">
+          <h2 class="admin-title">Observabilidad</h2>
+          <p>
+            Request ID más reciente: <strong data-admin-last-request-id>N/A</strong>.
+            Revisa logs estructurados en Cloudflare (evento <code>http_request</code>, <code>reservation_created</code>,
+            <code>notifications_dispatched</code>) para auditoría operativa.
+          </p>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner footer-powered">
+        <div class="footer-left">
+          <p>© 2026 La Casita de Yeya - Todos los derechos reservados</p>
+          <div class="footer-social" aria-label="Redes sociales">
+            <a class="footer-social-link footer-social-instagram" href="https://www.instagram.com/lacasitadeyeya/" target="_blank" rel="noopener noreferrer" aria-label="Ir a Instagram"></a>
+            <a class="footer-social-link footer-social-facebook" href="https://www.facebook.com/casitadeyeya/" target="_blank" rel="noopener noreferrer" aria-label="Ir a Facebook"></a>
+          </div>
+        </div>
+        <div class="footer-center">
+          <span>Powered by</span>
+          <a class="footer-cmlayer-link" href="https://cmlayer.com" target="_blank" rel="noopener noreferrer" aria-label="Ir a CmLayer">
+            <span class="footer-cmlayer-logo" aria-hidden="true"></span>
+            <span>CmLayer</span>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../../shared/js/main.js?v=20260223ops1"></script>
+    <script src="../../shared/js/reservations-admin.js?v=20260223ops1"></script>
+  </body>
+</html>

@@ -107,6 +107,26 @@ function getSecurityConfig(env) {
   };
 }
 
+function getInternalOriginConfig(env) {
+  const raw = normalizeText(env.INTERNAL_ALLOWED_ORIGINS || '', 2000);
+  if (!raw) {
+    return {
+      enabled: false,
+      origins: new Set(),
+    };
+  }
+
+  return {
+    enabled: true,
+    origins: new Set(
+      raw
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    ),
+  };
+}
+
 function getNotificationConfig(env) {
   return {
     maxAttempts: Math.min(parsePositiveInteger(env.NOTIFICATION_MAX_ATTEMPTS, 3), 10),
@@ -155,16 +175,76 @@ function getCorsHeaders(request, env) {
   };
 }
 
+function getSecurityHeaders() {
+  return {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+  };
+}
+
 function jsonResponse(request, env, body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       ...getCorsHeaders(request, env),
+      ...getSecurityHeaders(),
       ...extraHeaders,
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store',
     },
   });
+}
+
+function createRequestId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  const now = Date.now().toString(36);
+  const random = Math.random().toString(36).slice(2, 10);
+  return `${now}-${random}`;
+}
+
+function getLogLevelValue(env) {
+  const level = normalizeText(env.LOG_LEVEL || 'info', 12).toLowerCase();
+  if (level === 'debug') return 10;
+  if (level === 'info') return 20;
+  if (level === 'warn') return 30;
+  if (level === 'error') return 40;
+  return 20;
+}
+
+function getEventLevelValue(level) {
+  if (level === 'debug') return 10;
+  if (level === 'info') return 20;
+  if (level === 'warn') return 30;
+  if (level === 'error') return 40;
+  return 20;
+}
+
+function logEvent(env, level, eventType, details = {}) {
+  if (getEventLevelValue(level) < getLogLevelValue(env)) return;
+
+  const payload = {
+    ts: new Date().toISOString(),
+    level,
+    event: eventType,
+    ...details,
+  };
+
+  const message = JSON.stringify(payload);
+  if (level === 'debug' || level === 'info') {
+    console.log(message);
+  } else if (level === 'warn') {
+    console.warn(message);
+  } else {
+    console.error(message);
+  }
+}
+
+function shouldExposeInternalErrors(env) {
+  return parseBoolean(env.DEBUG_INTERNAL_ERRORS, false);
 }
 
 function formatDateLabel(isoDate) {
@@ -463,6 +543,19 @@ function getInternalAuthState(request, env) {
   if (!provided || provided !== expected) return { ok: false, reason: 'invalid' };
 
   return { ok: true };
+}
+
+function getInternalOriginState(request, env) {
+  const config = getInternalOriginConfig(env);
+  if (!config.enabled) return { ok: true };
+
+  const origin = normalizeText(request.headers.get('Origin') || '', 512);
+  if (!origin) return { ok: true };
+  if (config.origins.has('*') || config.origins.has(origin)) {
+    return { ok: true };
+  }
+
+  return { ok: false, reason: 'origin_blocked', origin };
 }
 
 async function queryCount(env, sql, bindings) {
@@ -1102,6 +1195,145 @@ async function listInternalNotifications(env, filters) {
   };
 }
 
+function rowTotalsToMap(rows, keyName = 'status') {
+  const result = {};
+  for (const row of rows || []) {
+    const key = normalizeText(String(row?.[keyName] ?? ''), 64).toLowerCase();
+    if (!key) continue;
+    result[key] = toInteger(row?.total, 0);
+  }
+  return result;
+}
+
+function sumMapValues(map) {
+  return Object.values(map || {}).reduce((acc, value) => acc + toInteger(value, 0), 0);
+}
+
+async function getInternalMetricsSummary(env) {
+  const reservationByStatusRows = await env.DB.prepare(
+    `SELECT COALESCE(status, 'pending') AS status, COUNT(1) AS total
+     FROM reservations
+     GROUP BY COALESCE(status, 'pending')`,
+  ).all();
+
+  const reservationByLocationRows = await env.DB.prepare(
+    `SELECT location, COUNT(1) AS total
+     FROM reservations
+     GROUP BY location`,
+  ).all();
+
+  const notificationByStatusRows = await env.DB.prepare(
+    `SELECT status, COUNT(1) AS total
+     FROM reservation_notifications
+     GROUP BY status`,
+  ).all();
+
+  const notificationByChannelStatusRows = await env.DB.prepare(
+    `SELECT channel, status, COUNT(1) AS total
+     FROM reservation_notifications
+     GROUP BY channel, status`,
+  ).all();
+
+  const reservationsByStatus = rowTotalsToMap(reservationByStatusRows?.results, 'status');
+  const reservationsByLocation = rowTotalsToMap(reservationByLocationRows?.results, 'location');
+  const notificationsByStatus = rowTotalsToMap(notificationByStatusRows?.results, 'status');
+
+  const notificationsByChannel = {};
+  for (const row of notificationByChannelStatusRows?.results || []) {
+    const channel = normalizeText(String(row?.channel ?? ''), 20).toLowerCase();
+    const status = normalizeText(String(row?.status ?? ''), 20).toLowerCase();
+    if (!channel || !status) continue;
+    if (!notificationsByChannel[channel]) {
+      notificationsByChannel[channel] = {
+        queued: 0,
+        sent: 0,
+        failed: 0,
+        total: 0,
+      };
+    }
+    const count = toInteger(row?.total, 0);
+    notificationsByChannel[channel][status] = count;
+    notificationsByChannel[channel].total += count;
+  }
+
+  const reservationsLast24h = await queryCount(
+    env,
+    `SELECT COUNT(1) AS total
+     FROM reservations
+     WHERE created_at >= datetime('now', '-24 hours')`,
+    [],
+  );
+
+  const reservationsUpcoming7d = await queryCount(
+    env,
+    `SELECT COUNT(1) AS total
+     FROM reservations
+     WHERE reservation_date >= date('now')
+       AND reservation_date <= date('now', '+7 day')`,
+    [],
+  );
+
+  const notificationsReadyToDispatch = await queryCount(
+    env,
+    `SELECT COUNT(1) AS total
+     FROM reservation_notifications
+     WHERE status = 'queued'
+       AND next_attempt_at <= datetime('now')`,
+    [],
+  );
+
+  const notificationsScheduledRetry = await queryCount(
+    env,
+    `SELECT COUNT(1) AS total
+     FROM reservation_notifications
+     WHERE status = 'queued'
+       AND next_attempt_at > datetime('now')`,
+    [],
+  );
+
+  const notificationsFailed24h = await queryCount(
+    env,
+    `SELECT COUNT(1) AS total
+     FROM reservation_notifications
+     WHERE status = 'failed'
+       AND updated_at >= datetime('now', '-24 hours')`,
+    [],
+  );
+
+  const notificationsDispatched24h = await queryCount(
+    env,
+    `SELECT COUNT(1) AS total
+     FROM reservation_notifications
+     WHERE status = 'sent'
+       AND sent_at >= datetime('now', '-24 hours')`,
+    [],
+  );
+
+  return {
+    reservations: {
+      total: sumMapValues(reservationsByStatus),
+      pending: toInteger(reservationsByStatus.pending, 0),
+      confirmed: toInteger(reservationsByStatus.confirmed, 0),
+      cancelled: toInteger(reservationsByStatus.cancelled, 0),
+      created_last_24h: reservationsLast24h,
+      upcoming_next_7_days: reservationsUpcoming7d,
+      by_location: reservationsByLocation,
+    },
+    notifications: {
+      total: sumMapValues(notificationsByStatus),
+      queued: toInteger(notificationsByStatus.queued, 0),
+      sent: toInteger(notificationsByStatus.sent, 0),
+      failed: toInteger(notificationsByStatus.failed, 0),
+      ready_to_dispatch: notificationsReadyToDispatch,
+      scheduled_retry: notificationsScheduledRetry,
+      sent_last_24h: notificationsDispatched24h,
+      failed_last_24h: notificationsFailed24h,
+      by_channel: notificationsByChannel,
+    },
+    generated_at: new Date().toISOString(),
+  };
+}
+
 async function enqueueReservationNotifications(env, reservation, notificationConfig, options = {}) {
   const status = STATUS_VALUES.has(options.status) ? options.status : reservation.status || 'pending';
   const note = normalizeText(options.note || '', 350);
@@ -1510,7 +1742,7 @@ async function selectQueuedNotificationsForDispatch(env, dispatchOptions) {
   return (rows?.results || []).map(rowToNotification);
 }
 
-async function dispatchQueuedNotifications(env, notificationConfig, dispatchOptions) {
+async function dispatchQueuedNotifications(env, notificationConfig, dispatchOptions, requestId = '') {
   const notifications = await selectQueuedNotificationsForDispatch(env, dispatchOptions);
 
   const details = [];
@@ -1528,6 +1760,16 @@ async function dispatchQueuedNotifications(env, notificationConfig, dispatchOpti
     else if (result.status === 'requeued') summary.requeued += 1;
     else summary.failed += 1;
   }
+
+  logEvent(env, 'info', 'notifications_dispatched', {
+    request_id: requestId || '',
+    selected: summary.selected,
+    sent: summary.sent,
+    failed: summary.failed,
+    requeued: summary.requeued,
+    filter_channel: dispatchOptions.channel || '',
+    filter_reservation_id: dispatchOptions.reservationId || 0,
+  });
 
   return {
     summary,
@@ -1570,7 +1812,7 @@ async function retryNotification(env, notificationId) {
   };
 }
 
-async function updateReservationStatus(env, notificationConfig, reservationId, payload) {
+async function updateReservationStatus(env, notificationConfig, reservationId, payload, requestId = '') {
   const validation = validateStatusUpdatePayload(payload || {});
   if (!validation.ok) {
     return {
@@ -1602,6 +1844,15 @@ async function updateReservationStatus(env, notificationConfig, reservationId, p
   const updated = await getReservationById(env, reservationId);
   const templates = buildNotificationTemplates(updated, status, note);
 
+  logEvent(env, 'info', 'reservation_status_updated', {
+    request_id: requestId || '',
+    reservation_id: reservationId,
+    new_status: status,
+    updated_by: updatedBy,
+    enqueue_notifications: enqueueNotifications,
+    dispatch_now: dispatchNow,
+  });
+
   let queueResult = {
     ok: true,
     queued: 0,
@@ -1627,7 +1878,7 @@ async function updateReservationStatus(env, notificationConfig, reservationId, p
         force: true,
         ids: queueResult.notifications.map((item) => item.id).filter((id) => Number.isInteger(id) && id > 0),
       };
-      dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, dispatchPayload);
+      dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, dispatchPayload, requestId);
     }
   }
 
@@ -1653,7 +1904,8 @@ async function updateReservationStatus(env, notificationConfig, reservationId, p
   };
 }
 
-async function handleInternalRoutes(request, env, path, url) {
+async function handleInternalRoutes(request, env, path, url, context = {}) {
+  const requestId = normalizeText(context.requestId || '', 80);
   const authState = getInternalAuthState(request, env);
   if (!authState.ok && authState.reason === 'not_configured') {
     return jsonResponse(
@@ -1674,6 +1926,25 @@ async function handleInternalRoutes(request, env, path, url) {
       { ok: false, code: 'unauthorized', error: 'Credenciales internas invalidas.' },
       401,
       { 'WWW-Authenticate': 'Bearer realm="internal-reservations"' },
+    );
+  }
+
+  const originState = getInternalOriginState(request, env);
+  if (!originState.ok) {
+    logEvent(env, 'warn', 'internal_origin_blocked', {
+      request_id: requestId || '',
+      path,
+      origin: originState.origin || '',
+    });
+    return jsonResponse(
+      request,
+      env,
+      {
+        ok: false,
+        code: 'origin_not_allowed',
+        error: 'Origen no permitido para API interna.',
+      },
+      403,
     );
   }
 
@@ -1732,6 +2003,19 @@ async function handleInternalRoutes(request, env, path, url) {
     );
   }
 
+  if (path === '/api/internal/metrics/summary' && request.method === 'GET') {
+    const metrics = await getInternalMetricsSummary(env);
+    return jsonResponse(
+      request,
+      env,
+      {
+        ok: true,
+        metrics,
+      },
+      200,
+    );
+  }
+
   if (path === '/api/internal/notifications/dispatch' && request.method === 'POST') {
     let payload = {};
     try {
@@ -1750,7 +2034,12 @@ async function handleInternalRoutes(request, env, path, url) {
       );
     }
 
-    const dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, parsedPayload.value);
+    const dispatchResult = await dispatchQueuedNotifications(
+      env,
+      notificationConfig,
+      parsedPayload.value,
+      requestId,
+    );
     return jsonResponse(
       request,
       env,
@@ -1804,7 +2093,7 @@ async function handleInternalRoutes(request, env, path, url) {
       ids: [notificationId],
     };
 
-    const dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, dispatchPayload);
+    const dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, dispatchPayload, requestId);
     return jsonResponse(
       request,
       env,
@@ -1876,7 +2165,13 @@ async function handleInternalRoutes(request, env, path, url) {
       return jsonResponse(request, env, { ok: false, code: 'invalid_json', error: 'JSON invalido.' }, 400);
     }
 
-    const updateResult = await updateReservationStatus(env, notificationConfig, reservationId, payload || {});
+    const updateResult = await updateReservationStatus(
+      env,
+      notificationConfig,
+      reservationId,
+      payload || {},
+      requestId,
+    );
     return jsonResponse(request, env, updateResult.body, updateResult.status);
   }
 
@@ -1945,7 +2240,7 @@ async function handleInternalRoutes(request, env, path, url) {
         force: true,
         ids: queueResult.notifications.map((item) => item.id).filter((id) => Number.isInteger(id) && id > 0),
       };
-      dispatch = await dispatchQueuedNotifications(env, notificationConfig, dispatchPayload);
+      dispatch = await dispatchQueuedNotifications(env, notificationConfig, dispatchPayload, requestId);
     }
 
     return jsonResponse(
@@ -1981,190 +2276,288 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '') || '/';
+    const requestId = createRequestId();
+    const startedAt = Date.now();
+    const method = request.method;
+    const clientIp = getClientIp(request);
+    const userAgent = getUserAgent(request);
 
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: getCorsHeaders(request, env) });
-    }
+    const responseHeaders = { 'X-Request-Id': requestId };
+    let response = null;
 
-    if (path.startsWith('/api/internal/')) {
-      try {
-        return await handleInternalRoutes(request, env, path, url);
-      } catch (error) {
-        return jsonResponse(
-          request,
-          env,
-          {
+    try {
+      if (request.method === 'OPTIONS') {
+        response = new Response(null, {
+          status: 204,
+          headers: {
+            ...getCorsHeaders(request, env),
+            ...getSecurityHeaders(),
+            ...responseHeaders,
+          },
+        });
+        return response;
+      }
+
+      if (path.startsWith('/api/internal/')) {
+        try {
+          response = await handleInternalRoutes(request, env, path, url, { requestId });
+        } catch (error) {
+          const message = normalizeText(error?.message || 'internal_error', 300);
+          logEvent(env, 'error', 'internal_route_failed', {
+            request_id: requestId,
+            method,
+            path,
+            error: message,
+          });
+
+          const body = {
             ok: false,
             code: 'internal_error',
             error: 'No se pudo procesar la operacion interna.',
-            detail: error?.message || 'internal_error',
-          },
-          500,
-        );
+          };
+          if (shouldExposeInternalErrors(env)) {
+            body.detail = message || 'internal_error';
+          }
+          response = jsonResponse(request, env, body, 500, responseHeaders);
+        }
+        if (response && !response.headers.get('X-Request-Id')) {
+          response = new Response(response.body, {
+            status: response.status,
+            headers: {
+              ...Object.fromEntries(response.headers.entries()),
+              ...responseHeaders,
+            },
+          });
+        }
+        return response;
       }
-    }
 
-    if (path === '/api/health') {
+      if (path === '/api/health') {
+        try {
+          await ensureOperationalSchema(env);
+          await env.DB.prepare('SELECT 1 AS ok').first();
+          const notificationConfig = getNotificationConfig(env);
+          response = jsonResponse(
+            request,
+            env,
+            {
+              ok: true,
+              service: 'reservations-api',
+              database: 'up',
+              internal_api_configured: Boolean(normalizeText(env.INTERNAL_API_KEY || '', 10)),
+              notifications: {
+                email_mode: notificationConfig.emailMode,
+                whatsapp_mode: notificationConfig.whatsappMode,
+                max_attempts: notificationConfig.maxAttempts,
+              },
+              timestamp: new Date().toISOString(),
+            },
+            200,
+            responseHeaders,
+          );
+        } catch {
+          response = jsonResponse(
+            request,
+            env,
+            {
+              ok: false,
+              code: 'db_unavailable',
+              error: 'Servicio de reservas temporalmente no disponible.',
+            },
+            503,
+            responseHeaders,
+          );
+        }
+        return response;
+      }
+
+      if (path !== '/api/reservations') {
+        response = jsonResponse(
+          request,
+          env,
+          { ok: false, code: 'not_found', error: 'Ruta no encontrada.' },
+          404,
+          responseHeaders,
+        );
+        return response;
+      }
+
+      if (request.method !== 'POST') {
+        response = jsonResponse(
+          request,
+          env,
+          { ok: false, code: 'method_not_allowed', error: 'Metodo no permitido.' },
+          405,
+          responseHeaders,
+        );
+        return response;
+      }
+
+      let payload;
+      try {
+        payload = await request.json();
+      } catch {
+        response = jsonResponse(
+          request,
+          env,
+          { ok: false, code: 'invalid_json', error: 'JSON invalido.' },
+          400,
+          responseHeaders,
+        );
+        return response;
+      }
+
+      const honeypot = normalizeText(payload?.empresa || payload?.website || payload?.company || '', 80);
+      if (honeypot) {
+        logEvent(env, 'warn', 'honeypot_triggered', { request_id: requestId, path });
+        response = jsonResponse(request, env, { ok: true, accepted: true }, 202, responseHeaders);
+        return response;
+      }
+
+      const validation = validatePublicReservationPayload(payload || {});
+      if (!validation.ok) {
+        response = jsonResponse(
+          request,
+          env,
+          { ok: false, code: validation.code || 'validation_error', error: validation.error },
+          422,
+          responseHeaders,
+        );
+        return response;
+      }
+
       try {
         await ensureOperationalSchema(env);
-        await env.DB.prepare('SELECT 1 AS ok').first();
+        const securityConfig = getSecurityConfig(env);
         const notificationConfig = getNotificationConfig(env);
-        return jsonResponse(
+        const metadata = {
+          userAgent,
+          clientIp,
+        };
+
+        const antiSpamDecision = await checkAntiSpam(env, validation.value, metadata, securityConfig);
+        if (antiSpamDecision) {
+          logEvent(env, 'warn', 'reservation_rejected', {
+            request_id: requestId,
+            path,
+            code: antiSpamDecision.body?.code || 'rejected',
+            email: validation.value.email,
+            location: validation.value.location,
+          });
+          response = jsonResponse(
+            request,
+            env,
+            antiSpamDecision.body,
+            antiSpamDecision.status,
+            { ...antiSpamDecision.headers, ...responseHeaders },
+          );
+          return response;
+        }
+
+        const reservationId = await insertReservation(env, validation.value, metadata);
+        const reservation = await getReservationById(env, reservationId);
+
+        let queueResult = {
+          ok: true,
+          queued: 0,
+          notifications: [],
+        };
+
+        let dispatchResult = null;
+
+        if (reservation) {
+          queueResult = await enqueueReservationNotifications(env, reservation, notificationConfig, {
+            status: 'pending',
+            note: '',
+            trigger: 'reservation_created',
+            updatedBy: 'system',
+            channels: DEFAULT_NOTIFICATION_CHANNELS,
+          });
+
+          if (queueResult.ok && queueResult.queued > 0 && notificationConfig.autoDispatchOnCreate) {
+            dispatchResult = await dispatchQueuedNotifications(
+              env,
+              notificationConfig,
+              {
+                limit: queueResult.queued,
+                reservationId,
+                channel: '',
+                force: true,
+                ids: queueResult.notifications
+                  .map((item) => item.id)
+                  .filter((id) => Number.isInteger(id) && id > 0),
+              },
+              requestId,
+            );
+          }
+        }
+
+        logEvent(env, 'info', 'reservation_created', {
+          request_id: requestId,
+          reservation_id: reservationId,
+          location: validation.value.location,
+          email: validation.value.email,
+          queued_notifications: queueResult.queued,
+        });
+
+        response = jsonResponse(
           request,
           env,
           {
             ok: true,
-            service: 'reservations-api',
-            database: 'up',
-            internal_api_configured: Boolean(normalizeText(env.INTERNAL_API_KEY || '', 10)),
+            reservation_id: reservationId,
+            status: 'pending',
+            message: 'Solicitud enviada. Te contactaremos para confirmar disponibilidad.',
             notifications: {
-              email_mode: notificationConfig.emailMode,
-              whatsapp_mode: notificationConfig.whatsappMode,
-              max_attempts: notificationConfig.maxAttempts,
+              queued: queueResult.queued,
+              delivery_modes: {
+                email: notificationConfig.emailMode,
+                whatsapp: notificationConfig.whatsappMode,
+              },
+              ...(dispatchResult
+                ? {
+                    dispatch: {
+                      summary: dispatchResult.summary,
+                    },
+                  }
+                : {}),
             },
-            timestamp: new Date().toISOString(),
           },
-          200,
+          201,
+          responseHeaders,
         );
-      } catch {
-        return jsonResponse(
-          request,
-          env,
-          {
-            ok: false,
-            code: 'db_unavailable',
-            error: 'Servicio de reservas temporalmente no disponible.',
-          },
-          503,
-        );
-      }
-    }
-
-    if (path !== '/api/reservations') {
-      return jsonResponse(request, env, { ok: false, code: 'not_found', error: 'Ruta no encontrada.' }, 404);
-    }
-
-    if (request.method !== 'POST') {
-      return jsonResponse(
-        request,
-        env,
-        { ok: false, code: 'method_not_allowed', error: 'Metodo no permitido.' },
-        405,
-      );
-    }
-
-    let payload;
-    try {
-      payload = await request.json();
-    } catch {
-      return jsonResponse(request, env, { ok: false, code: 'invalid_json', error: 'JSON invalido.' }, 400);
-    }
-
-    const honeypot = normalizeText(payload?.empresa || payload?.website || payload?.company || '', 80);
-    if (honeypot) {
-      return jsonResponse(request, env, { ok: true, accepted: true }, 202);
-    }
-
-    const validation = validatePublicReservationPayload(payload || {});
-    if (!validation.ok) {
-      return jsonResponse(
-        request,
-        env,
-        { ok: false, code: validation.code || 'validation_error', error: validation.error },
-        422,
-      );
-    }
-
-    try {
-      await ensureOperationalSchema(env);
-      const securityConfig = getSecurityConfig(env);
-      const notificationConfig = getNotificationConfig(env);
-      const metadata = {
-        userAgent: getUserAgent(request),
-        clientIp: getClientIp(request),
-      };
-
-      const antiSpamDecision = await checkAntiSpam(env, validation.value, metadata, securityConfig);
-      if (antiSpamDecision) {
-        return jsonResponse(
-          request,
-          env,
-          antiSpamDecision.body,
-          antiSpamDecision.status,
-          antiSpamDecision.headers,
-        );
-      }
-
-      const reservationId = await insertReservation(env, validation.value, metadata);
-      const reservation = await getReservationById(env, reservationId);
-
-      let queueResult = {
-        ok: true,
-        queued: 0,
-        notifications: [],
-      };
-
-      let dispatchResult = null;
-
-      if (reservation) {
-        queueResult = await enqueueReservationNotifications(env, reservation, notificationConfig, {
-          status: 'pending',
-          note: '',
-          trigger: 'reservation_created',
-          updatedBy: 'system',
-          channels: DEFAULT_NOTIFICATION_CHANNELS,
+        return response;
+      } catch (error) {
+        const message = normalizeText(error?.message || 'internal_error', 300);
+        logEvent(env, 'error', 'reservation_create_failed', {
+          request_id: requestId,
+          path,
+          error: message,
         });
-
-        if (queueResult.ok && queueResult.queued > 0 && notificationConfig.autoDispatchOnCreate) {
-          dispatchResult = await dispatchQueuedNotifications(env, notificationConfig, {
-            limit: queueResult.queued,
-            reservationId,
-            channel: '',
-            force: true,
-            ids: queueResult.notifications
-              .map((item) => item.id)
-              .filter((id) => Number.isInteger(id) && id > 0),
-          });
-        }
-      }
-
-      return jsonResponse(
-        request,
-        env,
-        {
-          ok: true,
-          reservation_id: reservationId,
-          status: 'pending',
-          message: 'Solicitud enviada. Te contactaremos para confirmar disponibilidad.',
-          notifications: {
-            queued: queueResult.queued,
-            delivery_modes: {
-              email: notificationConfig.emailMode,
-              whatsapp: notificationConfig.whatsappMode,
-            },
-            ...(dispatchResult
-              ? {
-                  dispatch: {
-                    summary: dispatchResult.summary,
-                  },
-                }
-              : {}),
-          },
-        },
-        201,
-      );
-    } catch (error) {
-      return jsonResponse(
-        request,
-        env,
-        {
+        const body = {
           ok: false,
           code: 'internal_error',
           error: 'No se pudo registrar la reserva.',
-          detail: error?.message || 'internal_error',
-        },
-        500,
-      );
+        };
+        if (shouldExposeInternalErrors(env)) {
+          body.detail = message || 'internal_error';
+        }
+        response = jsonResponse(request, env, body, 500, responseHeaders);
+        return response;
+      }
+    } finally {
+      const durationMs = Date.now() - startedAt;
+      const status = response?.status || 500;
+      const level = status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info';
+      logEvent(env, level, 'http_request', {
+        request_id: requestId,
+        method,
+        path,
+        status,
+        duration_ms: durationMs,
+        client_ip: clientIp,
+        user_agent: userAgent,
+      });
     }
   },
 };
