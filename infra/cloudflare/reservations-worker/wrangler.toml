@@ -10,6 +10,8 @@ RATE_LIMIT_WINDOW_SECONDS = "600"
 RATE_LIMIT_MAX_PER_IP = "4"
 RATE_LIMIT_MAX_PER_EMAIL_DAY = "8"
 DUPLICATE_WINDOW_SECONDS = "900"
+# INTERNAL_API_KEY debe configurarse como secreto:
+# npx wrangler secret put INTERNAL_API_KEY
 
 [[d1_databases]]
 binding = "DB"

@@ -6,6 +6,9 @@ API para registrar reservas desde `reserva/index.html`.
 
 - `GET /api/health`
 - `POST /api/reservations`
+- `GET /api/internal/reservations` (protegido)
+- `GET /api/internal/reservations/:id` (protegido)
+- `PATCH /api/internal/reservations/:id/status` (protegido)
 
 Body esperado (`application/json`):
 
@@ -61,6 +64,13 @@ cd infra/cloudflare/reservations-worker
 wrangler deploy
 ```
 
+7. Configurar llave interna (obligatorio para endpoints internos):
+
+```bash
+cd infra/cloudflare/reservations-worker
+wrangler secret put INTERNAL_API_KEY
+```
+
 ## Origenes permitidos
 
 Configurar `ALLOWED_ORIGINS` en `wrangler.toml` (lista separada por comas).
@@ -86,3 +96,25 @@ Respuestas clave:
 - `201` reserva creada
 - `409` solicitud duplicada reciente
 - `429` limite excedido (`retry_after_seconds`)
+
+## Flujo operativo interno
+
+Estados soportados:
+
+- `pending`
+- `confirmed`
+- `cancelled`
+
+Actualizar estado:
+
+```bash
+curl -X PATCH "https://<worker>/api/internal/reservations/123/status" \
+  -H "Authorization: Bearer <INTERNAL_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{"status":"confirmed","updated_by":"host","note":"Mesa lista 15 min antes"}'
+```
+
+La respuesta incluye plantillas listas para:
+
+- correo (`templates.email.subject`, `templates.email.body`)
+- WhatsApp (`templates.whatsapp.body`)

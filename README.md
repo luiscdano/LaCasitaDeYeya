@@ -90,5 +90,6 @@ Abrir:
   - `schema.sql` (esquema de base de datos)
   - `src/index.js` (endpoints `/api/health` y `/api/reservations`)
   - validaciones server-side + anti-spam/rate-limit base para preproduccion
+  - flujo interno con estados (`pending/confirmed/cancelled`) y plantillas de confirmacion (correo/WhatsApp)
 - Guia de despliegue:
   - `infra/cloudflare/reservations-worker/README.md`

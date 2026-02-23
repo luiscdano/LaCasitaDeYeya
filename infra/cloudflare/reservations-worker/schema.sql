@@ -9,6 +9,10 @@ CREATE TABLE IF NOT EXISTS reservations (
   guests INTEGER NOT NULL CHECK (guests >= 1 AND guests <= 30),
   comments TEXT DEFAULT '',
   source TEXT NOT NULL DEFAULT 'website',
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'cancelled')),
+  status_note TEXT NOT NULL DEFAULT '',
+  status_updated_at TEXT,
+  status_updated_by TEXT NOT NULL DEFAULT '',
   user_agent TEXT DEFAULT '',
   client_ip TEXT DEFAULT '',
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
