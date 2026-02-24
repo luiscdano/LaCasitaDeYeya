@@ -710,74 +710,39 @@ body.home-view .section-block {
 }
 
 .locality-detail-village .village-title {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.7rem;
   display: flex;
   flex-direction: column;
-  gap: 0.18rem;
+  gap: 0.08rem;
 }
 
 .locality-detail-village .village-hero-copy {
-  position: relative;
-  padding: clamp(0.6rem, 1.8vw, 1.2rem) clamp(0.45rem, 1.4vw, 1.15rem);
-}
-
-.locality-detail-village .village-hero-copy::before,
-.locality-detail-village .village-hero-copy::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  background: rgba(255, 255, 255, 0.52);
-  filter: drop-shadow(0 10px 18px rgba(8, 32, 119, 0.12));
-}
-
-.locality-detail-village .village-hero-copy::before {
-  top: 0.1rem;
-  left: -0.35rem;
-  right: -0.4rem;
-  height: clamp(190px, 23vw, 250px);
-  border-radius: 42% 58% 44% 56% / 50% 43% 57% 50%;
-}
-
-.locality-detail-village .village-hero-copy::after {
-  top: 2.45rem;
-  left: -0.55rem;
-  width: clamp(130px, 12vw, 188px);
-  height: clamp(44px, 5.3vw, 70px);
-  border-radius: 999px;
+  padding: 0;
 }
 
 .locality-detail-village .village-title-welcome {
-  display: inline-block;
-  width: fit-content;
-  padding: 0.01em 0.22em 0.08em;
+  display: block;
   font-family: "Amatic SC", cursive;
-  font-size: clamp(3.6rem, 7.8vw, 7rem);
-  line-height: 0.92;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: clamp(3.45rem, 8.3vw, 6.5rem);
+  line-height: 0.9;
+  letter-spacing: 0.03em;
   color: #1f4ea7;
-  background: rgba(255, 255, 255, 0.52);
-  box-shadow: 0 8px 22px rgba(8, 32, 119, 0.12);
   text-shadow:
-    0 5px 10px rgba(255, 255, 255, 0.36),
-    0 11px 22px rgba(8, 32, 119, 0.28);
+    0 5px 10px rgba(255, 255, 255, 0.38),
+    0 12px 24px rgba(8, 32, 119, 0.3);
 }
 
 .locality-detail-village .village-title-name {
-  display: inline-block;
-  width: fit-content;
-  padding: 0.03em 0.34em 0.12em;
+  display: block;
   font-family: "Bree Serif", serif;
-  font-size: clamp(3.2rem, 6.5vw, 5.8rem);
+  font-size: clamp(2.5rem, 5.2vw, 4rem);
   line-height: 1;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #9f1f2a;
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 10px 24px rgba(8, 32, 119, 0.14);
   text-shadow:
-    0 6px 14px rgba(8, 32, 119, 0.24),
-    0 2px 4px rgba(255, 255, 255, 0.18);
+    0 2px 7px rgba(8, 32, 119, 0.2),
+    0 8px 18px rgba(8, 32, 119, 0.22);
 }
 
 .locality-hero-copy > p {
@@ -806,64 +771,7 @@ body.home-view .section-block {
 }
 
 .locality-detail-village .village-food-showcase {
-  margin-top: clamp(1.2rem, 2.4vw, 2rem);
-}
-
-.locality-detail-village .village-food-showcase-grid {
-  display: grid;
-  grid-template-columns: 1.35fr 1.05fr 0.95fr;
-  grid-template-rows: repeat(2, minmax(240px, 24vw));
-  gap: clamp(0.08rem, 0.26vw, 0.24rem);
-}
-
-.locality-detail-village .village-food-item {
-  margin: 0;
-  border: clamp(2px, 0.34vw, 4px) solid #fff;
-  border-radius: 4px;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 18px 34px rgba(8, 32, 119, 0.2);
-  animation: village-food-float 5.8s ease-in-out infinite;
-}
-
-.locality-detail-village .village-food-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.locality-detail-village .village-food-item.item-1 {
-  grid-column: 1;
-  grid-row: 1 / span 2;
-  animation-delay: 0s;
-}
-
-.locality-detail-village .village-food-item.item-2 {
-  grid-column: 2;
-  grid-row: 1;
-  animation-delay: 0.45s;
-}
-
-.locality-detail-village .village-food-item.item-3 {
-  grid-column: 2;
-  grid-row: 2;
-  animation-delay: 0.9s;
-}
-
-.locality-detail-village .village-food-item.item-4 {
-  grid-column: 3;
-  grid-row: 1 / span 2;
-  animation-delay: 1.25s;
-}
-
-@keyframes village-food-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  margin-top: clamp(1.35rem, 2.8vw, 2.4rem);
 }
 
 .locality-detail-left .locality-hero-media img {
@@ -1878,15 +1786,6 @@ body.menu-view .menu-book-controls-bottom {
     width: min(504px, 90%);
   }
 
-  .locality-detail-village .village-hero-copy {
-    padding: 0;
-  }
-
-  .locality-detail-village .village-hero-copy::before,
-  .locality-detail-village .village-hero-copy::after {
-    content: none;
-  }
-
   .locality-detail-village .village-title-welcome {
     font-size: clamp(3rem, 12vw, 5rem);
     letter-spacing: 0.04em;
@@ -1895,19 +1794,6 @@ body.menu-view .menu-book-controls-bottom {
   .locality-detail-village .village-title-name {
     font-size: clamp(2.5rem, 10vw, 4.3rem);
     letter-spacing: 0.06em;
-  }
-
-  .locality-detail-village .village-food-showcase-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(190px, 40vw));
-  }
-
-  .locality-detail-village .village-food-item.item-1,
-  .locality-detail-village .village-food-item.item-2,
-  .locality-detail-village .village-food-item.item-3,
-  .locality-detail-village .village-food-item.item-4 {
-    grid-column: auto;
-    grid-row: auto;
   }
 
   .grid {
@@ -2231,12 +2117,6 @@ body.menu-view .menu-book-controls-bottom {
   .locality-detail-village .village-title-name {
     font-size: clamp(2rem, 12vw, 2.9rem);
     letter-spacing: 0.05em;
-  }
-
-  .locality-detail-village .village-food-showcase-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(4, minmax(180px, 62vw));
-    gap: clamp(0.12rem, 0.9vw, 0.28rem);
   }
 
   .instagram-grid {
