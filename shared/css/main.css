@@ -764,16 +764,11 @@ body.home-view .section-block {
 
 .locality-detail-village .locality-hero-media img {
   width: min(450px, 90%);
-  transform: translateX(clamp(0.35rem, 1vw, 1rem));
 }
 
 .locality-detail-village .locality-hero {
-  gap: clamp(0.6rem, 1.5vw, 1.25rem);
+  gap: clamp(0.45rem, 1.1vw, 1rem);
   margin-bottom: clamp(1rem, 2vw, 1.7rem);
-}
-
-.locality-detail-village > .grid {
-  margin-top: clamp(3.1rem, 6.1vw, 5.5rem);
 }
 
 .locality-detail-village .village-food-showcase {
@@ -794,6 +789,18 @@ body.home-view .section-block {
 
 .locality-detail .grid {
   margin-top: 1.1rem;
+}
+
+.locality-detail.locality-detail-village.locality-detail-left .locality-hero-media {
+  justify-self: end;
+}
+
+.locality-detail.locality-detail-village.locality-detail-left .locality-hero-media img {
+  transform: translateX(clamp(1.2rem, 2.2vw, 2.8rem));
+}
+
+.locality-detail.locality-detail-village > .grid {
+  margin-top: clamp(4.2rem, 7.2vw, 6.4rem);
 }
 
 .instagram-section {
@@ -1793,6 +1800,14 @@ body.menu-view .menu-book-controls-bottom {
     transform: none;
   }
 
+  .locality-detail.locality-detail-village.locality-detail-left .locality-hero-media {
+    justify-self: start;
+  }
+
+  .locality-detail.locality-detail-village.locality-detail-left .locality-hero-media img {
+    transform: none;
+  }
+
   .locality-detail-village .village-title-welcome {
     font-size: clamp(3rem, 12vw, 5rem);
     letter-spacing: 0.04em;
@@ -1801,6 +1816,10 @@ body.menu-view .menu-book-controls-bottom {
   .locality-detail-village .village-title-name {
     font-size: clamp(2.5rem, 10vw, 4.3rem);
     letter-spacing: 0.06em;
+  }
+
+  .locality-detail.locality-detail-village > .grid {
+    margin-top: clamp(2.8rem, 8vw, 4.2rem);
   }
 
   .grid {
@@ -2126,7 +2145,7 @@ body.menu-view .menu-book-controls-bottom {
     letter-spacing: 0.05em;
   }
 
-  .locality-detail-village > .grid {
+  .locality-detail.locality-detail-village > .grid {
     margin-top: clamp(2.45rem, 12vw, 4.2rem);
   }
 
