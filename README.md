@@ -98,3 +98,23 @@ Abrir:
   - observabilidad operativa (`/api/internal/metrics/summary` + logs estructurados)
 - Guia de despliegue:
   - `infra/cloudflare/reservations-worker/README.md`
+
+## Panel interno de reservas
+- Ruta:
+  - `reserva/panel/index.html`
+- Uso rapido:
+  1. Abrir panel interno.
+  2. Colocar `API base` del Worker.
+  3. Colocar `INTERNAL_API_KEY`.
+  4. Click en `Conectar`.
+- Operaciones:
+  - listar/filtrar reservas
+  - cambiar estado (`pending`, `confirmed`, `cancelled`)
+  - encolar y despachar notificaciones
+  - reintentar notificaciones fallidas
+  - consultar metricas operativas
+- Si necesitas definir/rotar llave interna:
+```bash
+cd infra/cloudflare/reservations-worker
+npx wrangler secret put INTERNAL_API_KEY
+```
