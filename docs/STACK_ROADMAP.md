@@ -1,5 +1,11 @@
 # Stack Roadmap (Corto, Mediano y Largo Plazo)
 
+## Estado actual
+
+- Ya existe un modulo base `React + Material UI` para panel interno:
+  - fuente: `apps/admin-panel/`
+  - build estatico actual: `reserva/panel-react/`
+
 ## Corto plazo (0-6 semanas)
 
 Objetivo: estabilidad operativa con despliegue rapido y bajo costo.

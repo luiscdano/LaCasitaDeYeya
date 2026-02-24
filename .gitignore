@@ -3,3 +3,5 @@
 infra/docker/reservations-api/.env
 infra/docker/reservations-api/node_modules/
 docs/qa/
+apps/admin-panel/node_modules/
+apps/admin-panel/dist/

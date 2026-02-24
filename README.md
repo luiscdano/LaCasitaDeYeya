@@ -21,6 +21,8 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
   - `CLIENTA_CHECKLIST_CANALES.md`
   - `BROWSER_COMPATIBILITY.md`
   - `RESERVATIONS_PANEL_OPERATIONS.md`
+- `apps/`
+  - `admin-panel/` (React + Material UI)
 - `infra/`
   - `cloudflare/reservations-worker/`
   - `docker-compose.reservations.yml`
@@ -41,7 +43,8 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
   - `index.html`
 - `reserva/`
   - `index.html`
-  - `panel/index.html` (panel interno operativo)
+  - `panel/index.html` (panel interno operativo en JS)
+  - `panel-react/index.html` (panel interno React + MUI compilado)
 
 ## Navegación principal
 - Localidad
@@ -113,8 +116,29 @@ Abrir:
   - encolar y despachar notificaciones
   - reintentar notificaciones fallidas
   - consultar metricas operativas
+- Panel React + Material UI (nuevo):
+  - fuente: `apps/admin-panel/`
+  - build estático publicado: `reserva/panel-react/`
 - Si necesitas definir/rotar llave interna:
 ```bash
 cd infra/cloudflare/reservations-worker
 npx wrangler secret put INTERNAL_API_KEY
+```
+
+## React + Material UI (Admin)
+- Desarrollo:
+```bash
+cd apps/admin-panel
+npm install
+npm run dev
+```
+- Build módulo:
+```bash
+cd apps/admin-panel
+npm run build
+```
+- Build para sitio estático actual:
+```bash
+cd apps/admin-panel
+npm run build -- --outDir ../../reserva/panel-react
 ```

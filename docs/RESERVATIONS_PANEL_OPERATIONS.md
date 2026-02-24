@@ -1,8 +1,13 @@
 # Panel Interno de Reservas
 
-Ruta interna:
+Ruta interna (JS actual):
 
 - `reserva/panel/index.html`
+
+Ruta interna (React + Material UI):
+
+- `reserva/panel-react/index.html`
+- Fuente: `apps/admin-panel/`
 
 ## Uso rapido
 
@@ -43,3 +48,11 @@ Outbox:
 - Request ID visible en panel (última llamada).
 - Métricas desde `GET /api/internal/metrics/summary`.
 - Logs estructurados en Cloudflare Worker.
+
+## Build del panel React
+
+```bash
+cd apps/admin-panel
+npm install
+npm run build -- --outDir ../../reserva/panel-react
+```
