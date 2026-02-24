@@ -739,10 +739,16 @@ body.home-view .section-block {
   line-height: 1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #9f1f2a;
+  color: var(--rojo-yeya);
+  -webkit-text-stroke: 0.35px rgba(255, 255, 255, 0.62);
+  paint-order: stroke fill;
   text-shadow:
-    0 2px 7px rgba(8, 32, 119, 0.2),
-    0 8px 18px rgba(8, 32, 119, 0.22);
+    0 1px 0 rgba(255, 255, 255, 0.28),
+    0 3px 8px rgba(8, 32, 119, 0.16);
+}
+
+.locality-detail-village .locality-hero-copy > p {
+  margin-top: clamp(1.45rem, 2.7vw, 2.25rem);
 }
 
 .locality-hero-copy > p {
