@@ -76,6 +76,68 @@
             <p>Alternativas de abastecimiento para evitar quiebres en cocina y operación.</p>
           </article>
         </div>
+
+        <h2>Solicitud general para eventos</h2>
+        <p>
+          Si necesitas bufete para una actividad, completa este formulario y nuestro equipo te contactará para coordinar disponibilidad.
+        </p>
+
+        <form
+          class="form"
+          method="post"
+          data-catering-form
+          data-catering-endpoint="https://lacasita-reservations-api.lacasita-yeya.workers.dev/api/catering-requests"
+          data-catering-timeout="12000"
+        >
+          <label>
+            Nombre completo
+            <input type="text" name="nombre" minlength="3" maxlength="120" autocomplete="name" required />
+          </label>
+          <label>
+            Teléfono
+            <input type="tel" name="telefono" inputmode="tel" minlength="7" maxlength="40" autocomplete="tel" required />
+          </label>
+          <label>
+            Correo electrónico
+            <input type="email" name="correo" maxlength="120" autocomplete="email" required />
+          </label>
+          <label>
+            Localidad preferida
+            <select name="localidad_preferida" required>
+              <option value="">Selecciona una opción</option>
+              <option value="any">Cualquiera</option>
+              <option value="village">Village</option>
+              <option value="downtown">Downtown</option>
+              <option value="los-corales">Los Corales</option>
+            </select>
+          </label>
+          <label>
+            Fecha estimada
+            <input type="date" name="fecha_evento" required />
+          </label>
+          <label>
+            Cantidad estimada de personas
+            <input type="number" min="1" max="2000" name="personas_estimadas" required />
+          </label>
+          <label class="full">
+            Detalles de la solicitud
+            <textarea
+              name="detalles"
+              minlength="12"
+              maxlength="1000"
+              placeholder="Cuéntanos lo necesario para preparar una propuesta general."
+              required
+            ></textarea>
+          </label>
+          <label class="reservation-hp" aria-hidden="true">
+            Empresa
+            <input type="text" name="empresa" autocomplete="off" tabindex="-1" />
+          </label>
+          <p class="form-status full" data-catering-status aria-live="polite"></p>
+          <div class="full actions">
+            <button class="btn btn-primary" type="submit" data-catering-submit>Enviar solicitud</button>
+          </div>
+        </form>
       </section>
     </main>
 
@@ -100,6 +162,6 @@
 
 
 
-    <script src="../shared/js/main.js?v=20260221m8"></script>
+    <script src="../shared/js/main.js?v=20260224m1"></script>
   </body>
 </html>

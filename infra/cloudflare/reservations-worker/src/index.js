@@ -1,4 +1,5 @@
 const LOCATION_VALUES = new Set(['village', 'downtown', 'los-corales']);
+const CATERING_LOCATION_VALUES = new Set(['any', 'village', 'downtown', 'los-corales']);
 const SOURCE_VALUES = new Set(['website', 'landing', 'admin', 'manual']);
 const STATUS_VALUES = new Set(['pending', 'confirmed', 'cancelled']);
 const NOTIFICATION_CHANNEL_VALUES = new Set(['email', 'whatsapp']);
@@ -84,6 +85,17 @@ function isValidReservationDate(value) {
   const min = new Date(`${getTodayIsoDate()}T00:00:00Z`);
   const max = new Date(min.getTime());
   max.setUTCDate(max.getUTCDate() + 365);
+  return selected >= min && selected <= max;
+}
+
+function isValidEventDate(value) {
+  if (!isValidDate(value)) return false;
+  const selected = new Date(`${value}T00:00:00Z`);
+  if (Number.isNaN(selected.getTime())) return false;
+
+  const min = new Date(`${getTodayIsoDate()}T00:00:00Z`);
+  const max = new Date(min.getTime());
+  max.setUTCDate(max.getUTCDate() + 730);
   return selected >= min && selected <= max;
 }
 
@@ -389,6 +401,62 @@ function validatePublicReservationPayload(payload) {
       reservationTime,
       guests,
       comments,
+      source,
+    },
+  };
+}
+
+function validatePublicCateringPayload(payload) {
+  const fullName = normalizeText(payload.full_name, 120);
+  const phone = normalizeText(payload.phone, 40);
+  const email = normalizeText(payload.email, 120).toLowerCase();
+  const preferredLocation = normalizeText(payload.preferred_location || 'any', 32).toLowerCase();
+  const eventDate = normalizeText(payload.event_date, 10);
+  const guestsEstimate = toInteger(payload.guests_estimate, 0);
+  const details = normalizeText(payload.details || '', 1000);
+  const sourceRaw = normalizeText(payload.source || 'website', 32).toLowerCase();
+  const source = SOURCE_VALUES.has(sourceRaw) ? sourceRaw : 'website';
+
+  if (!fullName || fullName.length < 3) {
+    return { ok: false, error: 'Nombre completo invalido.', code: 'invalid_full_name' };
+  }
+  if (!phone || !isValidPhone(phone)) {
+    return { ok: false, error: 'Telefono invalido. Usa un numero valido.', code: 'invalid_phone' };
+  }
+  if (!email || !isValidEmail(email)) {
+    return { ok: false, error: 'Correo electronico invalido.', code: 'invalid_email' };
+  }
+  if (!CATERING_LOCATION_VALUES.has(preferredLocation)) {
+    return { ok: false, error: 'Localidad preferida invalida.', code: 'invalid_preferred_location' };
+  }
+  if (!isValidEventDate(eventDate)) {
+    return {
+      ok: false,
+      error: 'Fecha invalida. Debe estar entre hoy y los proximos 24 meses.',
+      code: 'invalid_event_date',
+    };
+  }
+  if (!Number.isInteger(guestsEstimate) || guestsEstimate < 1 || guestsEstimate > 2000) {
+    return { ok: false, error: 'Cantidad estimada de personas invalida.', code: 'invalid_guests_estimate' };
+  }
+  if (!details || details.length < 12) {
+    return {
+      ok: false,
+      error: 'Incluye mas detalles para procesar la solicitud.',
+      code: 'invalid_details',
+    };
+  }
+
+  return {
+    ok: true,
+    value: {
+      fullName,
+      phone,
+      email,
+      preferredLocation,
+      eventDate,
+      guestsEstimate,
+      details,
       source,
     },
   };
@@ -746,6 +814,48 @@ async function ensureOperationalSchema(env) {
       `CREATE INDEX IF NOT EXISTS idx_reservation_notifications_created_at
        ON reservation_notifications (created_at)`,
     ).run();
+
+    await env.DB.prepare(
+      `CREATE TABLE IF NOT EXISTS catering_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        full_name TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        email TEXT NOT NULL,
+        preferred_location TEXT NOT NULL DEFAULT 'any' CHECK (preferred_location IN ('any', 'village', 'downtown', 'los-corales')),
+        event_date TEXT NOT NULL,
+        guests_estimate INTEGER NOT NULL CHECK (guests_estimate >= 1 AND guests_estimate <= 2000),
+        details TEXT NOT NULL DEFAULT '',
+        source TEXT NOT NULL DEFAULT 'website',
+        user_agent TEXT DEFAULT '',
+        client_ip TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_catering_requests_created_at
+       ON catering_requests (created_at)`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_catering_requests_event_date
+       ON catering_requests (event_date)`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_catering_requests_email_created_at
+       ON catering_requests (email, created_at)`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_catering_requests_client_ip_created_at
+       ON catering_requests (client_ip, created_at)`,
+    ).run();
+
+    await env.DB.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_catering_requests_duplicate_guard
+       ON catering_requests (email, preferred_location, event_date, guests_estimate, created_at)`,
+    ).run();
   })().catch((error) => {
     schemaReadyPromise = null;
     throw error;
@@ -840,6 +950,92 @@ async function checkAntiSpam(env, reservation, metadata, securityConfig) {
   return null;
 }
 
+async function checkCateringAntiSpam(env, requestData, metadata, securityConfig) {
+  const { clientIp } = metadata;
+
+  if (clientIp) {
+    const ipCount = await queryCount(
+      env,
+      `SELECT COUNT(1) AS total
+       FROM catering_requests
+       WHERE client_ip = ?
+         AND created_at >= datetime('now', ?)`,
+      [clientIp, `-${securityConfig.rateLimitWindowSeconds} seconds`],
+    );
+
+    if (ipCount >= securityConfig.rateLimitMaxPerIp) {
+      return {
+        status: 429,
+        body: {
+          ok: false,
+          code: 'rate_limited_ip',
+          error: 'Has enviado varias solicitudes en poco tiempo. Intenta nuevamente en unos minutos.',
+          retry_after_seconds: securityConfig.rateLimitWindowSeconds,
+        },
+        headers: {
+          'Retry-After': String(securityConfig.rateLimitWindowSeconds),
+        },
+      };
+    }
+  }
+
+  const emailCount = await queryCount(
+    env,
+    `SELECT COUNT(1) AS total
+     FROM catering_requests
+     WHERE email = ?
+       AND created_at >= datetime('now', '-1 day')`,
+    [requestData.email],
+  );
+
+  if (emailCount >= securityConfig.rateLimitMaxPerEmailDay) {
+    return {
+      status: 429,
+      body: {
+        ok: false,
+        code: 'rate_limited_email',
+        error: 'Este correo ya genero varias solicitudes hoy. Intenta de nuevo mas tarde.',
+        retry_after_seconds: 3600,
+      },
+      headers: {
+        'Retry-After': '3600',
+      },
+    };
+  }
+
+  const duplicateCount = await queryCount(
+    env,
+    `SELECT COUNT(1) AS total
+     FROM catering_requests
+     WHERE email = ?
+       AND preferred_location = ?
+       AND event_date = ?
+       AND guests_estimate = ?
+       AND created_at >= datetime('now', ?)`,
+    [
+      requestData.email,
+      requestData.preferredLocation,
+      requestData.eventDate,
+      requestData.guestsEstimate,
+      `-${securityConfig.duplicateWindowSeconds} seconds`,
+    ],
+  );
+
+  if (duplicateCount > 0) {
+    return {
+      status: 409,
+      body: {
+        ok: false,
+        code: 'duplicate_catering_request',
+        error: 'Ya recibimos una solicitud similar recientemente. Si necesitas cambios, intenta en unos minutos.',
+      },
+      headers: {},
+    };
+  }
+
+  return null;
+}
+
 async function insertReservation(env, reservation, metadata) {
   const result = await env.DB.prepare(
     `INSERT INTO reservations (
@@ -874,6 +1070,54 @@ async function insertReservation(env, reservation, metadata) {
     .run();
 
   return result?.meta?.last_row_id ?? null;
+}
+
+async function insertCateringRequest(env, requestData, metadata) {
+  const result = await env.DB.prepare(
+    `INSERT INTO catering_requests (
+      full_name,
+      phone,
+      email,
+      preferred_location,
+      event_date,
+      guests_estimate,
+      details,
+      source,
+      user_agent,
+      client_ip
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  )
+    .bind(
+      requestData.fullName,
+      requestData.phone,
+      requestData.email,
+      requestData.preferredLocation,
+      requestData.eventDate,
+      requestData.guestsEstimate,
+      requestData.details,
+      requestData.source,
+      metadata.userAgent,
+      metadata.clientIp,
+    )
+    .run();
+
+  return result?.meta?.last_row_id ?? null;
+}
+
+function rowToCateringRequest(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    full_name: row.full_name,
+    phone: row.phone,
+    email: row.email,
+    preferred_location: row.preferred_location,
+    event_date: row.event_date,
+    guests_estimate: row.guests_estimate,
+    details: row.details || '',
+    source: row.source || 'website',
+    created_at: row.created_at,
+  };
 }
 
 function rowToReservation(row) {
@@ -945,6 +1189,28 @@ async function getReservationById(env, reservationId) {
     .first();
 
   return rowToReservation(row);
+}
+
+async function getCateringRequestById(env, requestId) {
+  const row = await env.DB.prepare(
+    `SELECT
+      id,
+      full_name,
+      phone,
+      email,
+      preferred_location,
+      event_date,
+      guests_estimate,
+      details,
+      source,
+      created_at
+    FROM catering_requests
+    WHERE id = ?`,
+  )
+    .bind(requestId)
+    .first();
+
+  return rowToCateringRequest(row);
 }
 
 async function getNotificationById(env, notificationId) {
@@ -2371,7 +2637,10 @@ export default {
         return response;
       }
 
-      if (path !== '/api/reservations') {
+      const isReservationPath = path === '/api/reservations';
+      const isCateringPath = path === '/api/catering-requests';
+
+      if (!isReservationPath && !isCateringPath) {
         response = jsonResponse(
           request,
           env,
@@ -2414,7 +2683,141 @@ export default {
         return response;
       }
 
-      const validation = validatePublicReservationPayload(payload || {});
+      if (isReservationPath) {
+        const validation = validatePublicReservationPayload(payload || {});
+        if (!validation.ok) {
+          response = jsonResponse(
+            request,
+            env,
+            { ok: false, code: validation.code || 'validation_error', error: validation.error },
+            422,
+            responseHeaders,
+          );
+          return response;
+        }
+
+        try {
+          await ensureOperationalSchema(env);
+          const securityConfig = getSecurityConfig(env);
+          const notificationConfig = getNotificationConfig(env);
+          const metadata = {
+            userAgent,
+            clientIp,
+          };
+
+          const antiSpamDecision = await checkAntiSpam(env, validation.value, metadata, securityConfig);
+          if (antiSpamDecision) {
+            logEvent(env, 'warn', 'reservation_rejected', {
+              request_id: requestId,
+              path,
+              code: antiSpamDecision.body?.code || 'rejected',
+              email: validation.value.email,
+              location: validation.value.location,
+            });
+            response = jsonResponse(
+              request,
+              env,
+              antiSpamDecision.body,
+              antiSpamDecision.status,
+              { ...antiSpamDecision.headers, ...responseHeaders },
+            );
+            return response;
+          }
+
+          const reservationId = await insertReservation(env, validation.value, metadata);
+          const reservation = await getReservationById(env, reservationId);
+
+          let queueResult = {
+            ok: true,
+            queued: 0,
+            notifications: [],
+          };
+
+          let dispatchResult = null;
+
+          if (reservation) {
+            queueResult = await enqueueReservationNotifications(env, reservation, notificationConfig, {
+              status: 'pending',
+              note: '',
+              trigger: 'reservation_created',
+              updatedBy: 'system',
+              channels: DEFAULT_NOTIFICATION_CHANNELS,
+            });
+
+            if (queueResult.ok && queueResult.queued > 0 && notificationConfig.autoDispatchOnCreate) {
+              dispatchResult = await dispatchQueuedNotifications(
+                env,
+                notificationConfig,
+                {
+                  limit: queueResult.queued,
+                  reservationId,
+                  channel: '',
+                  force: true,
+                  ids: queueResult.notifications
+                    .map((item) => item.id)
+                    .filter((id) => Number.isInteger(id) && id > 0),
+                },
+                requestId,
+              );
+            }
+          }
+
+          logEvent(env, 'info', 'reservation_created', {
+            request_id: requestId,
+            reservation_id: reservationId,
+            location: validation.value.location,
+            email: validation.value.email,
+            queued_notifications: queueResult.queued,
+          });
+
+          response = jsonResponse(
+            request,
+            env,
+            {
+              ok: true,
+              reservation_id: reservationId,
+              status: 'pending',
+              message: 'Solicitud enviada. Te contactaremos para confirmar disponibilidad.',
+              notifications: {
+                queued: queueResult.queued,
+                delivery_modes: {
+                  email: notificationConfig.emailMode,
+                  whatsapp: notificationConfig.whatsappMode,
+                },
+                ...(dispatchResult
+                  ? {
+                      dispatch: {
+                        summary: dispatchResult.summary,
+                      },
+                    }
+                  : {}),
+              },
+            },
+            201,
+            responseHeaders,
+          );
+          return response;
+        } catch (error) {
+          const message = normalizeText(error?.message || 'internal_error', 300);
+          logEvent(env, 'error', 'reservation_create_failed', {
+            request_id: requestId,
+            path,
+            error: message,
+          });
+          const body = {
+            ok: false,
+            code: 'internal_error',
+            error: 'No se pudo registrar la reserva.',
+          };
+          if (shouldExposeInternalErrors(env)) {
+            body.detail = message || 'internal_error';
+          }
+          response = jsonResponse(request, env, body, 500, responseHeaders);
+          return response;
+        }
+      }
+
+      const validation = validatePublicCateringPayload(payload || {});
       if (!validation.ok) {
         response = jsonResponse(
           request,
@@ -2429,20 +2832,19 @@ export default {
       try {
         await ensureOperationalSchema(env);
         const securityConfig = getSecurityConfig(env);
-        const notificationConfig = getNotificationConfig(env);
         const metadata = {
           userAgent,
           clientIp,
         };
 
-        const antiSpamDecision = await checkAntiSpam(env, validation.value, metadata, securityConfig);
+        const antiSpamDecision = await checkCateringAntiSpam(env, validation.value, metadata, securityConfig);
         if (antiSpamDecision) {
-          logEvent(env, 'warn', 'reservation_rejected', {
+          logEvent(env, 'warn', 'catering_request_rejected', {
             request_id: requestId,
             path,
             code: antiSpamDecision.body?.code || 'rejected',
             email: validation.value.email,
-            location: validation.value.location,
+            preferred_location: validation.value.preferredLocation,
           });
           response = jsonResponse(
             request,
@@ -2454,50 +2856,16 @@ export default {
           return response;
         }
 
-        const reservationId = await insertReservation(env, validation.value, metadata);
-        const reservation = await getReservationById(env, reservationId);
+        const cateringRequestId = await insertCateringRequest(env, validation.value, metadata);
+        const cateringRequest = await getCateringRequestById(env, cateringRequestId);
 
-        let queueResult = {
-          ok: true,
-          queued: 0,
-          notifications: [],
-        };
-
-        let dispatchResult = null;
-
-        if (reservation) {
-          queueResult = await enqueueReservationNotifications(env, reservation, notificationConfig, {
-            status: 'pending',
-            note: '',
-            trigger: 'reservation_created',
-            updatedBy: 'system',
-            channels: DEFAULT_NOTIFICATION_CHANNELS,
-          });
-
-          if (queueResult.ok && queueResult.queued > 0 && notificationConfig.autoDispatchOnCreate) {
-            dispatchResult = await dispatchQueuedNotifications(
-              env,
-              notificationConfig,
-              {
-                limit: queueResult.queued,
-                reservationId,
-                channel: '',
-                force: true,
-                ids: queueResult.notifications
-                  .map((item) => item.id)
-                  .filter((id) => Number.isInteger(id) && id > 0),
-              },
-              requestId,
-            );
-          }
-        }
-
-        logEvent(env, 'info', 'reservation_created', {
+        logEvent(env, 'info', 'catering_request_created', {
           request_id: requestId,
-          reservation_id: reservationId,
-          location: validation.value.location,
+          catering_request_id: cateringRequestId,
+          preferred_location: validation.value.preferredLocation,
           email: validation.value.email,
-          queued_notifications: queueResult.queued,
+          event_date: validation.value.eventDate,
+          guests_estimate: validation.value.guestsEstimate,
         });
 
         response = jsonResponse(
@@ -2505,23 +2873,10 @@ export default {
           env,
           {
             ok: true,
-            reservation_id: reservationId,
+            catering_request_id: cateringRequestId,
             status: 'pending',
-            message: 'Solicitud enviada. Te contactaremos para confirmar disponibilidad.',
-            notifications: {
-              queued: queueResult.queued,
-              delivery_modes: {
-                email: notificationConfig.emailMode,
-                whatsapp: notificationConfig.whatsappMode,
-              },
-              ...(dispatchResult
-                ? {
-                    dispatch: {
-                      summary: dispatchResult.summary,
-                    },
-                  }
-                : {}),
-            },
+            message: 'Solicitud enviada. Te contactaremos para coordinar el servicio.',
+            request: cateringRequest,
           },
           201,
           responseHeaders,
@@ -2529,7 +2884,7 @@ export default {
         return response;
       } catch (error) {
         const message = normalizeText(error?.message || 'internal_error', 300);
-        logEvent(env, 'error', 'reservation_create_failed', {
+        logEvent(env, 'error', 'catering_request_create_failed', {
           request_id: requestId,
           path,
           error: message,
@@ -2537,7 +2892,7 @@ export default {
         const body = {
           ok: false,
           code: 'internal_error',
-          error: 'No se pudo registrar la reserva.',
+          error: 'No se pudo registrar la solicitud de evento.',
         };
         if (shouldExposeInternalErrors(env)) {
           body.detail = message || 'internal_error';

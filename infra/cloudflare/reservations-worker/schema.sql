@@ -68,3 +68,33 @@ CREATE INDEX IF NOT EXISTS idx_reservation_notifications_channel_status
 
 CREATE INDEX IF NOT EXISTS idx_reservation_notifications_created_at
   ON reservation_notifications (created_at);
+
+CREATE TABLE IF NOT EXISTS catering_requests (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  full_name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  email TEXT NOT NULL,
+  preferred_location TEXT NOT NULL DEFAULT 'any' CHECK (preferred_location IN ('any', 'village', 'downtown', 'los-corales')),
+  event_date TEXT NOT NULL,
+  guests_estimate INTEGER NOT NULL CHECK (guests_estimate >= 1 AND guests_estimate <= 2000),
+  details TEXT NOT NULL DEFAULT '',
+  source TEXT NOT NULL DEFAULT 'website',
+  user_agent TEXT DEFAULT '',
+  client_ip TEXT DEFAULT '',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_catering_requests_created_at
+  ON catering_requests (created_at);
+
+CREATE INDEX IF NOT EXISTS idx_catering_requests_event_date
+  ON catering_requests (event_date);
+
+CREATE INDEX IF NOT EXISTS idx_catering_requests_email_created_at
+  ON catering_requests (email, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_catering_requests_client_ip_created_at
+  ON catering_requests (client_ip, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_catering_requests_duplicate_guard
+  ON catering_requests (email, preferred_location, event_date, guests_estimate, created_at);

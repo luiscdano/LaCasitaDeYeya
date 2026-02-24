@@ -8,6 +8,7 @@ Publicos:
 
 - `GET /api/health`
 - `POST /api/reservations`
+- `POST /api/catering-requests`
 
 Internos (protegidos con `INTERNAL_API_KEY`):
 
@@ -32,6 +33,21 @@ Body esperado para `POST /api/reservations` (`application/json`):
   "reservation_time": "19:30",
   "guests": 4,
   "comments": "Mesa exterior",
+  "source": "website"
+}
+```
+
+Body esperado para `POST /api/catering-requests` (`application/json`):
+
+```json
+{
+  "full_name": "Nombre Apellido",
+  "phone": "+1 809 000 0000",
+  "email": "correo@dominio.com",
+  "preferred_location": "any",
+  "event_date": "2026-06-20",
+  "guests_estimate": 120,
+  "details": "Solicitud general de bufete para evento.",
   "source": "website"
 }
 ```

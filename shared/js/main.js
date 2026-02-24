@@ -274,6 +274,33 @@ function getReservationErrorMessage(status, payload) {
   return apiMessage || `No se pudo enviar la reserva (${status}). Intenta de nuevo.`;
 }
 
+function getCateringErrorMessage(status, payload) {
+  const apiMessage = typeof payload?.error === 'string' ? payload.error.trim() : '';
+
+  if (status === 429) {
+    const retryAfter = Number.parseInt(String(payload?.retry_after_seconds ?? ''), 10);
+    if (Number.isInteger(retryAfter) && retryAfter > 0) {
+      const retryMinutes = Math.max(1, Math.ceil(retryAfter / 60));
+      return `Demasiadas solicitudes en poco tiempo. Intenta nuevamente en ${retryMinutes} minuto(s).`;
+    }
+    return apiMessage || 'Demasiadas solicitudes en poco tiempo. Intenta nuevamente en unos minutos.';
+  }
+
+  if (status === 409) {
+    return apiMessage || 'Ya recibimos una solicitud similar recientemente.';
+  }
+
+  if (status === 422) {
+    return apiMessage || 'Revisa los datos del formulario antes de enviarlo.';
+  }
+
+  if (status === 503) {
+    return apiMessage || 'Solicitudes temporalmente no disponibles. Intenta nuevamente en breve.';
+  }
+
+  return apiMessage || `No se pudo enviar la solicitud (${status}). Intenta de nuevo.`;
+}
+
 function initReservationForm() {
   const form = document.querySelector('[data-reservation-form]');
   if (!form) return;
@@ -386,7 +413,119 @@ function initReservationForm() {
   });
 }
 
+function initCateringForm() {
+  const form = document.querySelector('[data-catering-form]');
+  if (!form) return;
+
+  const statusElement = form.querySelector('[data-catering-status]');
+  const submitButton = form.querySelector('[data-catering-submit]');
+  const dateInput = form.querySelector('input[name="fecha_evento"]');
+  const endpoint = (form.dataset.cateringEndpoint || '').trim();
+  const timeoutMs = Number.parseInt(form.dataset.cateringTimeout || '12000', 10);
+
+  if (dateInput) {
+    dateInput.min = getTodayIsoDate();
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    setReservationStatus(statusElement, '', '');
+
+    if (!form.reportValidity()) return;
+
+    const formData = new FormData(form);
+    const honeypot = String(formData.get('empresa') || '').trim();
+    if (honeypot) {
+      setReservationStatus(statusElement, 'success', 'Solicitud enviada. Te contactaremos pronto.');
+      form.reset();
+      if (dateInput) {
+        dateInput.min = getTodayIsoDate();
+      }
+      return;
+    }
+
+    if (!endpoint) {
+      setReservationStatus(statusElement, 'error', 'Solicitudes temporalmente no disponibles. Intenta nuevamente en breve.');
+      return;
+    }
+
+    const payload = {
+      full_name: String(formData.get('nombre') || '').trim(),
+      phone: String(formData.get('telefono') || '').trim(),
+      email: String(formData.get('correo') || '').trim(),
+      preferred_location: String(formData.get('localidad_preferida') || '').trim(),
+      event_date: String(formData.get('fecha_evento') || '').trim(),
+      guests_estimate: Number.parseInt(String(formData.get('personas_estimadas') || '0'), 10),
+      details: String(formData.get('detalles') || '').trim(),
+      source: 'website',
+    };
+
+    if (payload.event_date && payload.event_date < getTodayIsoDate()) {
+      setReservationStatus(statusElement, 'error', 'La fecha del evento no puede ser anterior a hoy.');
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), Number.isFinite(timeoutMs) ? timeoutMs : 12000);
+    const initialButtonText = submitButton?.textContent || '';
+
+    try {
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.classList.add('is-loading');
+        submitButton.textContent = 'Enviando...';
+      }
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+
+      let responsePayload = null;
+      try {
+        responsePayload = await response.json();
+      } catch {
+        responsePayload = null;
+      }
+
+      if (!response.ok || !responsePayload?.ok) {
+        const errorMessage = getCateringErrorMessage(response.status, responsePayload);
+        throw new Error(errorMessage);
+      }
+
+      form.reset();
+      if (dateInput) {
+        dateInput.min = getTodayIsoDate();
+      }
+      setReservationStatus(
+        statusElement,
+        'success',
+        responsePayload?.message || 'Solicitud enviada. Te contactaremos para coordinar detalles.',
+      );
+    } catch (error) {
+      const isAbort = error instanceof DOMException && error.name === 'AbortError';
+      const message = isAbort
+        ? 'La solicitud tardó demasiado. Revisa tu conexión e intenta nuevamente.'
+        : error?.message || 'No se pudo enviar la solicitud. Intenta nuevamente.';
+      setReservationStatus(statusElement, 'error', message);
+    } finally {
+      window.clearTimeout(timeout);
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.classList.remove('is-loading');
+        submitButton.textContent = initialButtonText || 'Enviar solicitud';
+      }
+    }
+  });
+}
+
 initMobileMenu();
 initMenuBook();
 initInstagramFeed();
 initReservationForm();
+initCateringForm();
