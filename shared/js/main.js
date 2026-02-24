@@ -346,8 +346,7 @@ function renderVillageWeather(card, state) {
   if (rainProbability === null) {
     statusElement.textContent = tf('village.weather.unavailable', {}, 'No se pudo cargar el clima ahora.');
   } else {
-    const weatherIcon = rainProbability >= 46 ? '🌧' : '☁';
-    statusElement.textContent = `${weatherIcon} ${rainProbability}%`;
+    statusElement.textContent = `🌧 ${rainProbability}%`;
   }
 
   const observedAt = formatWeatherObservedAt(weather.observedAt);
