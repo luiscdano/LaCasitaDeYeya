@@ -764,10 +764,16 @@ body.home-view .section-block {
 
 .locality-detail-village .locality-hero-media img {
   width: min(450px, 90%);
+  transform: translateX(clamp(0.35rem, 1vw, 1rem));
 }
 
 .locality-detail-village .locality-hero {
+  gap: clamp(0.6rem, 1.5vw, 1.25rem);
   margin-bottom: clamp(1rem, 2vw, 1.7rem);
+}
+
+.locality-detail-village > .grid {
+  margin-top: clamp(3.1rem, 6.1vw, 5.5rem);
 }
 
 .locality-detail-village .village-food-showcase {
@@ -1784,6 +1790,7 @@ body.menu-view .menu-book-controls-bottom {
 
   .locality-detail-village .locality-hero-media img {
     width: min(504px, 90%);
+    transform: none;
   }
 
   .locality-detail-village .village-title-welcome {
@@ -2117,6 +2124,10 @@ body.menu-view .menu-book-controls-bottom {
   .locality-detail-village .village-title-name {
     font-size: clamp(2rem, 12vw, 2.9rem);
     letter-spacing: 0.05em;
+  }
+
+  .locality-detail-village > .grid {
+    margin-top: clamp(2.45rem, 12vw, 4.2rem);
   }
 
   .instagram-grid {
