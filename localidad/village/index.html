@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Bree+Serif&family=Nunito+Sans:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../../shared/css/main.css?v=20260224locv7" />
+    <link rel="stylesheet" href="../../shared/css/main.css?v=20260224locv9" />
   </head>
   <body>
     <header class="topbar">
@@ -71,16 +71,33 @@
 
         <div class="grid">
           <article class="card">
-            <h3>Horario sugerido</h3>
-            <p>Lunes a domingo: 8:00 AM - 10:00 PM</p>
+            <h3>Horario</h3>
+            <p class="village-hours-list">
+              <span>Lunes a jueves: 9:00 AM - 10:00 PM</span>
+              <span>Viernes y sábado: 9:00 AM - 11:00 PM</span>
+              <span>Domingos: 9:00 AM - 10:00 PM</span>
+              <span>Días festivos: Los Horarios Pueden Variar</span>
+            </p>
           </article>
-          <article class="card">
-            <h3>Dirección</h3>
-            <p>Punta Cana Village, acceso principal comercial.</p>
+          <article
+            class="card"
+            data-weather-card
+            data-weather-lat="18.58182"
+            data-weather-lon="-68.40431"
+            data-weather-timezone="America/Santo_Domingo"
+            data-weather-place="Punta Cana Village"
+          >
+            <h3>Clima</h3>
+            <p class="village-weather-status" data-weather-status>Cargando clima...</p>
+            <p class="village-weather-details" data-weather-details>Zona: Punta Cana Village</p>
           </article>
           <article class="card">
             <h3>Contacto</h3>
-            <p>WhatsApp y llamadas directas para pedidos y reservas.</p>
+            <p class="village-contact-list">
+              <span>Teléfono restaurante: <a href="tel:+18093627146">(809) 362-7146</a></span>
+              <span>Correo: pendiente</span>
+              <span>WhatsApp Business: pendiente</span>
+            </p>
           </article>
         </div>
 
@@ -129,7 +146,7 @@
 
 
 
-    <script src="../../shared/js/i18n.js?v=20260224i18n2"></script>
-    <script src="../../shared/js/main.js?v=20260224i18n2"></script>
+    <script src="../../shared/js/i18n.js?v=20260224i18n3"></script>
+    <script src="../../shared/js/main.js?v=20260224i18n3"></script>
   </body>
 </html>

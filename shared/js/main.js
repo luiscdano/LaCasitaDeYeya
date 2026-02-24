@@ -254,6 +254,153 @@ function initMenuBook() {
   }
 }
 
+function parseWeatherFloat(value) {
+  const parsed = Number.parseFloat(String(value ?? ''));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function isRainWeatherCode(code) {
+  return [
+    51, 53, 55, 56, 57,
+    61, 63, 65, 66, 67,
+    80, 81, 82, 95, 96, 99,
+  ].includes(Number(code));
+}
+
+function formatWeatherNumber(value, digits = 1) {
+  if (!Number.isFinite(value)) return '--';
+  const language = window.LaCasitaI18n?.getLanguage?.() === 'en' ? 'en-US' : 'es-DO';
+  return value.toLocaleString(language, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+}
+
+function formatWeatherObservedAt(isoDateTime) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2})/.exec(String(isoDateTime || '').trim());
+  if (!match) return String(isoDateTime || '').trim();
+
+  const [, year, month, day, time] = match;
+  if (window.LaCasitaI18n?.getLanguage?.() === 'en') {
+    return `${month}/${day}/${year} ${time}`;
+  }
+  return `${day}/${month}/${year} ${time}`;
+}
+
+function renderVillageWeather(card, state) {
+  if (!card) return;
+
+  const statusElement = card.querySelector('[data-weather-status]');
+  const detailsElement = card.querySelector('[data-weather-details]');
+  if (!statusElement || !detailsElement) return;
+
+  const place = String(card.dataset.weatherPlace || 'Punta Cana Village').trim();
+  const zoneLabel = tf('village.weather.zone', { place }, `Zona: ${place}`);
+
+  if (state.phase === 'loading') {
+    statusElement.textContent = t('Cargando clima...');
+    detailsElement.textContent = zoneLabel;
+    return;
+  }
+
+  if (state.phase === 'error' || !state.data) {
+    statusElement.textContent = tf('village.weather.unavailable', {}, 'No se pudo cargar el clima ahora.');
+    detailsElement.textContent = zoneLabel;
+    return;
+  }
+
+  const weather = state.data;
+  statusElement.textContent = weather.isRaining
+    ? tf('village.weather.raining', {}, 'Está lloviendo ahora.')
+    : tf('village.weather.clear', {}, 'No está lloviendo ahora.');
+
+  const observedAt = formatWeatherObservedAt(weather.observedAt);
+  detailsElement.textContent = tf(
+    'village.weather.updated',
+    {
+      zone: zoneLabel,
+      temp: formatWeatherNumber(weather.temperature, 1),
+      wind: formatWeatherNumber(weather.windSpeed, 1),
+      time: observedAt || '--',
+    },
+    `${zoneLabel} · ${formatWeatherNumber(weather.temperature, 1)}°C · Viento ${formatWeatherNumber(weather.windSpeed, 1)} km/h · Actualizado: ${observedAt || '--'}`,
+  );
+}
+
+async function fetchVillageWeather(card) {
+  const latitude = parseWeatherFloat(card?.dataset.weatherLat);
+  const longitude = parseWeatherFloat(card?.dataset.weatherLon);
+  const timezone = String(card?.dataset.weatherTimezone || 'America/Santo_Domingo').trim();
+
+  if (latitude === null || longitude === null) {
+    throw new Error('weather coordinates are missing');
+  }
+
+  const params = new URLSearchParams({
+    latitude: String(latitude),
+    longitude: String(longitude),
+    current_weather: 'true',
+    timezone,
+  });
+
+  const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error(`weather unavailable (${response.status})`);
+  }
+
+  const payload = await response.json();
+  const current = payload?.current_weather;
+  if (!current) {
+    throw new Error('weather payload invalid');
+  }
+
+  const temperature = parseWeatherFloat(current.temperature);
+  const windSpeed = parseWeatherFloat(current.windspeed);
+
+  return {
+    temperature: temperature ?? 0,
+    windSpeed: windSpeed ?? 0,
+    observedAt: String(current.time || ''),
+    isRaining: isRainWeatherCode(current.weathercode),
+  };
+}
+
+function initVillageWeather() {
+  const weatherCard = document.querySelector('[data-weather-card]');
+  if (!weatherCard) return;
+
+  const state = {
+    phase: 'loading',
+    data: null,
+  };
+
+  const render = () => {
+    renderVillageWeather(weatherCard, state);
+  };
+
+  const load = async () => {
+    state.phase = 'loading';
+    render();
+
+    try {
+      state.data = await fetchVillageWeather(weatherCard);
+      state.phase = 'ready';
+    } catch {
+      state.data = null;
+      state.phase = 'error';
+    }
+
+    render();
+  };
+
+  window.addEventListener('lcy:language-changed', render);
+  load();
+  window.setInterval(load, 1000 * 60 * 15);
+}
+
 function setReservationStatus(element, type, message) {
   if (!element) return;
   element.classList.remove('is-success', 'is-error');
@@ -563,5 +710,6 @@ function initCateringForm() {
 initMobileMenu();
 initMenuBook();
 initInstagramFeed();
+initVillageWeather();
 initReservationForm();
 initCateringForm();
