@@ -58,6 +58,15 @@ Sitio reiniciado desde cero con arquitectura seccionada por carpetas.
 - Abastecimiento
 - Reserva
 
+## Idioma (ES / EN)
+- Idioma por defecto: español (`es`).
+- Selector de idioma en topbar (icono de globo) para cambiar entre `Español` e `Inglés`.
+- Persistencia por navegador con `localStorage` (`lacasita_language`).
+- Base i18n:
+  - `shared/js/i18n.js` (diccionario, traducción de texto/atributos y switcher global).
+  - `shared/js/main.js` y `shared/js/reservations-admin.js` con mensajes dinámicos compatibles i18n.
+- Importante: `i18n.js` se carga antes de `main.js` en todas las páginas.
+
 ## Desarrollo local
 ```bash
 python3 -m http.server 8080

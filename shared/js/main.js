@@ -2,13 +2,33 @@ const menuToggle = document.querySelector('[data-menu-toggle]');
 const mainNav = document.querySelector('#main-nav');
 const FALLBACK_INSTAGRAM_IMAGE = 'shared/img/logo.webp?v=20260220opt1';
 
+function interpolateTemplate(template, vars = {}) {
+  let result = String(template || '');
+  Object.entries(vars || {}).forEach(([key, value]) => {
+    result = result.replace(new RegExp(`{{\\s*${key}\\s*}}`, 'g'), String(value ?? ''));
+  });
+  return result;
+}
+
+function t(value) {
+  if (typeof value !== 'string') return '';
+  return window.LaCasitaI18n?.translate ? window.LaCasitaI18n.translate(value) : value;
+}
+
+function tf(key, vars = {}, fallback = '') {
+  if (window.LaCasitaI18n?.format) {
+    return window.LaCasitaI18n.format(key, vars, fallback);
+  }
+  return interpolateTemplate(fallback, vars);
+}
+
 function initMobileMenu() {
   if (!menuToggle || !mainNav) return;
 
   menuToggle.addEventListener('click', () => {
     const isOpen = mainNav.classList.toggle('is-open');
     menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    menuToggle.setAttribute('aria-label', isOpen ? 'Cerrar navegación' : 'Abrir navegación');
+    menuToggle.setAttribute('aria-label', isOpen ? t('Cerrar navegación') : t('Abrir navegación'));
   });
 
   mainNav.querySelectorAll('a').forEach((link) => {
@@ -16,10 +36,18 @@ function initMobileMenu() {
       if (window.innerWidth <= 860) {
         mainNav.classList.remove('is-open');
         menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.setAttribute('aria-label', 'Abrir navegación');
+        menuToggle.setAttribute('aria-label', t('Abrir navegación'));
       }
     });
   });
+
+  const handleLanguageChange = () => {
+    const isOpen = mainNav.classList.contains('is-open');
+    menuToggle.setAttribute('aria-label', isOpen ? t('Cerrar navegación') : t('Abrir navegación'));
+  };
+
+  window.addEventListener('lcy:language-changed', handleLanguageChange);
+  handleLanguageChange();
 }
 
 function truncateText(value, max = 120) {
@@ -57,11 +85,11 @@ function buildInstagramCard(post, profileUrl) {
   card.href = getInstagramPostUrl(post, profileUrl);
   card.target = '_blank';
   card.rel = 'noopener noreferrer';
-  card.ariaLabel = 'Abrir publicación de Instagram';
+  card.ariaLabel = t('Abrir publicación de Instagram');
 
   const image = document.createElement('img');
   image.src = post.image || '';
-  image.alt = truncateText(post.caption || 'Publicación reciente de Instagram', 90);
+  image.alt = truncateText(post.caption || t('Publicación reciente de Instagram'), 90);
   image.loading = 'lazy';
   image.decoding = 'async';
   image.referrerPolicy = 'no-referrer';
@@ -74,7 +102,7 @@ function buildInstagramCard(post, profileUrl) {
   if (post.is_video) {
     const badge = document.createElement('span');
     badge.className = 'instagram-badge is-reel';
-    badge.textContent = 'Reel';
+    badge.textContent = t('Reel');
     card.appendChild(badge);
   }
 
@@ -86,13 +114,13 @@ function showInstagramFallback(container, profileUrl) {
   message.className = 'instagram-empty';
 
   const text = document.createElement('span');
-  text.textContent = 'No se pudo cargar el feed en este momento. ';
+  text.textContent = `${t('No se pudo cargar el feed en este momento.') } `;
 
   const link = document.createElement('a');
   link.href = profileUrl;
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
-  link.textContent = 'Ver perfil en Instagram';
+  link.textContent = t('Ver perfil en Instagram');
 
   message.appendChild(text);
   message.appendChild(link);
@@ -254,24 +282,28 @@ function getReservationErrorMessage(status, payload) {
     const retryAfter = Number.parseInt(String(payload?.retry_after_seconds ?? ''), 10);
     if (Number.isInteger(retryAfter) && retryAfter > 0) {
       const retryMinutes = Math.max(1, Math.ceil(retryAfter / 60));
-      return `Demasiadas solicitudes en poco tiempo. Intenta nuevamente en ${retryMinutes} minuto(s).`;
+      return tf(
+        'common.rate_limit_retry_minutes',
+        { minutes: retryMinutes },
+        `Demasiadas solicitudes en poco tiempo. Intenta nuevamente en ${retryMinutes} minuto(s).`,
+      );
     }
-    return apiMessage || 'Demasiadas solicitudes en poco tiempo. Intenta nuevamente en unos minutos.';
+    return apiMessage ? t(apiMessage) : t('Demasiadas solicitudes en poco tiempo. Intenta nuevamente en unos minutos.');
   }
 
   if (status === 409) {
-    return apiMessage || 'Ya recibimos una solicitud similar recientemente.';
+    return apiMessage ? t(apiMessage) : t('Ya recibimos una solicitud similar recientemente.');
   }
 
   if (status === 422) {
-    return apiMessage || 'Revisa los datos del formulario antes de enviarlo.';
+    return apiMessage ? t(apiMessage) : t('Revisa los datos del formulario antes de enviarlo.');
   }
 
   if (status === 503) {
-    return apiMessage || 'Reservas temporalmente no disponibles. Intenta nuevamente en breve.';
+    return apiMessage ? t(apiMessage) : t('Reservas temporalmente no disponibles. Intenta nuevamente en breve.');
   }
 
-  return apiMessage || `No se pudo enviar la reserva (${status}). Intenta de nuevo.`;
+  return apiMessage ? t(apiMessage) : t(`No se pudo enviar la reserva (${status}). Intenta de nuevo.`);
 }
 
 function getCateringErrorMessage(status, payload) {
@@ -281,24 +313,28 @@ function getCateringErrorMessage(status, payload) {
     const retryAfter = Number.parseInt(String(payload?.retry_after_seconds ?? ''), 10);
     if (Number.isInteger(retryAfter) && retryAfter > 0) {
       const retryMinutes = Math.max(1, Math.ceil(retryAfter / 60));
-      return `Demasiadas solicitudes en poco tiempo. Intenta nuevamente en ${retryMinutes} minuto(s).`;
+      return tf(
+        'common.rate_limit_retry_minutes',
+        { minutes: retryMinutes },
+        `Demasiadas solicitudes en poco tiempo. Intenta nuevamente en ${retryMinutes} minuto(s).`,
+      );
     }
-    return apiMessage || 'Demasiadas solicitudes en poco tiempo. Intenta nuevamente en unos minutos.';
+    return apiMessage ? t(apiMessage) : t('Demasiadas solicitudes en poco tiempo. Intenta nuevamente en unos minutos.');
   }
 
   if (status === 409) {
-    return apiMessage || 'Ya recibimos una solicitud similar recientemente.';
+    return apiMessage ? t(apiMessage) : t('Ya recibimos una solicitud similar recientemente.');
   }
 
   if (status === 422) {
-    return apiMessage || 'Revisa los datos del formulario antes de enviarlo.';
+    return apiMessage ? t(apiMessage) : t('Revisa los datos del formulario antes de enviarlo.');
   }
 
   if (status === 503) {
-    return apiMessage || 'Solicitudes temporalmente no disponibles. Intenta nuevamente en breve.';
+    return apiMessage ? t(apiMessage) : t('Solicitudes temporalmente no disponibles. Intenta nuevamente en breve.');
   }
 
-  return apiMessage || `No se pudo enviar la solicitud (${status}). Intenta de nuevo.`;
+  return apiMessage ? t(apiMessage) : t(`No se pudo enviar la solicitud (${status}). Intenta de nuevo.`);
 }
 
 function initReservationForm() {
@@ -324,7 +360,7 @@ function initReservationForm() {
     const formData = new FormData(form);
     const honeypot = String(formData.get('empresa') || '').trim();
     if (honeypot) {
-      setReservationStatus(statusElement, 'success', 'Solicitud enviada. Te confirmaremos la reserva pronto.');
+      setReservationStatus(statusElement, 'success', t('Solicitud enviada. Te confirmaremos la reserva pronto.'));
       form.reset();
       if (dateInput) {
         dateInput.min = getTodayIsoDate();
@@ -333,7 +369,7 @@ function initReservationForm() {
     }
 
     if (!endpoint) {
-      setReservationStatus(statusElement, 'error', 'Reservas temporalmente no disponibles. Intenta nuevamente en breve.');
+      setReservationStatus(statusElement, 'error', t('Reservas temporalmente no disponibles. Intenta nuevamente en breve.'));
       return;
     }
 
@@ -350,7 +386,7 @@ function initReservationForm() {
     };
 
     if (payload.reservation_date && payload.reservation_date < getTodayIsoDate()) {
-      setReservationStatus(statusElement, 'error', 'La fecha de reserva no puede ser anterior a hoy.');
+      setReservationStatus(statusElement, 'error', t('La fecha de reserva no puede ser anterior a hoy.'));
       return;
     }
 
@@ -362,7 +398,7 @@ function initReservationForm() {
       if (submitButton) {
         submitButton.disabled = true;
         submitButton.classList.add('is-loading');
-        submitButton.textContent = 'Enviando...';
+        submitButton.textContent = t('Enviando...');
       }
 
       const response = await fetch(endpoint, {
@@ -394,20 +430,20 @@ function initReservationForm() {
       setReservationStatus(
         statusElement,
         'success',
-        responsePayload?.message || 'Solicitud enviada. Te contactaremos para confirmar disponibilidad.',
+        responsePayload?.message ? t(responsePayload.message) : t('Solicitud enviada. Te contactaremos para confirmar disponibilidad.'),
       );
     } catch (error) {
       const isAbort = error instanceof DOMException && error.name === 'AbortError';
       const message = isAbort
-        ? 'La solicitud tardó demasiado. Revisa tu conexión e intenta nuevamente.'
-        : error?.message || 'No se pudo enviar la reserva. Intenta nuevamente.';
+        ? t('La solicitud tardó demasiado. Revisa tu conexión e intenta nuevamente.')
+        : t(error?.message || 'No se pudo enviar la reserva. Intenta nuevamente.');
       setReservationStatus(statusElement, 'error', message);
     } finally {
       window.clearTimeout(timeout);
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.classList.remove('is-loading');
-        submitButton.textContent = initialButtonText || 'Enviar solicitud';
+        submitButton.textContent = initialButtonText || t('Enviar solicitud');
       }
     }
   });
@@ -436,7 +472,7 @@ function initCateringForm() {
     const formData = new FormData(form);
     const honeypot = String(formData.get('empresa') || '').trim();
     if (honeypot) {
-      setReservationStatus(statusElement, 'success', 'Solicitud enviada. Te contactaremos pronto.');
+      setReservationStatus(statusElement, 'success', t('Solicitud enviada. Te contactaremos pronto.'));
       form.reset();
       if (dateInput) {
         dateInput.min = getTodayIsoDate();
@@ -445,7 +481,7 @@ function initCateringForm() {
     }
 
     if (!endpoint) {
-      setReservationStatus(statusElement, 'error', 'Solicitudes temporalmente no disponibles. Intenta nuevamente en breve.');
+      setReservationStatus(statusElement, 'error', t('Solicitudes temporalmente no disponibles. Intenta nuevamente en breve.'));
       return;
     }
 
@@ -461,7 +497,7 @@ function initCateringForm() {
     };
 
     if (payload.event_date && payload.event_date < getTodayIsoDate()) {
-      setReservationStatus(statusElement, 'error', 'La fecha del evento no puede ser anterior a hoy.');
+      setReservationStatus(statusElement, 'error', t('La fecha del evento no puede ser anterior a hoy.'));
       return;
     }
 
@@ -473,7 +509,7 @@ function initCateringForm() {
       if (submitButton) {
         submitButton.disabled = true;
         submitButton.classList.add('is-loading');
-        submitButton.textContent = 'Enviando...';
+        submitButton.textContent = t('Enviando...');
       }
 
       const response = await fetch(endpoint, {
@@ -505,20 +541,20 @@ function initCateringForm() {
       setReservationStatus(
         statusElement,
         'success',
-        responsePayload?.message || 'Solicitud enviada. Te contactaremos para coordinar detalles.',
+        responsePayload?.message ? t(responsePayload.message) : t('Solicitud enviada. Te contactaremos para coordinar detalles.'),
       );
     } catch (error) {
       const isAbort = error instanceof DOMException && error.name === 'AbortError';
       const message = isAbort
-        ? 'La solicitud tardó demasiado. Revisa tu conexión e intenta nuevamente.'
-        : error?.message || 'No se pudo enviar la solicitud. Intenta nuevamente.';
+        ? t('La solicitud tardó demasiado. Revisa tu conexión e intenta nuevamente.')
+        : t(error?.message || 'No se pudo enviar la solicitud. Intenta nuevamente.');
       setReservationStatus(statusElement, 'error', message);
     } finally {
       window.clearTimeout(timeout);
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.classList.remove('is-loading');
-        submitButton.textContent = initialButtonText || 'Enviar solicitud';
+        submitButton.textContent = initialButtonText || t('Enviar solicitud');
       }
     }
   });

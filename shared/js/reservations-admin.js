@@ -42,7 +42,31 @@
     internalKey: '',
     isConnected: false,
     isBusy: false,
+    lastMetrics: {},
+    lastReservations: [],
+    lastNotifications: [],
+    showedDisconnectedPlaceholder: false,
   };
+
+  function interpolateTemplate(template, vars = {}) {
+    let result = String(template || '');
+    Object.entries(vars || {}).forEach(([key, value]) => {
+      result = result.replace(new RegExp(`{{\\s*${key}\\s*}}`, 'g'), String(value ?? ''));
+    });
+    return result;
+  }
+
+  function t(value) {
+    if (typeof value !== 'string') return '';
+    return window.LaCasitaI18n?.translate ? window.LaCasitaI18n.translate(value) : value;
+  }
+
+  function tf(key, vars = {}, fallback = '') {
+    if (window.LaCasitaI18n?.format) {
+      return window.LaCasitaI18n.format(key, vars, fallback);
+    }
+    return interpolateTemplate(fallback, vars);
+  }
 
   function normalizeBaseUrl(value) {
     return String(value || '').trim().replace(/\/+$/, '');
@@ -69,12 +93,12 @@
   }
 
   function formatStatus(status) {
-    if (status === 'pending') return 'Pendiente';
-    if (status === 'confirmed') return 'Confirmada';
-    if (status === 'cancelled') return 'Cancelada';
-    if (status === 'queued') return 'Queued';
-    if (status === 'sent') return 'Sent';
-    if (status === 'failed') return 'Failed';
+    if (status === 'pending') return t('Pendiente');
+    if (status === 'confirmed') return t('Confirmada');
+    if (status === 'cancelled') return t('Cancelada');
+    if (status === 'queued') return t('Queued');
+    if (status === 'sent') return t('Sent');
+    if (status === 'failed') return t('Failed');
     return status || '-';
   }
 
@@ -140,6 +164,7 @@
   }
 
   function renderMetrics(metrics) {
+    state.lastMetrics = metrics || {};
     const reservations = metrics?.reservations || {};
     const notifications = metrics?.notifications || {};
 
@@ -154,13 +179,14 @@
   function renderReservations(reservations) {
     if (!ui.reservationsBody) return;
     const rows = Array.isArray(reservations) ? reservations : [];
+    state.lastReservations = rows;
 
     if (ui.reservationsCount) {
-      ui.reservationsCount.textContent = `Total: ${rows.length}`;
+      ui.reservationsCount.textContent = tf('admin.total_count', { count: rows.length }, 'Total: {{count}}');
     }
 
     if (!rows.length) {
-      ui.reservationsBody.innerHTML = '<tr><td colspan="7">Sin resultados para los filtros actuales.</td></tr>';
+      ui.reservationsBody.innerHTML = `<tr><td colspan="7">${escapeHtml(t('Sin resultados para los filtros actuales.'))}</td></tr>`;
       return;
     }
 
@@ -168,10 +194,10 @@
       .map((reservation) => {
         const id = Number.parseInt(String(reservation.id), 10);
         const actions = [
-          `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="set-status" data-reservation-id="${id}" data-target-status="pending">Pendiente</button>`,
-          `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="set-status" data-reservation-id="${id}" data-target-status="confirmed">Confirmar</button>`,
-          `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="set-status" data-reservation-id="${id}" data-target-status="cancelled">Cancelar</button>`,
-          `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="notify" data-reservation-id="${id}">Notificar</button>`,
+          `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="set-status" data-reservation-id="${id}" data-target-status="pending">${escapeHtml(t('Pendiente'))}</button>`,
+          `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="set-status" data-reservation-id="${id}" data-target-status="confirmed">${escapeHtml(t('Confirmar'))}</button>`,
+          `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="set-status" data-reservation-id="${id}" data-target-status="cancelled">${escapeHtml(t('Cancelar'))}</button>`,
+          `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="notify" data-reservation-id="${id}">${escapeHtml(t('Notificar'))}</button>`,
         ].join('');
 
         return `
@@ -195,13 +221,14 @@
   function renderNotifications(notifications) {
     if (!ui.notificationsBody) return;
     const rows = Array.isArray(notifications) ? notifications : [];
+    state.lastNotifications = rows;
 
     if (ui.notificationsCount) {
-      ui.notificationsCount.textContent = `Total: ${rows.length}`;
+      ui.notificationsCount.textContent = tf('admin.total_count', { count: rows.length }, 'Total: {{count}}');
     }
 
     if (!rows.length) {
-      ui.notificationsBody.innerHTML = '<tr><td colspan="9">Sin resultados para los filtros actuales.</td></tr>';
+      ui.notificationsBody.innerHTML = `<tr><td colspan="9">${escapeHtml(t('Sin resultados para los filtros actuales.'))}</td></tr>`;
       return;
     }
 
@@ -212,11 +239,11 @@
         const isDispatchable = notification.status === 'queued';
 
         const retryButton = isRetryable
-          ? `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="retry" data-notification-id="${id}">Retry</button>`
+          ? `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="retry" data-notification-id="${id}">${escapeHtml(t('Reintentar'))}</button>`
           : '';
 
         const dispatchButton = isDispatchable
-          ? `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="dispatch-one" data-notification-id="${id}">Despachar</button>`
+          ? `<button type="button" class="btn btn-secondary admin-mini-btn" data-action="dispatch-one" data-notification-id="${id}">${escapeHtml(t('Despachar'))}</button>`
           : '';
 
         return `
@@ -238,7 +265,7 @@
 
   function ensureConnected() {
     if (!state.isConnected || !state.apiBase || !state.internalKey) {
-      throw new Error('Conecta primero el panel con URL y llave interna.');
+      throw new Error(t('Conecta primero el panel con URL y llave interna.'));
     }
   }
 
@@ -281,7 +308,8 @@
       }
 
       if (!response.ok || !payload?.ok) {
-        const error = new Error(payload?.error || `Error HTTP ${response.status}`);
+        const fallbackHttpError = tf('admin.http_error', { status: response.status }, 'Error HTTP {{status}}');
+        const error = new Error(payload?.error || fallbackHttpError);
         error.status = response.status;
         error.payload = payload;
         throw error;
@@ -290,7 +318,7 @@
       return payload;
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {
-        throw new Error('La solicitud tardó demasiado. Intenta nuevamente.');
+        throw new Error(t('La solicitud tardó demasiado. Intenta nuevamente.'));
       }
       throw error;
     } finally {
@@ -351,7 +379,7 @@
     setBusy(true);
     try {
       await Promise.all([loadMetrics(), loadReservations(), loadNotifications()]);
-      setConnectionStatus('Panel sincronizado correctamente.', 'success');
+      setConnectionStatus(t('Panel sincronizado correctamente.'), 'success');
     } finally {
       setBusy(false);
     }
@@ -362,12 +390,12 @@
     const key = String(ui.apiKeyInput?.value || '').trim();
 
     if (!base || !/^https?:\/\//i.test(base)) {
-      setConnectionStatus('Debes colocar una URL base válida para la API.', 'error');
+      setConnectionStatus(t('Debes colocar una URL base válida para la API.'), 'error');
       return;
     }
 
     if (!key || key.length < 16) {
-      setConnectionStatus('Debes colocar una Internal API Key válida.', 'error');
+      setConnectionStatus(t('Debes colocar una Internal API Key válida.'), 'error');
       return;
     }
 
@@ -376,34 +404,39 @@
     state.isConnected = true;
     applyConnectionUi();
 
-    setConnectionStatus('Validando credenciales...', '');
+    setConnectionStatus(t('Validando credenciales...'), '');
 
     try {
       await refreshAll();
       saveSession();
+      state.showedDisconnectedPlaceholder = false;
     } catch (error) {
       state.isConnected = false;
       applyConnectionUi();
-      setConnectionStatus(error?.message || 'No se pudo conectar al panel interno.', 'error');
+      setConnectionStatus(t(error?.message || 'No se pudo conectar al panel interno.'), 'error');
     }
   }
 
   function disconnectPanel() {
     state.isConnected = false;
     state.internalKey = '';
+    state.lastMetrics = {};
+    state.lastReservations = [];
+    state.lastNotifications = [];
+    state.showedDisconnectedPlaceholder = true;
     clearSession();
 
     if (ui.apiKeyInput) ui.apiKeyInput.value = '';
     if (ui.reservationsBody) {
-      ui.reservationsBody.innerHTML = '<tr><td colspan="7">Panel desconectado.</td></tr>';
+      ui.reservationsBody.innerHTML = `<tr><td colspan="7">${escapeHtml(t('Panel desconectado.'))}</td></tr>`;
     }
     if (ui.notificationsBody) {
-      ui.notificationsBody.innerHTML = '<tr><td colspan="9">Panel desconectado.</td></tr>';
+      ui.notificationsBody.innerHTML = `<tr><td colspan="9">${escapeHtml(t('Panel desconectado.'))}</td></tr>`;
     }
 
     renderMetrics({});
     setLastRequestId('N/A');
-    setConnectionStatus('Panel desconectado.', '');
+    setConnectionStatus(t('Panel desconectado.'), '');
     applyConnectionUi();
   }
 
@@ -421,10 +454,17 @@
         },
       });
 
-      setConnectionStatus(`Reserva #${reservationId} actualizada a ${formatStatus(status)}.`, 'success');
+      setConnectionStatus(
+        tf(
+          'admin.reservation_updated',
+          { id: reservationId, status: formatStatus(status) },
+          `Reserva #{{id}} actualizada a {{status}}.`,
+        ),
+        'success',
+      );
       await Promise.all([loadMetrics(), loadReservations(), loadNotifications()]);
     } catch (error) {
-      setConnectionStatus(error?.message || 'No se pudo actualizar el estado de la reserva.', 'error');
+      setConnectionStatus(t(error?.message || 'No se pudo actualizar el estado de la reserva.'), 'error');
     } finally {
       setBusy(false);
     }
@@ -443,10 +483,17 @@
         },
       });
 
-      setConnectionStatus(`Notificaciones encoladas para la reserva #${reservationId}.`, 'success');
+      setConnectionStatus(
+        tf(
+          'admin.notifications_queued',
+          { id: reservationId },
+          'Notificaciones encoladas para la reserva #{{id}}.',
+        ),
+        'success',
+      );
       await Promise.all([loadMetrics(), loadNotifications()]);
     } catch (error) {
-      setConnectionStatus(error?.message || 'No se pudo encolar la notificación.', 'error');
+      setConnectionStatus(t(error?.message || 'No se pudo encolar la notificación.'), 'error');
     } finally {
       setBusy(false);
     }
@@ -475,12 +522,20 @@
 
       const summary = response.summary || {};
       setConnectionStatus(
-        `Despacho completado: ${summary.sent || 0} sent, ${summary.failed || 0} failed, ${summary.requeued || 0} requeued.`,
+        tf(
+          'admin.dispatch_summary',
+          {
+            sent: summary.sent || 0,
+            failed: summary.failed || 0,
+            requeued: summary.requeued || 0,
+          },
+          'Despacho completado: {{sent}} enviadas, {{failed}} fallidas, {{requeued}} reencoladas.',
+        ),
         'success',
       );
       await Promise.all([loadMetrics(), loadNotifications()]);
     } catch (error) {
-      setConnectionStatus(error?.message || 'No se pudo despachar la cola.', 'error');
+      setConnectionStatus(t(error?.message || 'No se pudo despachar la cola.'), 'error');
     } finally {
       setBusy(false);
     }
@@ -493,10 +548,13 @@
         method: 'POST',
         body: { dispatch_now: true },
       });
-      setConnectionStatus(`Notificación #${notificationId} reintentada.`, 'success');
+      setConnectionStatus(
+        tf('admin.notification_retried', { id: notificationId }, 'Notificación #{{id}} reintentada.'),
+        'success',
+      );
       await Promise.all([loadMetrics(), loadNotifications()]);
     } catch (error) {
-      setConnectionStatus(error?.message || 'No se pudo reintentar la notificación.', 'error');
+      setConnectionStatus(t(error?.message || 'No se pudo reintentar la notificación.'), 'error');
     } finally {
       setBusy(false);
     }
@@ -559,7 +617,7 @@
       try {
         await refreshAll();
       } catch (error) {
-        setConnectionStatus(error?.message || 'No se pudo refrescar el panel.', 'error');
+        setConnectionStatus(t(error?.message || 'No se pudo refrescar el panel.'), 'error');
       } finally {
         setBusy(false);
       }
@@ -570,9 +628,9 @@
       setBusy(true);
       try {
         await loadReservations();
-        setConnectionStatus('Reservas actualizadas.', 'success');
+        setConnectionStatus(t('Reservas actualizadas.'), 'success');
       } catch (error) {
-        setConnectionStatus(error?.message || 'No se pudieron cargar las reservas.', 'error');
+        setConnectionStatus(t(error?.message || 'No se pudieron cargar las reservas.'), 'error');
       } finally {
         setBusy(false);
       }
@@ -583,9 +641,9 @@
       setBusy(true);
       try {
         await loadNotifications();
-        setConnectionStatus('Outbox actualizado.', 'success');
+        setConnectionStatus(t('Outbox actualizado.'), 'success');
       } catch (error) {
-        setConnectionStatus(error?.message || 'No se pudieron cargar las notificaciones.', 'error');
+        setConnectionStatus(t(error?.message || 'No se pudieron cargar las notificaciones.'), 'error');
       } finally {
         setBusy(false);
       }
@@ -607,14 +665,29 @@
   function init() {
     restoreSession();
     applyConnectionUi();
-    setConnectionStatus('Panel listo. Ingresa URL y llave interna para conectar.', '');
+    setConnectionStatus(t('Panel listo. Ingresa URL y llave interna para conectar.'), '');
     bindBaseActions();
     bindReservationsActions();
     bindNotificationsActions();
 
     if (state.apiBase && state.internalKey) {
-      setConnectionStatus('Sesión previa detectada. Pulsa "Conectar" para cargar datos.', '');
+      setConnectionStatus(t('Sesión previa detectada. Pulsa "Conectar" para cargar datos.'), '');
     }
+
+    window.addEventListener('lcy:language-changed', () => {
+      renderMetrics(state.lastMetrics || {});
+      renderReservations(state.lastReservations || []);
+      renderNotifications(state.lastNotifications || []);
+
+      if (state.showedDisconnectedPlaceholder && !state.isConnected) {
+        if (ui.reservationsBody) {
+          ui.reservationsBody.innerHTML = `<tr><td colspan="7">${escapeHtml(t('Panel desconectado.'))}</td></tr>`;
+        }
+        if (ui.notificationsBody) {
+          ui.notificationsBody.innerHTML = `<tr><td colspan="9">${escapeHtml(t('Panel desconectado.'))}</td></tr>`;
+        }
+      }
+    });
   }
 
   init();
