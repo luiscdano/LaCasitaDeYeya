@@ -103,8 +103,14 @@ Abrir:
   - `infra/cloudflare/reservations-worker/README.md`
 
 ## Panel interno de reservas
+- Estado actual:
+  - panel operativo en JS (`reserva/panel/`)
+  - panel operativo en React + Material UI (`reserva/panel-react/`)
+  - commit de implementación React + MUI: `08b41dc`
 - Ruta:
   - `reserva/panel/index.html`
+  - `reserva/panel-react/index.html`
+  - en GitHub Pages: `https://luiscdano.github.io/LaCasitaDeYeya/reserva/panel-react/`
 - Uso rapido:
   1. Abrir panel interno.
   2. Colocar `API base` del Worker.
@@ -119,6 +125,7 @@ Abrir:
 - Panel React + Material UI (nuevo):
   - fuente: `apps/admin-panel/`
   - build estático publicado: `reserva/panel-react/`
+  - guía operativa: `docs/RESERVATIONS_PANEL_OPERATIONS.md`
 - Si necesitas definir/rotar llave interna:
 ```bash
 cd infra/cloudflare/reservations-worker
@@ -140,5 +147,5 @@ npm run build
 - Build para sitio estático actual:
 ```bash
 cd apps/admin-panel
-npm run build -- --outDir ../../reserva/panel-react
+npm run build -- --outDir ../../reserva/panel-react --emptyOutDir
 ```
