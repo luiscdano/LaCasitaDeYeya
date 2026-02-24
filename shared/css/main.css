@@ -709,6 +709,38 @@ body.home-view .section-block {
   margin: 0 0 0.55rem;
 }
 
+.locality-detail-village .village-title {
+  margin: 0 0 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+}
+
+.locality-detail-village .village-title-welcome {
+  display: block;
+  font-family: "Amatic SC", cursive;
+  font-size: clamp(3rem, 6.2vw, 4.8rem);
+  line-height: 0.92;
+  letter-spacing: 0.03em;
+  color: #1f4ea7;
+  text-shadow:
+    0 5px 10px rgba(255, 255, 255, 0.36),
+    0 11px 22px rgba(8, 32, 119, 0.28);
+}
+
+.locality-detail-village .village-title-name {
+  display: block;
+  font-family: "Bree Serif", serif;
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9f1f2a;
+  text-shadow:
+    0 6px 14px rgba(8, 32, 119, 0.24),
+    0 2px 4px rgba(255, 255, 255, 0.18);
+}
+
 .locality-hero-copy > p {
   max-width: 34ch;
   text-shadow: 0 6px 16px rgba(8, 32, 119, 0.08);
@@ -724,6 +756,10 @@ body.home-view .section-block {
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   box-shadow: 0 22px 44px rgba(8, 32, 119, 0.24);
+}
+
+.locality-detail-village .locality-hero-media img {
+  width: min(450px, 90%);
 }
 
 .locality-detail-left .locality-hero-media img {
@@ -1732,6 +1768,10 @@ body.menu-view .menu-book-controls-bottom {
   .locality-detail-right .locality-hero-media img {
     width: min(560px, 100%);
     transform: none;
+  }
+
+  .locality-detail-village .locality-hero-media img {
+    width: min(504px, 90%);
   }
 
   .grid {
