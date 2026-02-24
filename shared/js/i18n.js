@@ -4,9 +4,9 @@
   const SUPPORTED_LANGUAGES = ['es', 'en'];
 
   const EN_TRANSLATIONS = {
-  "Abastecimiento": "Supply",
+  "Abastecimiento": "Catering",
   "Abrir": "Open",
-  "Abastecimiento: lineamientos de proveedores, calidad y trazabilidad.": "Supply: supplier guidelines, quality and traceability.",
+  "Abastecimiento: lineamientos de proveedores, calidad y trazabilidad.": "Catering: supplier guidelines, quality and traceability.",
   "© 2026 La Casita de Yeya - Todos los derechos reservados": "© 2026 La Casita de Yeya - All rights reserved",
   ") para auditoría operativa.": ") for operational audit.",
   "Abrir publicación de Instagram": "Open Instagram post",
@@ -17,7 +17,7 @@
   "Aguas y Refrescos / Soft Drinks and Water": "Waters and Soft Drinks / Soft Drinks and Water",
   "Acompañado de un cremoso puré de cepa de apio de Constanza.": "Accompanied by a creamy Constanza celery strain puree.",
   "Acceso privado para gestionar estados, cola de notificaciones y monitoreo operativo.": "Private access to manage status, notification queue and operational monitoring.",
-  "Alternativas de abastecimiento para evitar quiebres en cocina y operación.": "Supply alternatives to avoid breakdowns in kitchen and operation.",
+  "Alternativas de abastecimiento para evitar quiebres en cocina y operación.": "Catering alternatives to avoid disruptions in kitchen and operations.",
   "Aplicar": "Apply",
   "Aperol Spritz": "Aperol Spritz",
   "Alitas de Pollo / Chicken Wings": "Chicken Wings",
@@ -190,7 +190,7 @@
   "Jugos Naturales de Estación / Natural Seasonal Juice": "Natural Seasonal Juices / Natural Seasonal Juice",
   "La Casita de Yeya | Downtown": "Yeya's Little House | Downtown",
   "La Casita de Yeya | Inicio": "La Casita de Yeya | Home",
-  "La Casita de Yeya | Abastecimiento": "La Casita de Yeya | Supply",
+  "La Casita de Yeya | Abastecimiento": "La Casita de Yeya | Catering",
   "La Casita de Yeya": "La Casita de Yeya",
   "La Casita de Yeya | Descripción General": "La Casita de Yeya | General Description",
   "La Casita de Yeya | Reserva": "La Casita de Yeya | Reservations",
@@ -202,7 +202,7 @@
   "La Casita de Yeya | Los Corales": "La Casita de Yeya | Los Corales",
   "La Casita de Yeya | Panel de Reservas": "La Casita de Yeya | Reservations Panel",
   "La Casita de Yeya nace para celebrar la cocina dominicana con recetas de raíz familiar, servicio cercano y": "La Casita de Yeya was born to celebrate Dominican cuisine with recipes from family roots, close service and",
-  "La Casita de Yeya: sitio oficial con secciones de Localidad, Menú, Sobre, Abastecimiento y Reserva.": "La Casita de Yeya: official site with sections for Locations, Menu, About, Supply and Reservations.",
+  "La Casita de Yeya: sitio oficial con secciones de Localidad, Menú, Sobre, Abastecimiento y Reserva.": "La Casita de Yeya: official site with sections for Locations, Menu, About, Catering and Reservations.",
   "La fecha de reserva no puede ser anterior a hoy.": "The reservation date cannot be earlier than today.",
   "Langosta Caribeña (ajillo/criolla) por libra": "Caribbean lobster (garlic/criolla) per pound",
   "La solicitud tardó demasiado. Intenta nuevamente.": "The request took too long. Try again.",
