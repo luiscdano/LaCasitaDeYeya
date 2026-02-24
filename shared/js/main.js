@@ -259,12 +259,43 @@ function parseWeatherFloat(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function isRainWeatherCode(code) {
-  return [
-    51, 53, 55, 56, 57,
-    61, 63, 65, 66, 67,
-    80, 81, 82, 95, 96, 99,
-  ].includes(Number(code));
+function getRainProbabilityFromPayload(payload, observedAt) {
+  const times = Array.isArray(payload?.hourly?.time) ? payload.hourly.time : [];
+  const probabilities = Array.isArray(payload?.hourly?.precipitation_probability)
+    ? payload.hourly.precipitation_probability
+    : [];
+
+  if (!times.length || !probabilities.length) return null;
+
+  let targetIndex = times.findIndex((time) => String(time) === observedAt);
+  if (targetIndex === -1) {
+    const observedHour = String(observedAt || '').slice(0, 13);
+    targetIndex = times.findIndex((time) => String(time).slice(0, 13) === observedHour);
+  }
+
+  if (targetIndex === -1) {
+    const referenceTime = Number.isFinite(Date.parse(observedAt)) ? Date.parse(observedAt) : Date.now();
+    let bestIndex = 0;
+    let bestDiff = Number.POSITIVE_INFINITY;
+
+    times.forEach((time, index) => {
+      const parsedTime = Date.parse(String(time));
+      if (!Number.isFinite(parsedTime)) return;
+
+      const diff = Math.abs(parsedTime - referenceTime);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        bestIndex = index;
+      }
+    });
+
+    targetIndex = bestIndex;
+  }
+
+  const probability = parseWeatherFloat(probabilities[targetIndex]);
+  if (!Number.isFinite(probability)) return null;
+
+  return Math.max(0, Math.min(100, Math.round(probability)));
 }
 
 function formatWeatherNumber(value, digits = 1) {
@@ -310,9 +341,14 @@ function renderVillageWeather(card, state) {
   }
 
   const weather = state.data;
-  statusElement.textContent = weather.isRaining
-    ? tf('village.weather.raining', {}, 'Está lloviendo ahora.')
-    : tf('village.weather.clear', {}, 'No está lloviendo ahora.');
+  const rainProbability = Number.isFinite(weather.rainProbability) ? weather.rainProbability : null;
+
+  if (rainProbability === null) {
+    statusElement.textContent = tf('village.weather.unavailable', {}, 'No se pudo cargar el clima ahora.');
+  } else {
+    const weatherIcon = rainProbability >= 46 ? '🌧' : '☁';
+    statusElement.textContent = `${weatherIcon} ${rainProbability}%`;
+  }
 
   const observedAt = formatWeatherObservedAt(weather.observedAt);
   detailsElement.textContent = tf(
@@ -340,6 +376,7 @@ async function fetchVillageWeather(card) {
     latitude: String(latitude),
     longitude: String(longitude),
     current_weather: 'true',
+    hourly: 'precipitation_probability',
     timezone,
   });
 
@@ -359,12 +396,14 @@ async function fetchVillageWeather(card) {
 
   const temperature = parseWeatherFloat(current.temperature);
   const windSpeed = parseWeatherFloat(current.windspeed);
+  const observedAt = String(current.time || '');
+  const rainProbability = getRainProbabilityFromPayload(payload, observedAt);
 
   return {
     temperature: temperature ?? 0,
     windSpeed: windSpeed ?? 0,
-    observedAt: String(current.time || ''),
-    isRaining: isRainWeatherCode(current.weathercode),
+    observedAt,
+    rainProbability,
   };
 }
 

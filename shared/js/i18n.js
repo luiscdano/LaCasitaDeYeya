@@ -420,7 +420,7 @@
   "Ver menú": "View menu",
   "Ver perfil en Instagram": "View Instagram profile",
   "WhatsApp": "WhatsApp",
-  "WhatsApp Business: pendiente": "WhatsApp Business: pending",
+  "WhatsApp: pendiente": "WhatsApp: pending",
   "Visión": "Vision",
   "una experiencia de mesa auténtica en Punta Cana.": "an authentic table experience in Punta Cana.",
   "Vodka Tonic": "Vodka Tonic",
