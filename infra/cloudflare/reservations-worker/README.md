@@ -2,6 +2,8 @@
 
 API para registrar reservas desde `reserva/index.html` con flujo interno de estados, outbox y monitoreo.
 
+Tambien procesa solicitudes generales de eventos desde `abastecimiento/index.html`.
+
 ## Endpoints
 
 Publicos:
@@ -167,6 +169,7 @@ En este modo:
 - Las notificaciones se encolan en `reservation_notifications`.
 - El despacho marca `sent` sin tocar proveedores externos.
 - Puedes probar el flujo end-to-end sin correo ni WhatsApp Business reales.
+- Las alertas operativas de nuevos ingresos (`/api/reservations` y `/api/catering-requests`) se intentan enviar al canal interno si existe destino configurado.
 
 ## Activar envio real luego
 
@@ -174,18 +177,21 @@ Correo con Resend:
 
 1. `EMAIL_DELIVERY_MODE=resend`
 2. `EMAIL_FROM=reservas@tu-dominio.com`
-3. `wrangler secret put RESEND_API_KEY`
+3. `EMAIL_TO=operaciones@tu-dominio.com,gerencia@tu-dominio.com`
+4. `wrangler secret put RESEND_API_KEY`
 
 WhatsApp Business API (Meta):
 
 1. `WHATSAPP_DELIVERY_MODE=meta`
 2. `WABA_PHONE_NUMBER_ID=<id>`
 3. `WABA_API_VERSION=v21.0` (o la version actual)
-4. `wrangler secret put WABA_ACCESS_TOKEN`
+4. `WABA_TO_NUMBER=<numero_interno_destino>`
+5. `wrangler secret put WABA_ACCESS_TOKEN`
 
-Opcional para pruebas controladas:
+Opcional:
 
-- `WABA_TO_NUMBER=<numero_destino>`
+- `NOTIFY_OPERATIONS_ON_CREATE=true|false` (default `true`)
+- `NOTIFY_OPERATIONS_ON_CATERING_CREATE=true|false` (default `true`)
 
 ## Observabilidad
 

@@ -110,6 +110,21 @@ function parseAllowedOrigins(env) {
   );
 }
 
+function parseCsvValues(raw, maxItems = 20, maxLength = 180) {
+  if (typeof raw !== 'string' || !raw.trim()) return [];
+  const values = raw
+    .split(',')
+    .map((value) => normalizeText(value, maxLength))
+    .filter(Boolean)
+    .slice(0, maxItems);
+
+  const unique = [];
+  for (const value of values) {
+    if (!unique.includes(value)) unique.push(value);
+  }
+  return unique;
+}
+
 function getSecurityConfig(env) {
   return {
     rateLimitWindowSeconds: parsePositiveInteger(env.RATE_LIMIT_WINDOW_SECONDS, 600),
@@ -140,16 +155,23 @@ function getInternalOriginConfig(env) {
 }
 
 function getNotificationConfig(env) {
+  const opsEmailRecipients = parseCsvValues(env.EMAIL_TO || '', 20, 180)
+    .map((email) => email.toLowerCase())
+    .filter((email) => isValidEmail(email));
+
   return {
     maxAttempts: Math.min(parsePositiveInteger(env.NOTIFICATION_MAX_ATTEMPTS, 3), 10),
     defaultDispatchLimit: Math.min(parsePositiveInteger(env.NOTIFICATION_DISPATCH_BATCH_LIMIT, 10), 50),
     autoDispatchOnCreate: parseBoolean(env.NOTIFICATIONS_AUTO_DISPATCH_ON_CREATE, false),
     autoDispatchOnStatusChange: parseBoolean(env.NOTIFICATIONS_AUTO_DISPATCH_ON_STATUS_CHANGE, false),
+    notifyOperationsOnCreate: parseBoolean(env.NOTIFY_OPERATIONS_ON_CREATE, true),
+    notifyOperationsOnCateringCreate: parseBoolean(env.NOTIFY_OPERATIONS_ON_CATERING_CREATE, true),
     emailMode: normalizeMode(env.EMAIL_DELIVERY_MODE, EMAIL_DELIVERY_MODE_VALUES, 'mock'),
     whatsappMode: normalizeMode(env.WHATSAPP_DELIVERY_MODE, WHATSAPP_DELIVERY_MODE_VALUES, 'mock'),
     emailFrom: normalizeText(env.EMAIL_FROM || '', 180),
     emailReplyTo: normalizeText(env.EMAIL_REPLY_TO || '', 180),
     resendApiKey: normalizeText(env.RESEND_API_KEY || '', 320),
+    opsEmailRecipients,
     whatsappApiVersion: normalizeText(env.WABA_API_VERSION || 'v21.0', 20) || 'v21.0',
     whatsappPhoneNumberId: normalizeText(env.WABA_PHONE_NUMBER_ID || '', 64),
     whatsappAccessToken: normalizeText(env.WABA_ACCESS_TOKEN || '', 400),
@@ -1305,6 +1327,151 @@ function buildNotificationTemplates(reservation, status, note = '') {
       body: whatsappBody,
     },
   };
+}
+
+function preferredLocationLabel(value) {
+  const normalized = normalizeText(value || '', 32).toLowerCase();
+  if (!normalized || normalized === 'any') return 'Cualquiera';
+  return locationLabel(normalized);
+}
+
+function buildReservationOperationsAlert(reservation) {
+  const location = locationLabel(reservation.location);
+  const dateLabel = formatDateLabel(reservation.reservation_date);
+  const guestsLabel = reservation.guests === 1 ? '1 persona' : `${reservation.guests} personas`;
+  const comments = normalizeText(reservation.comments || '', 500) || 'N/A';
+
+  const lines = [
+    `Nueva reserva #${reservation.id}`,
+    `Cliente: ${reservation.full_name}`,
+    `Telefono: ${reservation.phone}`,
+    `Correo: ${reservation.email}`,
+    `Localidad: ${location}`,
+    `Fecha: ${dateLabel}`,
+    `Hora: ${reservation.reservation_time}`,
+    `Personas: ${guestsLabel}`,
+    `Comentarios: ${comments}`,
+    `Fuente: ${reservation.source || 'website'}`,
+  ];
+
+  return {
+    emailSubject: `Nueva reserva #${reservation.id} - ${location}`,
+    emailBody: lines.join('\n'),
+    whatsappBody: lines.join('\n'),
+  };
+}
+
+function buildCateringOperationsAlert(cateringRequest) {
+  const location = preferredLocationLabel(cateringRequest.preferred_location);
+  const dateLabel = formatDateLabel(cateringRequest.event_date);
+  const guestsLabel =
+    toInteger(cateringRequest.guests_estimate, 0) === 1
+      ? '1 persona'
+      : `${toInteger(cateringRequest.guests_estimate, 0)} personas`;
+  const details = normalizeText(cateringRequest.details || '', 700) || 'Sin detalles.';
+
+  const lines = [
+    `Nueva solicitud de evento #${cateringRequest.id}`,
+    `Contacto: ${cateringRequest.full_name}`,
+    `Telefono: ${cateringRequest.phone}`,
+    `Correo: ${cateringRequest.email}`,
+    `Localidad preferida: ${location}`,
+    `Fecha estimada: ${dateLabel}`,
+    `Personas estimadas: ${guestsLabel}`,
+    `Detalles: ${details}`,
+    `Fuente: ${cateringRequest.source || 'website'}`,
+  ];
+
+  return {
+    emailSubject: `Nueva solicitud de evento #${cateringRequest.id}`,
+    emailBody: lines.join('\n'),
+    whatsappBody: lines.join('\n'),
+  };
+}
+
+async function dispatchOperationsAlerts(env, notificationConfig, alertPayload, context = {}) {
+  const jobs = [];
+
+  if (notificationConfig.emailMode !== 'disabled') {
+    for (const recipient of notificationConfig.opsEmailRecipients || []) {
+      jobs.push({
+        channel: 'email',
+        recipient,
+        subject: alertPayload.emailSubject || 'Nueva solicitud',
+        body: alertPayload.emailBody || '',
+      });
+    }
+  }
+
+  if (notificationConfig.whatsappMode !== 'disabled' && notificationConfig.whatsappFallbackTo) {
+    jobs.push({
+      channel: 'whatsapp',
+      recipient: notificationConfig.whatsappFallbackTo,
+      subject: '',
+      body: alertPayload.whatsappBody || alertPayload.emailBody || '',
+    });
+  }
+
+  if (!jobs.length) {
+    logEvent(env, 'info', 'operations_alerts_skipped', {
+      request_id: normalizeText(context.requestId || '', 80),
+      trigger: normalizeText(context.trigger || '', 40),
+      reason: 'destinations_not_configured',
+    });
+    return {
+      attempted: 0,
+      sent: 0,
+      failed: 0,
+    };
+  }
+
+  const summary = {
+    attempted: jobs.length,
+    sent: 0,
+    failed: 0,
+  };
+
+  for (let index = 0; index < jobs.length; index += 1) {
+    const job = jobs[index];
+    const notification = {
+      id: `ops-${normalizeText(context.trigger || 'manual', 40)}-${Date.now()}-${index + 1}`,
+      recipient: job.recipient,
+      subject: job.subject,
+      body: job.body,
+      channel: job.channel,
+    };
+
+    let result;
+    try {
+      if (job.channel === 'email') {
+        result = await sendEmailNotification(notification, notificationConfig);
+      } else {
+        result = await sendWhatsAppNotification(notification, notificationConfig);
+      }
+    } catch (error) {
+      result = {
+        ok: false,
+        provider: channelProvider(job.channel, notificationConfig),
+        error: normalizeText(error?.message || 'operations_dispatch_failed', 300),
+      };
+    }
+
+    if (result.ok) {
+      summary.sent += 1;
+    } else {
+      summary.failed += 1;
+    }
+  }
+
+  logEvent(env, summary.failed > 0 ? 'warn' : 'info', 'operations_alerts_dispatched', {
+    request_id: normalizeText(context.requestId || '', 80),
+    trigger: normalizeText(context.trigger || '', 40),
+    attempted: summary.attempted,
+    sent: summary.sent,
+    failed: summary.failed,
+  });
+
+  return summary;
 }
 
 function parseReservationListFilters(url) {
@@ -2615,6 +2782,10 @@ export default {
                 email_mode: notificationConfig.emailMode,
                 whatsapp_mode: notificationConfig.whatsappMode,
                 max_attempts: notificationConfig.maxAttempts,
+                operations_email_recipients: notificationConfig.opsEmailRecipients.length,
+                operations_whatsapp_configured: Boolean(notificationConfig.whatsappFallbackTo),
+                notify_operations_on_create: notificationConfig.notifyOperationsOnCreate,
+                notify_operations_on_catering_create: notificationConfig.notifyOperationsOnCateringCreate,
               },
               timestamp: new Date().toISOString(),
             },
@@ -2734,6 +2905,11 @@ export default {
           };
 
           let dispatchResult = null;
+          let operationsAlertResult = {
+            attempted: 0,
+            sent: 0,
+            failed: 0,
+          };
 
           if (reservation) {
             queueResult = await enqueueReservationNotifications(env, reservation, notificationConfig, {
@@ -2760,6 +2936,19 @@ export default {
                 requestId,
               );
             }
+
+            if (notificationConfig.notifyOperationsOnCreate) {
+              const alertPayload = buildReservationOperationsAlert(reservation);
+              operationsAlertResult = await dispatchOperationsAlerts(
+                env,
+                notificationConfig,
+                alertPayload,
+                {
+                  requestId,
+                  trigger: 'reservation_created',
+                },
+              );
+            }
           }
 
           logEvent(env, 'info', 'reservation_created', {
@@ -2768,6 +2957,8 @@ export default {
             location: validation.value.location,
             email: validation.value.email,
             queued_notifications: queueResult.queued,
+            operations_alerts_sent: operationsAlertResult.sent,
+            operations_alerts_failed: operationsAlertResult.failed,
           });
 
           response = jsonResponse(
@@ -2792,6 +2983,7 @@ export default {
                     }
                   : {}),
               },
+              operations_notifications: operationsAlertResult,
             },
             201,
             responseHeaders,
@@ -2832,6 +3024,7 @@ export default {
       try {
         await ensureOperationalSchema(env);
         const securityConfig = getSecurityConfig(env);
+        const notificationConfig = getNotificationConfig(env);
         const metadata = {
           userAgent,
           clientIp,
@@ -2858,6 +3051,19 @@ export default {
 
         const cateringRequestId = await insertCateringRequest(env, validation.value, metadata);
         const cateringRequest = await getCateringRequestById(env, cateringRequestId);
+        let operationsAlertResult = {
+          attempted: 0,
+          sent: 0,
+          failed: 0,
+        };
+
+        if (cateringRequest && notificationConfig.notifyOperationsOnCateringCreate) {
+          const alertPayload = buildCateringOperationsAlert(cateringRequest);
+          operationsAlertResult = await dispatchOperationsAlerts(env, notificationConfig, alertPayload, {
+            requestId,
+            trigger: 'catering_request_created',
+          });
+        }
 
         logEvent(env, 'info', 'catering_request_created', {
           request_id: requestId,
@@ -2866,6 +3072,8 @@ export default {
           email: validation.value.email,
           event_date: validation.value.eventDate,
           guests_estimate: validation.value.guestsEstimate,
+          operations_alerts_sent: operationsAlertResult.sent,
+          operations_alerts_failed: operationsAlertResult.failed,
         });
 
         response = jsonResponse(
@@ -2877,6 +3085,7 @@ export default {
             status: 'pending',
             message: 'Solicitud enviada. Te contactaremos para coordinar el servicio.',
             request: cateringRequest,
+            operations_notifications: operationsAlertResult,
           },
           201,
           responseHeaders,

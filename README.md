@@ -98,6 +98,7 @@ Abrir:
   - validaciones server-side + anti-spam/rate-limit base para preproduccion
   - flujo interno con estados (`pending/confirmed/cancelled`) y plantillas de confirmacion (correo/WhatsApp)
   - outbox `reservation_notifications` con reintentos (`queued/sent/failed`) y despacho en modo `mock` por defecto
+  - alertas operativas de nuevos ingresos (reserva + abastecimiento) hacia canales internos configurados (`EMAIL_TO`, `WABA_TO_NUMBER`)
   - hardening API (headers de seguridad, `X-Request-Id`, control opcional de origen interno)
   - observabilidad operativa (`/api/internal/metrics/summary` + logs estructurados)
 - Guia de despliegue:
