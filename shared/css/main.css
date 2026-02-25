@@ -892,6 +892,7 @@ body.home-view .section-block {
 }
 
 .locality-detail-village .village-map-frame-wrap {
+  position: relative;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
@@ -907,6 +908,17 @@ body.home-view .section-block {
   height: min(64vw, 520px);
   min-height: 360px;
   border: 0;
+}
+
+.locality-detail-village .village-map-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.locality-detail-village .village-map-link:focus-visible {
+  outline: 3px solid rgba(15, 86, 174, 0.65);
+  outline-offset: -3px;
 }
 
 .instagram-section {
@@ -1243,6 +1255,10 @@ body.home-view .section-block {
 
 body.home-view main {
   flex: 1;
+  padding-bottom: 0;
+}
+
+body.village-view main {
   padding-bottom: 0;
 }
 
