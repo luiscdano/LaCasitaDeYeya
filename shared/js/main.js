@@ -327,15 +327,16 @@ function renderVillageWeather(card, state) {
 
   const place = String(card.dataset.weatherPlace || 'Punta Cana Village').trim();
   const zoneLabel = tf('village.weather.zone', { place }, `Zona: ${place}`);
+  const fallbackWeatherStatus = '🌧 --%';
 
   if (state.phase === 'loading') {
-    statusElement.textContent = t('Cargando clima...');
+    statusElement.textContent = fallbackWeatherStatus;
     detailsElement.textContent = zoneLabel;
     return;
   }
 
   if (state.phase === 'error' || !state.data) {
-    statusElement.textContent = tf('village.weather.unavailable', {}, 'No se pudo cargar el clima ahora.');
+    statusElement.textContent = fallbackWeatherStatus;
     detailsElement.textContent = zoneLabel;
     return;
   }
@@ -343,11 +344,7 @@ function renderVillageWeather(card, state) {
   const weather = state.data;
   const rainProbability = Number.isFinite(weather.rainProbability) ? weather.rainProbability : null;
 
-  if (rainProbability === null) {
-    statusElement.textContent = tf('village.weather.unavailable', {}, 'No se pudo cargar el clima ahora.');
-  } else {
-    statusElement.textContent = `🌧 ${rainProbability}%`;
-  }
+  statusElement.textContent = rainProbability === null ? fallbackWeatherStatus : `🌧 ${rainProbability}%`;
 
   const observedAt = formatWeatherObservedAt(weather.observedAt);
   detailsElement.textContent = tf(

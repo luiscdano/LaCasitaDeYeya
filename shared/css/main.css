@@ -827,14 +827,25 @@ body.home-view .section-block {
   text-decoration: none;
 }
 
+.locality-detail-village .village-weather-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
 .locality-detail-village .village-weather-status {
-  margin-bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  font-family: "Nunito Sans", system-ui, sans-serif;
+  font-size: 0.95em;
   font-weight: 800;
+  line-height: 1;
   color: var(--blue-900);
 }
 
 .locality-detail-village .village-weather-details {
-  margin-top: 0.26rem;
+  margin-top: 0.45rem;
   margin-bottom: 0;
   line-height: 1.4;
 }
