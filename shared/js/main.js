@@ -433,7 +433,7 @@ function initVillageWeather() {
 
   window.addEventListener('lcy:language-changed', render);
   load();
-  window.setInterval(load, 1000 * 60 * 15);
+  window.setInterval(load, 1000 * 60 * 5);
 }
 
 function setReservationStatus(element, type, message) {
