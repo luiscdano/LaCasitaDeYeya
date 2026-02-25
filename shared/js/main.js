@@ -307,15 +307,21 @@ function formatWeatherNumber(value, digits = 1) {
   });
 }
 
-function formatWeatherObservedAt(isoDateTime) {
-  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2})/.exec(String(isoDateTime || '').trim());
-  if (!match) return String(isoDateTime || '').trim();
+function formatWeatherRefreshedAt(value) {
+  const parsed = Number.isFinite(value) ? value : Date.parse(String(value || ''));
+  if (!Number.isFinite(parsed)) return '--';
 
-  const [, year, month, day, time] = match;
-  if (window.LaCasitaI18n?.getLanguage?.() === 'en') {
-    return `${month}/${day}/${year} ${time}`;
-  }
-  return `${day}/${month}/${year} ${time}`;
+  const language = window.LaCasitaI18n?.getLanguage?.() === 'en' ? 'en-US' : 'es-DO';
+  return new Intl.DateTimeFormat(language, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+    .format(new Date(parsed))
+    .replace(',', '');
 }
 
 function renderVillageWeather(card, state) {
@@ -346,16 +352,16 @@ function renderVillageWeather(card, state) {
 
   statusElement.textContent = rainProbability === null ? fallbackWeatherStatus : `${rainProbability}%`;
 
-  const observedAt = formatWeatherObservedAt(weather.observedAt);
+  const refreshedAt = formatWeatherRefreshedAt(weather.refreshedAt);
   detailsElement.textContent = tf(
     'village.weather.updated',
     {
       zone: zoneLabel,
       temp: formatWeatherNumber(weather.temperature, 1),
       wind: formatWeatherNumber(weather.windSpeed, 1),
-      time: observedAt || '--',
+      time: refreshedAt || '--',
     },
-    `${zoneLabel} · ${formatWeatherNumber(weather.temperature, 1)}°C · Viento ${formatWeatherNumber(weather.windSpeed, 1)} km/h · Actualizado: ${observedAt || '--'}`,
+    `${zoneLabel} · ${formatWeatherNumber(weather.temperature, 1)}°C · Viento ${formatWeatherNumber(weather.windSpeed, 1)} km/h · Actualizado: ${refreshedAt || '--'}`,
   );
 }
 
@@ -400,6 +406,7 @@ async function fetchVillageWeather(card) {
     windSpeed: windSpeed ?? 0,
     observedAt,
     rainProbability,
+    refreshedAt: Date.now(),
   };
 }
 
