@@ -693,6 +693,10 @@ body.home-view .section-block {
   margin-top: clamp(1.1rem, 2.2vw, 2rem);
 }
 
+.container.locality-detail-village {
+  width: min(1480px, 96vw);
+}
+
 .locality-hero {
   display: grid;
   grid-template-columns: minmax(290px, 0.9fr) minmax(0, 1fr);
@@ -809,6 +813,22 @@ body.home-view .section-block {
 
 .locality-detail.locality-detail-village > .grid {
   margin-top: clamp(4.2rem, 7.2vw, 6.4rem);
+  column-gap: clamp(1.6rem, 3vw, 3.2rem);
+  align-items: start;
+}
+
+.locality-detail-village .grid > .card {
+  display: grid;
+  align-content: start;
+  grid-template-rows: auto 1fr;
+}
+
+.locality-detail-village .grid > .card > h3 {
+  min-height: 2.05rem;
+}
+
+.locality-detail-village .grid > .card > p {
+  margin-top: 0.4rem;
 }
 
 .locality-detail-village .village-hours-list span,
@@ -830,15 +850,26 @@ body.home-view .section-block {
 .locality-detail-village .village-weather-title {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.72rem;
+}
+
+.locality-detail-village .village-weather-readout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  margin-left: 0.06rem;
+}
+
+.locality-detail-village .village-weather-icon {
+  font-size: 0.92em;
+  line-height: 1;
 }
 
 .locality-detail-village .village-weather-status {
-  display: inline-flex;
-  align-items: center;
+  display: inline-block;
   margin: 0;
   font-family: "Nunito Sans", system-ui, sans-serif;
-  font-size: 0.95em;
+  font-size: 0.9em;
   font-weight: 800;
   line-height: 1;
   color: var(--blue-900);
