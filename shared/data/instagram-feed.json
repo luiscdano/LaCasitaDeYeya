@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-02-24T13:44:19Z",
+  "fetched_at": "2026-02-25T03:16:02Z",
   "posts": [
+    {
+      "id": "3839761164008522957",
+      "shortcode": "DVJkm9LEYTN",
+      "permalink": "https://www.instagram.com/p/DVJkm9LEYTN/",
+      "image": "shared/data/instagram/DVJkm9LEYTN.jpg",
+      "caption": "Pescado frito: Del Mar Pa’ Yeya 🐟🇩🇴 | Los esperamos en nuestras casitas para vivir la verdadera experiencia dominicana en Punta Cana. \n\n#dominicanfood",
+      "is_video": false,
+      "taken_at_timestamp": 1771955285
+    },
     {
       "id": "3838982061244129641",
       "shortcode": "DVGzdhLjaFp",
@@ -83,15 +92,6 @@
       "caption": "Hoy, Día de Nuestra Señora de la Altagracia🇩🇴\n\nLa Basílica de Nuestra Señora de la Altagracia está directamente relacionada con la Altagracia porque es el principal santuario dedicado a ella, quien es la Virgen patrona de la República Dominicana.\n\n#díadelaaltagracia #basilicadehiguey",
       "is_video": false,
       "taken_at_timestamp": 1769006318
-    },
-    {
-      "id": "3814372577880657874",
-      "shortcode": "DTvX6ZxkU_S",
-      "permalink": "https://www.instagram.com/p/DTvX6ZxkU_S/",
-      "image": "shared/data/instagram/DTvX6ZxkU_S.jpg",
-      "caption": "Del mar Caribe con orgullo 🇩🇴🌊\nPescado fresco por manos de pescadores locales directo para nuestras casitas.\n\n#lacasitadeyeya #dominicanfood #pescadodomicilio",
-      "is_video": false,
-      "taken_at_timestamp": 1768928666
     }
   ]
 }
