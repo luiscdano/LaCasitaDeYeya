@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-02-27T13:32:40Z",
+  "fetched_at": "2026-02-27T19:03:31Z",
   "posts": [
+    {
+      "id": "3841854037423888111",
+      "shortcode": "DVRAeRbjRbv",
+      "permalink": "https://www.instagram.com/reel/DVRAeRbjRbv/",
+      "image": "shared/data/instagram/DVRAeRbjRbv.jpg",
+      "caption": "Dominicanos de pura cepa🇩🇴 | Hoy celebramos con orgullo el 182 aniversario de la indecencia dominicana. ¡Feliz día de la independencia!\n\nLos esperamos con la mejor comida típica dominicana y un 2 x 1 en el trago pasión de quisqueya con @ronbrugalrd en @thevillagepuntacana",
+      "is_video": true,
+      "taken_at_timestamp": 1772204855
+    },
     {
       "id": "3839761164008522957",
       "shortcode": "DVJkm9LEYTN",
@@ -83,15 +92,6 @@
       "caption": "Nuestra mesa celebra el verdadero sabor dominicano🇩🇴 | #puntacanasabeayeya",
       "is_video": false,
       "taken_at_timestamp": 1769275793
-    },
-    {
-      "id": "3815023965086010729",
-      "shortcode": "DTxsBVYjc1p",
-      "permalink": "https://www.instagram.com/p/DTxsBVYjc1p/",
-      "image": "shared/data/instagram/DTxsBVYjc1p.jpg",
-      "caption": "Hoy, Día de Nuestra Señora de la Altagracia🇩🇴\n\nLa Basílica de Nuestra Señora de la Altagracia está directamente relacionada con la Altagracia porque es el principal santuario dedicado a ella, quien es la Virgen patrona de la República Dominicana.\n\n#díadelaaltagracia #basilicadehiguey",
-      "is_video": false,
-      "taken_at_timestamp": 1769006318
     }
   ]
 }
