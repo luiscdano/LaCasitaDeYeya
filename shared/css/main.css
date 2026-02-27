@@ -848,6 +848,10 @@ body.home-view .section-block {
   margin-top: 0;
 }
 
+.locality-detail-village .village-contact-card {
+  display: block;
+}
+
 .locality-detail-village .village-hours-list span,
 .locality-detail-village .village-contact-list span {
   display: block;
