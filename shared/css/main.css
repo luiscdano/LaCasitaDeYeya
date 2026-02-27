@@ -829,7 +829,15 @@ body.home-view .section-block {
 }
 
 .locality-detail-village .grid > .card > p {
-  margin-top: 0.4rem;
+  margin-top: 0;
+}
+
+.locality-detail-village .village-hours-list,
+.locality-detail-village .village-weather-details,
+.locality-detail-village .village-contact-list {
+  margin-top: 0.45rem;
+  margin-bottom: 0;
+  line-height: 1.4;
 }
 
 .locality-detail-village .village-hours-list span,
@@ -878,8 +886,6 @@ body.home-view .section-block {
 
 .locality-detail-village .village-weather-details {
   margin-top: 0.45rem;
-  margin-bottom: 0;
-  line-height: 1.4;
 }
 
 .locality-detail-village .village-map-section {
