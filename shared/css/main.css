@@ -2014,6 +2014,20 @@ body.menu-view .menu-book-controls-bottom {
 }
 
 @media (max-width: 860px) {
+  .locality-detail-village .corales-food-showcase-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, minmax(210px, 62vw));
+  }
+
+  .locality-detail-village .corales-food-showcase-grid .home-food-item.item-1,
+  .locality-detail-village .corales-food-showcase-grid .home-food-item.item-2,
+  .locality-detail-village .corales-food-showcase-grid .home-food-item.item-3,
+  .locality-detail-village .corales-food-showcase-grid .home-food-item.item-4,
+  .locality-detail-village .corales-food-showcase-grid .home-food-item.item-5 {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+
   .topbar-inner {
     min-height: 72px;
     flex-wrap: wrap;
