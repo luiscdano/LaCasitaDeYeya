@@ -844,6 +844,10 @@ body.home-view .section-block {
   margin-top: 0.08rem;
 }
 
+.locality-detail-village .village-contact-card .village-contact-list {
+  margin-top: -0.16rem;
+}
+
 .locality-detail-village .village-hours-list span,
 .locality-detail-village .village-contact-list span {
   display: block;
