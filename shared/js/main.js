@@ -488,13 +488,7 @@ function renderVillageWeather(card, state) {
     displayRainProbability === null ? fallbackWeatherStatus : `${displayRainProbability}%`;
 
   if (iconElement) {
-    if (isRainingNow) {
-      iconElement.textContent = '🌧';
-    } else if (Number.isFinite(displayRainProbability) && displayRainProbability >= 45) {
-      iconElement.textContent = '🌦';
-    } else {
-      iconElement.textContent = '☀️';
-    }
+    iconElement.textContent = '🌧';
   }
 
   const refreshedAt = formatWeatherRefreshedAt(weather.refreshedAt);
