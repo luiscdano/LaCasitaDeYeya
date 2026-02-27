@@ -103,6 +103,7 @@ Abrir:
   - `wrangler.toml` (config Worker + D1)
   - `schema.sql` (esquema de base de datos)
   - `src/index.js` (endpoints publicos + internos)
+  - endpoint publico de clima para localidad: `GET /api/weather/current?lat=&lon=&timezone=&lang=`
   - endpoint publico de solicitudes de eventos/bufete: `POST /api/catering-requests` (modulo `abastecimiento`)
   - validaciones server-side + anti-spam/rate-limit base para preproduccion
   - flujo interno con estados (`pending/confirmed/cancelled`) y plantillas de confirmacion (correo/WhatsApp)
@@ -141,6 +142,11 @@ Abrir:
 ```bash
 cd infra/cloudflare/reservations-worker
 npx wrangler secret put INTERNAL_API_KEY
+```
+- Para activar WeatherAPI (clima Village/Downtown/Los Corales via proxy):
+```bash
+cd infra/cloudflare/reservations-worker
+npx wrangler secret put WEATHER_API_KEY
 ```
 
 ## React + Material UI (Admin)

@@ -462,7 +462,7 @@
     "village.weather.zone": "Zona: {{place}}",
     "village.weather.raining": "Está lloviendo ahora.",
     "village.weather.clear": "No está lloviendo ahora.",
-    "village.weather.updated": "{{zone}} · {{temp}}°C · Viento {{wind}} km/h · Actualizado: {{time}}",
+    "village.weather.updated": "{{zone}} · {{temp}}°C · Viento {{wind}} km/h · {{rain}} · Actualizado: {{time}}",
     "village.weather.unavailable": "No se pudo cargar el clima ahora."
   },
   "en": {
@@ -476,7 +476,7 @@
     "village.weather.zone": "Area: {{place}}",
     "village.weather.raining": "It is raining right now.",
     "village.weather.clear": "It is not raining right now.",
-    "village.weather.updated": "{{zone}} · {{temp}}°C · Wind {{wind}} km/h · Updated: {{time}}",
+    "village.weather.updated": "{{zone}} · {{temp}}°C · Wind {{wind}} km/h · {{rain}} · Updated: {{time}}",
     "village.weather.unavailable": "Could not load weather right now."
   }
 };

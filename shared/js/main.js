@@ -259,7 +259,33 @@ function parseWeatherFloat(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function getRainProbabilityFromPayload(payload, observedAt) {
+function parseWeatherBoolean(value) {
+  if (typeof value === 'boolean') return value;
+  const normalized = String(value ?? '').trim().toLowerCase();
+  if (['1', 'true', 'yes', 'on', 'si', 's'].includes(normalized)) return true;
+  if (['0', 'false', 'no', 'off', 'n'].includes(normalized)) return false;
+  return false;
+}
+
+function parseWeatherTimestamp(value, fallback = Date.now()) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    const normalized = value > 10 ** 12 ? value : value * 1000;
+    if (Number.isFinite(normalized)) return normalized;
+  }
+
+  const raw = String(value ?? '').trim();
+  if (/^-?\d+(\.\d+)?$/.test(raw)) {
+    const numeric = Number.parseFloat(raw);
+    const normalized = numeric > 10 ** 12 ? numeric : numeric * 1000;
+    if (Number.isFinite(normalized)) return normalized;
+  }
+
+  const parsed = Date.parse(raw);
+  if (Number.isFinite(parsed)) return parsed;
+  return fallback;
+}
+
+function getRainProbabilityFromOpenMeteoPayload(payload, observedAt) {
   const times = Array.isArray(payload?.hourly?.time) ? payload.hourly.time : [];
   const probabilities = Array.isArray(payload?.hourly?.precipitation_probability)
     ? payload.hourly.precipitation_probability
@@ -298,6 +324,13 @@ function getRainProbabilityFromPayload(payload, observedAt) {
   return Math.max(0, Math.min(100, Math.round(probability)));
 }
 
+function isRainingFromOpenMeteoCode(rawCode) {
+  const code = Number.parseInt(String(rawCode ?? ''), 10);
+  if (!Number.isInteger(code)) return false;
+
+  return new Set([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99]).has(code);
+}
+
 function formatWeatherNumber(value, digits = 1) {
   if (!Number.isFinite(value)) return '--';
   const language = window.LaCasitaI18n?.getLanguage?.() === 'en' ? 'en-US' : 'es-DO';
@@ -324,56 +357,62 @@ function formatWeatherRefreshedAt(value) {
     .replace(',', '');
 }
 
-function renderVillageWeather(card, state) {
-  if (!card) return;
-
-  const statusElement = card.querySelector('[data-weather-status]');
-  const detailsElement = card.querySelector('[data-weather-details]');
-  if (!statusElement || !detailsElement) return;
-
-  const place = String(card.dataset.weatherPlace || 'Punta Cana Village').trim();
-  const zoneLabel = tf('village.weather.zone', { place }, `Zona: ${place}`);
-  const fallbackWeatherStatus = '--%';
-
-  if (state.phase === 'loading') {
-    statusElement.textContent = fallbackWeatherStatus;
-    detailsElement.textContent = zoneLabel;
-    return;
+function mapWeatherFromProxyPayload(payload) {
+  const weather = payload?.weather && typeof payload.weather === 'object' ? payload.weather : payload;
+  if (!weather || typeof weather !== 'object') {
+    throw new Error('weather proxy payload invalid');
   }
 
-  if (state.phase === 'error' || !state.data) {
-    statusElement.textContent = fallbackWeatherStatus;
-    detailsElement.textContent = zoneLabel;
-    return;
+  const temperature = parseWeatherFloat(weather.temperature);
+  const windSpeed = parseWeatherFloat(weather.windSpeed);
+  if (!Number.isFinite(temperature) || !Number.isFinite(windSpeed)) {
+    throw new Error('weather proxy payload invalid');
   }
 
-  const weather = state.data;
-  const rainProbability = Number.isFinite(weather.rainProbability) ? weather.rainProbability : null;
+  const rainProbabilityRaw = parseWeatherFloat(weather.rainProbability);
+  const rainProbability = Number.isFinite(rainProbabilityRaw)
+    ? Math.max(0, Math.min(100, Math.round(rainProbabilityRaw)))
+    : null;
+  const precipMm = parseWeatherFloat(weather.precipMm);
+  const isRainingNow =
+    parseWeatherBoolean(weather.isRainingNow) || (Number.isFinite(precipMm) && precipMm > 0.05);
 
-  statusElement.textContent = rainProbability === null ? fallbackWeatherStatus : `${rainProbability}%`;
-
-  const refreshedAt = formatWeatherRefreshedAt(weather.refreshedAt);
-  detailsElement.textContent = tf(
-    'village.weather.updated',
-    {
-      zone: zoneLabel,
-      temp: formatWeatherNumber(weather.temperature, 1),
-      wind: formatWeatherNumber(weather.windSpeed, 1),
-      time: refreshedAt || '--',
-    },
-    `${zoneLabel} · ${formatWeatherNumber(weather.temperature, 1)}°C · Viento ${formatWeatherNumber(weather.windSpeed, 1)} km/h · Actualizado: ${refreshedAt || '--'}`,
-  );
+  return {
+    temperature,
+    windSpeed,
+    observedAt: parseWeatherTimestamp(weather.observedAt, Date.now()),
+    rainProbability,
+    isRainingNow,
+    refreshedAt: parseWeatherTimestamp(weather.refreshedAt, Date.now()),
+    provider: String(payload?.provider || weather.provider || 'weather-proxy').trim() || 'weather-proxy',
+  };
 }
 
-async function fetchVillageWeather(card) {
-  const latitude = parseWeatherFloat(card?.dataset.weatherLat);
-  const longitude = parseWeatherFloat(card?.dataset.weatherLon);
-  const timezone = String(card?.dataset.weatherTimezone || 'America/Santo_Domingo').trim();
-
-  if (latitude === null || longitude === null) {
-    throw new Error('weather coordinates are missing');
+async function fetchVillageWeatherFromProxy(card, latitude, longitude, timezone) {
+  const endpoint = String(card?.dataset.weatherEndpoint || '').trim();
+  if (!endpoint) {
+    throw new Error('weather endpoint is missing');
   }
 
+  const requestUrl = new URL(endpoint, window.location.origin);
+  requestUrl.searchParams.set('lat', String(latitude));
+  requestUrl.searchParams.set('lon', String(longitude));
+  requestUrl.searchParams.set('timezone', timezone);
+  requestUrl.searchParams.set('lang', window.LaCasitaI18n?.getLanguage?.() === 'en' ? 'en' : 'es');
+
+  const response = await fetch(requestUrl.toString(), {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error(`weather proxy unavailable (${response.status})`);
+  }
+
+  const payload = await response.json();
+  return mapWeatherFromProxyPayload(payload);
+}
+
+async function fetchVillageWeatherFromOpenMeteo(latitude, longitude, timezone) {
   const params = new URLSearchParams({
     latitude: String(latitude),
     longitude: String(longitude),
@@ -398,16 +437,108 @@ async function fetchVillageWeather(card) {
 
   const temperature = parseWeatherFloat(current.temperature);
   const windSpeed = parseWeatherFloat(current.windspeed);
-  const observedAt = String(current.time || '');
-  const rainProbability = getRainProbabilityFromPayload(payload, observedAt);
+  const observedAtRaw = String(current.time || '');
+  const observedAt = parseWeatherTimestamp(observedAtRaw, Date.now());
+  const rainProbability = getRainProbabilityFromOpenMeteoPayload(payload, observedAtRaw);
+  const isRainingNow = isRainingFromOpenMeteoCode(current.weathercode);
 
   return {
     temperature: temperature ?? 0,
     windSpeed: windSpeed ?? 0,
     observedAt,
     rainProbability,
+    isRainingNow,
     refreshedAt: Date.now(),
+    provider: 'open-meteo',
   };
+}
+
+function renderVillageWeather(card, state) {
+  if (!card) return;
+
+  const iconElement = card.querySelector('[data-weather-icon]');
+  const statusElement = card.querySelector('[data-weather-status]');
+  const detailsElement = card.querySelector('[data-weather-details]');
+  if (!statusElement || !detailsElement) return;
+
+  const place = String(card.dataset.weatherPlace || 'Punta Cana Village').trim();
+  const zoneLabel = tf('village.weather.zone', { place }, `Zona: ${place}`);
+  const fallbackWeatherStatus = '--%';
+
+  if (state.phase === 'loading') {
+    if (iconElement) iconElement.textContent = '🌧';
+    statusElement.textContent = fallbackWeatherStatus;
+    detailsElement.textContent = zoneLabel;
+    return;
+  }
+
+  if (state.phase === 'error' || !state.data) {
+    if (iconElement) iconElement.textContent = '🌧';
+    statusElement.textContent = fallbackWeatherStatus;
+    detailsElement.textContent = zoneLabel;
+    return;
+  }
+
+  const weather = state.data;
+  const rainProbability = Number.isFinite(weather.rainProbability) ? weather.rainProbability : null;
+  const isRainingNow = Boolean(weather.isRainingNow);
+  const displayRainProbability = isRainingNow ? 100 : rainProbability;
+
+  statusElement.textContent =
+    displayRainProbability === null ? fallbackWeatherStatus : `${displayRainProbability}%`;
+
+  if (iconElement) {
+    if (isRainingNow) {
+      iconElement.textContent = '🌧';
+    } else if (Number.isFinite(displayRainProbability) && displayRainProbability >= 45) {
+      iconElement.textContent = '🌦';
+    } else {
+      iconElement.textContent = '☀️';
+    }
+  }
+
+  const refreshedAt = formatWeatherRefreshedAt(weather.refreshedAt);
+  const rainNowLabel = isRainingNow
+    ? tf('village.weather.raining', {}, 'Está lloviendo ahora.')
+    : tf('village.weather.clear', {}, 'No está lloviendo ahora.');
+  detailsElement.textContent = tf(
+    'village.weather.updated',
+    {
+      zone: zoneLabel,
+      temp: formatWeatherNumber(weather.temperature, 1),
+      wind: formatWeatherNumber(weather.windSpeed, 1),
+      rain: rainNowLabel,
+      time: refreshedAt || '--',
+    },
+    `${zoneLabel} · ${formatWeatherNumber(weather.temperature, 1)}°C · Viento ${formatWeatherNumber(weather.windSpeed, 1)} km/h · ${rainNowLabel} · Actualizado: ${refreshedAt || '--'}`,
+  );
+}
+
+async function fetchVillageWeather(card) {
+  const latitude = parseWeatherFloat(card?.dataset.weatherLat);
+  const longitude = parseWeatherFloat(card?.dataset.weatherLon);
+  const timezone = String(card?.dataset.weatherTimezone || 'America/Santo_Domingo').trim();
+
+  if (latitude === null || longitude === null) {
+    throw new Error('weather coordinates are missing');
+  }
+
+  const weatherEndpoint = String(card?.dataset.weatherEndpoint || '').trim();
+  let proxyError = null;
+
+  if (weatherEndpoint) {
+    try {
+      return await fetchVillageWeatherFromProxy(card, latitude, longitude, timezone);
+    } catch (error) {
+      proxyError = error;
+    }
+  }
+
+  try {
+    return await fetchVillageWeatherFromOpenMeteo(latitude, longitude, timezone);
+  } catch (openMeteoError) {
+    throw proxyError || openMeteoError;
+  }
 }
 
 function initVillageWeather() {

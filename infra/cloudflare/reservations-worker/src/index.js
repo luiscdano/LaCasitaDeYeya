@@ -6,6 +6,8 @@ const NOTIFICATION_CHANNEL_VALUES = new Set(['email', 'whatsapp']);
 const NOTIFICATION_STATUS_VALUES = new Set(['queued', 'sent', 'failed']);
 const EMAIL_DELIVERY_MODE_VALUES = new Set(['mock', 'disabled', 'resend']);
 const WHATSAPP_DELIVERY_MODE_VALUES = new Set(['mock', 'disabled', 'meta']);
+const WEATHER_LANGUAGE_VALUES = new Set(['es', 'en']);
+const OPEN_METEO_RAIN_CODES = new Set([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99]);
 
 const LOCATION_LABELS = {
   village: 'Village',
@@ -37,6 +39,12 @@ function parsePositiveInteger(raw, fallback) {
 
 function toInteger(value, fallback = 0) {
   const parsed = Number.parseInt(String(value ?? ''), 10);
+  if (!Number.isFinite(parsed)) return fallback;
+  return parsed;
+}
+
+function toFloat(value, fallback = null) {
+  const parsed = Number.parseFloat(String(value ?? ''));
   if (!Number.isFinite(parsed)) return fallback;
   return parsed;
 }
@@ -179,6 +187,103 @@ function getNotificationConfig(env) {
   };
 }
 
+function getWeatherConfig(env) {
+  const cacheTtlSeconds = Math.min(Math.max(parsePositiveInteger(env.WEATHER_CACHE_TTL_SECONDS, 600), 60), 3600);
+  const requestTimeoutMs = Math.min(Math.max(parsePositiveInteger(env.WEATHER_REQUEST_TIMEOUT_MS, 6500), 1000), 20000);
+  const apiBaseUrlRaw =
+    normalizeText(env.WEATHER_API_BASE_URL || 'https://api.weatherapi.com/v1', 220) || 'https://api.weatherapi.com/v1';
+
+  return {
+    apiKey: normalizeText(env.WEATHER_API_KEY || '', 300),
+    apiBaseUrl: apiBaseUrlRaw.replace(/\/+$/, ''),
+    cacheTtlSeconds,
+    requestTimeoutMs,
+  };
+}
+
+function normalizeWeatherLanguage(raw) {
+  const normalized = normalizeText(raw || '', 10).toLowerCase();
+  if (WEATHER_LANGUAGE_VALUES.has(normalized)) return normalized;
+  return 'es';
+}
+
+function parseCoordinate(raw, min, max) {
+  const parsed = toFloat(raw, null);
+  if (!Number.isFinite(parsed)) return null;
+  if (parsed < min || parsed > max) return null;
+  return Number(parsed.toFixed(5));
+}
+
+function parsePercentage(raw) {
+  const parsed = toFloat(raw, null);
+  if (!Number.isFinite(parsed)) return null;
+  return Math.max(0, Math.min(100, Math.round(parsed)));
+}
+
+function getWeatherApiRainProbability(payload, observedAtEpochSeconds) {
+  const hourly = payload?.forecast?.forecastday?.[0]?.hour;
+  if (Array.isArray(hourly) && hourly.length) {
+    const referenceEpoch = observedAtEpochSeconds > 0 ? observedAtEpochSeconds : Math.floor(Date.now() / 1000);
+    let nearestChance = null;
+    let nearestDiff = Number.POSITIVE_INFINITY;
+
+    for (const item of hourly) {
+      const epoch = toInteger(item?.time_epoch, 0);
+      const chance = parsePercentage(item?.chance_of_rain);
+      if (!epoch || chance === null) continue;
+
+      const diff = Math.abs(epoch - referenceEpoch);
+      if (diff < nearestDiff) {
+        nearestDiff = diff;
+        nearestChance = chance;
+      }
+    }
+
+    if (nearestChance !== null) return nearestChance;
+  }
+
+  return parsePercentage(payload?.forecast?.forecastday?.[0]?.day?.daily_chance_of_rain);
+}
+
+function getOpenMeteoRainProbability(payload, observedAt) {
+  const times = Array.isArray(payload?.hourly?.time) ? payload.hourly.time : [];
+  const probabilities = Array.isArray(payload?.hourly?.precipitation_probability)
+    ? payload.hourly.precipitation_probability
+    : [];
+
+  if (!times.length || !probabilities.length) return null;
+
+  let targetIndex = times.findIndex((time) => String(time) === observedAt);
+  if (targetIndex === -1) {
+    const observedHour = String(observedAt || '').slice(0, 13);
+    targetIndex = times.findIndex((time) => String(time).slice(0, 13) === observedHour);
+  }
+
+  if (targetIndex === -1) {
+    const referenceTime = Number.isFinite(Date.parse(String(observedAt || '')))
+      ? Date.parse(String(observedAt || ''))
+      : Date.now();
+    let bestIndex = 0;
+    let bestDiff = Number.POSITIVE_INFINITY;
+
+    times.forEach((time, index) => {
+      const parsedTime = Date.parse(String(time));
+      if (!Number.isFinite(parsedTime)) return;
+      const diff = Math.abs(parsedTime - referenceTime);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        bestIndex = index;
+      }
+    });
+
+    targetIndex = bestIndex;
+  }
+
+  const probability = toFloat(probabilities[targetIndex], null);
+  if (!Number.isFinite(probability)) return null;
+  return Math.max(0, Math.min(100, Math.round(probability)));
+}
+
 function getClientIp(request) {
   return (
     normalizeText(request.headers.get('CF-Connecting-IP') || '', 64) ||
@@ -218,7 +323,7 @@ function getSecurityHeaders() {
   };
 }
 
-function jsonResponse(request, env, body, status = 200, extraHeaders = {}) {
+function jsonResponse(request, env, body, status = 200, extraHeaders = {}, cacheControl = 'no-store') {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
@@ -226,7 +331,7 @@ function jsonResponse(request, env, body, status = 200, extraHeaders = {}) {
       ...getSecurityHeaders(),
       ...extraHeaders,
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'no-store',
+      'Cache-Control': cacheControl,
     },
   });
 }
@@ -2337,6 +2442,283 @@ async function updateReservationStatus(env, notificationConfig, reservationId, p
   };
 }
 
+async function fetchWeatherApiForecast(weatherConfig, latitude, longitude, language) {
+  const upstreamUrl = new URL(`${weatherConfig.apiBaseUrl}/forecast.json`);
+  upstreamUrl.searchParams.set('key', weatherConfig.apiKey);
+  upstreamUrl.searchParams.set('q', `${latitude},${longitude}`);
+  upstreamUrl.searchParams.set('days', '1');
+  upstreamUrl.searchParams.set('aqi', 'no');
+  upstreamUrl.searchParams.set('alerts', 'no');
+  upstreamUrl.searchParams.set('lang', language);
+
+  const controller = new AbortController();
+  const timeoutHandle = setTimeout(() => {
+    controller.abort('weather_timeout');
+  }, weatherConfig.requestTimeoutMs);
+
+  try {
+    return await fetch(upstreamUrl.toString(), {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+      signal: controller.signal,
+      cf: {
+        cacheTtl: 0,
+      },
+    });
+  } finally {
+    clearTimeout(timeoutHandle);
+  }
+}
+
+async function fetchOpenMeteoForecast(latitude, longitude, timezone) {
+  const params = new URLSearchParams({
+    latitude: String(latitude),
+    longitude: String(longitude),
+    current_weather: 'true',
+    hourly: 'precipitation_probability',
+    timezone,
+  });
+
+  return fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+    cf: {
+      cacheTtl: 0,
+    },
+  });
+}
+
+async function handlePublicWeatherCurrentRoute(request, env, url, context = {}) {
+  const requestId = normalizeText(context.requestId || '', 80);
+  const weatherConfig = getWeatherConfig(env);
+
+  const latitude = parseCoordinate(url.searchParams.get('lat'), -90, 90);
+  const longitude = parseCoordinate(url.searchParams.get('lon'), -180, 180);
+  const timezone =
+    normalizeText(url.searchParams.get('timezone') || 'America/Santo_Domingo', 64) || 'America/Santo_Domingo';
+  const language = normalizeWeatherLanguage(url.searchParams.get('lang'));
+
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return jsonResponse(
+      request,
+      env,
+      {
+        ok: false,
+        code: 'invalid_coordinates',
+        error: 'Parametros de latitud/longitud invalidos.',
+      },
+      422,
+      { 'X-Request-Id': requestId },
+    );
+  }
+
+  const cacheControl = `public, max-age=${weatherConfig.cacheTtlSeconds}, s-maxage=${weatherConfig.cacheTtlSeconds}`;
+  const cacheKey = new Request(
+    `https://weather-cache.lacasita/api/weather/current?lat=${latitude}&lon=${longitude}&timezone=${encodeURIComponent(timezone)}&lang=${language}`,
+    { method: 'GET' },
+  );
+
+  try {
+    const cachedResponse = await caches.default.match(cacheKey);
+    if (cachedResponse) {
+      const cachedBody = await cachedResponse.json();
+      return jsonResponse(
+        request,
+        env,
+        {
+          ...cachedBody,
+          cache: 'hit',
+        },
+        200,
+        {
+          'X-Request-Id': requestId,
+          'X-Weather-Cache': 'HIT',
+        },
+        cacheControl,
+      );
+    }
+  } catch {
+    // Cache read failures should not break weather resolution.
+  }
+
+  let weatherBody = null;
+  let weatherApiError = null;
+
+  if (weatherConfig.apiKey) {
+    let upstreamResponse;
+    try {
+      upstreamResponse = await fetchWeatherApiForecast(weatherConfig, latitude, longitude, language);
+    } catch (error) {
+      weatherApiError = error;
+      upstreamResponse = null;
+    }
+
+    if (upstreamResponse?.ok) {
+      let payload = null;
+      try {
+        payload = await upstreamResponse.json();
+      } catch {
+        payload = null;
+      }
+
+      const current = payload?.current || null;
+      const temperature = toFloat(current?.temp_c, null);
+      const windSpeed = toFloat(current?.wind_kph, null);
+      const precipMm = toFloat(current?.precip_mm, 0);
+      const observedAtEpochSeconds = toInteger(current?.last_updated_epoch, 0);
+      const rainProbability = getWeatherApiRainProbability(payload, observedAtEpochSeconds);
+      const isRainingNow = Number.isFinite(precipMm) && precipMm > 0.05;
+
+      if (Number.isFinite(temperature) && Number.isFinite(windSpeed)) {
+        weatherBody = {
+          ok: true,
+          provider: 'weatherapi',
+          weather: {
+            temperature: Number(temperature.toFixed(1)),
+            windSpeed: Number(windSpeed.toFixed(1)),
+            rainProbability,
+            isRainingNow,
+            precipMm: Number((precipMm || 0).toFixed(2)),
+            observedAt:
+              observedAtEpochSeconds > 0
+                ? new Date(observedAtEpochSeconds * 1000).toISOString()
+                : new Date().toISOString(),
+            refreshedAt: Date.now(),
+            timezone,
+          },
+        };
+      }
+    } else if (upstreamResponse) {
+      weatherApiError = new Error(`weatherapi_upstream_${upstreamResponse.status}`);
+    }
+  }
+
+  if (!weatherBody) {
+    let openMeteoResponse;
+    try {
+      openMeteoResponse = await fetchOpenMeteoForecast(latitude, longitude, timezone);
+    } catch (error) {
+      const weatherApiErrorMessage = normalizeText(weatherApiError?.message || '', 160);
+      return jsonResponse(
+        request,
+        env,
+        {
+          ok: false,
+          code: 'weather_upstream_error',
+          error: 'No se pudo consultar el proveedor de clima.',
+          ...(weatherApiErrorMessage ? { provider_detail: weatherApiErrorMessage } : {}),
+        },
+        503,
+        { 'X-Request-Id': requestId },
+      );
+    }
+
+    if (!openMeteoResponse.ok) {
+      const weatherApiErrorMessage = normalizeText(weatherApiError?.message || '', 160);
+      return jsonResponse(
+        request,
+        env,
+        {
+          ok: false,
+          code: 'weather_upstream_unavailable',
+          error: `Proveedor de clima no disponible (${openMeteoResponse.status}).`,
+          ...(weatherApiErrorMessage ? { provider_detail: weatherApiErrorMessage } : {}),
+        },
+        503,
+        { 'X-Request-Id': requestId },
+      );
+    }
+
+    let openMeteoPayload = null;
+    try {
+      openMeteoPayload = await openMeteoResponse.json();
+    } catch {
+      return jsonResponse(
+        request,
+        env,
+        {
+          ok: false,
+          code: 'weather_payload_invalid',
+          error: 'Respuesta invalida del proveedor de clima.',
+        },
+        503,
+        { 'X-Request-Id': requestId },
+      );
+    }
+
+    const current = openMeteoPayload?.current_weather || null;
+    const temperature = toFloat(current?.temperature, null);
+    const windSpeed = toFloat(current?.windspeed, null);
+    const observedAt = normalizeText(current?.time || '', 40);
+    const rainProbability = getOpenMeteoRainProbability(openMeteoPayload, observedAt);
+    const weatherCode = toInteger(current?.weathercode, -1);
+    const isRainingNow = OPEN_METEO_RAIN_CODES.has(weatherCode);
+    const observedAtTimestamp = Date.parse(observedAt);
+
+    if (!Number.isFinite(temperature) || !Number.isFinite(windSpeed)) {
+      return jsonResponse(
+        request,
+        env,
+        {
+          ok: false,
+          code: 'weather_payload_invalid',
+          error: 'Respuesta invalida del proveedor de clima.',
+        },
+        503,
+        { 'X-Request-Id': requestId },
+      );
+    }
+
+    weatherBody = {
+      ok: true,
+      provider: 'open-meteo',
+      weather: {
+        temperature: Number(temperature.toFixed(1)),
+        windSpeed: Number(windSpeed.toFixed(1)),
+        rainProbability,
+        isRainingNow,
+        precipMm: null,
+        observedAt: Number.isFinite(observedAtTimestamp) ? new Date(observedAtTimestamp).toISOString() : new Date().toISOString(),
+        refreshedAt: Date.now(),
+        timezone,
+      },
+    };
+  }
+
+  const cachePayloadResponse = new Response(JSON.stringify(weatherBody), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': cacheControl,
+    },
+  });
+
+  if (context.executionCtx?.waitUntil) {
+    context.executionCtx.waitUntil(caches.default.put(cacheKey, cachePayloadResponse.clone()));
+  } else {
+    await caches.default.put(cacheKey, cachePayloadResponse.clone());
+  }
+
+  return jsonResponse(
+    request,
+    env,
+    {
+      ...weatherBody,
+      cache: 'miss',
+    },
+    200,
+    {
+      'X-Request-Id': requestId,
+      'X-Weather-Cache': 'MISS',
+    },
+    cacheControl,
+  );
+}
+
 async function handleInternalRoutes(request, env, path, url, context = {}) {
   const requestId = normalizeText(context.requestId || '', 80);
   const authState = getInternalAuthState(request, env);
@@ -2706,7 +3088,7 @@ async function handleInternalRoutes(request, env, path, url, context = {}) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, executionCtx) {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '') || '/';
     const requestId = createRequestId();
@@ -2804,6 +3186,55 @@ export default {
             503,
             responseHeaders,
           );
+        }
+        return response;
+      }
+
+      if (path === '/api/weather/current') {
+        if (request.method !== 'GET') {
+          response = jsonResponse(
+            request,
+            env,
+            { ok: false, code: 'method_not_allowed', error: 'Metodo no permitido.' },
+            405,
+            responseHeaders,
+          );
+          return response;
+        }
+
+        try {
+          response = await handlePublicWeatherCurrentRoute(request, env, url, {
+            requestId,
+            executionCtx,
+          });
+        } catch (error) {
+          const message = normalizeText(error?.message || 'internal_error', 300);
+          logEvent(env, 'error', 'weather_route_failed', {
+            request_id: requestId,
+            method,
+            path,
+            error: message,
+          });
+
+          const body = {
+            ok: false,
+            code: 'internal_error',
+            error: 'No se pudo obtener el clima.',
+          };
+          if (shouldExposeInternalErrors(env)) {
+            body.detail = message || 'internal_error';
+          }
+          response = jsonResponse(request, env, body, 500, responseHeaders);
+        }
+
+        if (response && !response.headers.get('X-Request-Id')) {
+          response = new Response(response.body, {
+            status: response.status,
+            headers: {
+              ...Object.fromEntries(response.headers.entries()),
+              ...responseHeaders,
+            },
+          });
         }
         return response;
       }

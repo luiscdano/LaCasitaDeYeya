@@ -9,6 +9,7 @@ Tambien procesa solicitudes generales de eventos desde `abastecimiento/index.htm
 Publicos:
 
 - `GET /api/health`
+- `GET /api/weather/current?lat=<lat>&lon=<lon>&timezone=<tz>&lang=<es|en>`
 - `POST /api/reservations`
 - `POST /api/catering-requests`
 
@@ -98,6 +99,19 @@ wrangler deploy
 cd infra/cloudflare/reservations-worker
 wrangler secret put INTERNAL_API_KEY
 ```
+
+8. Configurar clima (WeatherAPI) para `GET /api/weather/current`:
+
+```bash
+cd infra/cloudflare/reservations-worker
+wrangler secret put WEATHER_API_KEY
+```
+
+Opcional en `wrangler.toml`:
+
+- `WEATHER_CACHE_TTL_SECONDS` (default: `600`)
+- `WEATHER_REQUEST_TIMEOUT_MS` (default: `6500`)
+- `WEATHER_API_BASE_URL` (default: `https://api.weatherapi.com/v1`)
 
 ## Origenes permitidos
 
@@ -196,5 +210,6 @@ Opcional:
 ## Observabilidad
 
 - Header `X-Request-Id` en respuestas para trazabilidad.
+- Header `X-Weather-Cache` (`HIT`/`MISS`) en `GET /api/weather/current`.
 - Endpoint interno `GET /api/internal/metrics/summary`.
 - Logs estructurados en Worker (`http_request`, `reservation_created`, `notifications_dispatched`, etc.) controlados por `LOG_LEVEL`.
