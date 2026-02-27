@@ -840,16 +840,17 @@ body.home-view .section-block {
   line-height: 1.4;
 }
 
-.locality-detail-village .village-contact-card > h3 {
-  min-height: 0;
-}
-
-.locality-detail-village .village-contact-card .village-contact-list {
-  margin-top: 0;
-}
-
-.locality-detail-village .village-contact-card {
+.locality-detail-village .grid > .card.village-contact-card {
   display: block;
+}
+
+.locality-detail-village .grid > .card.village-contact-card > h3 {
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.locality-detail-village .grid > .card.village-contact-card .village-contact-list {
+  margin-top: 0;
 }
 
 .locality-detail-village .village-hours-list span,
