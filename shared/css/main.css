@@ -689,6 +689,31 @@ body.home-view .section-block {
   grid-row: 1 / span 2;
 }
 
+.locality-detail-village .corales-food-showcase-grid .home-food-item.item-1 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.locality-detail-village .corales-food-showcase-grid .home-food-item.item-2 {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.locality-detail-village .corales-food-showcase-grid .home-food-item.item-3 {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.locality-detail-village .corales-food-showcase-grid .home-food-item.item-4 {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.locality-detail-village .corales-food-showcase-grid .home-food-item.item-5 {
+  grid-column: 3;
+  grid-row: 2;
+}
+
 .locality-detail {
   margin-top: clamp(1.1rem, 2.2vw, 2rem);
 }
@@ -1909,9 +1934,15 @@ body.menu-view .menu-book-controls-bottom {
   .home-food-item.item-1,
   .home-food-item.item-2,
   .home-food-item.item-3,
-  .home-food-item.item-4 {
+  .home-food-item.item-4,
+  .home-food-item.item-5 {
     grid-column: auto;
     grid-row: auto;
+  }
+
+  .locality-detail-village .corales-food-showcase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(210px, 44vw));
   }
 
   .locality-hero,
@@ -2281,6 +2312,11 @@ body.menu-view .menu-book-controls-bottom {
     grid-template-rows: repeat(4, minmax(180px, 62vw));
     padding: 0 clamp(0.12rem, 1.1vw, 0.28rem);
     gap: clamp(0.12rem, 0.9vw, 0.28rem);
+  }
+
+  .locality-detail-village .corales-food-showcase-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, minmax(180px, 62vw));
   }
 
   .locality-detail-village .village-title-welcome {

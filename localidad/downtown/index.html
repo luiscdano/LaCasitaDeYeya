@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Downtown: información operativa y comercial del local Downtown." />
+    <meta name="description" content="Downtown: información operativa y de experiencia del local Downtown." />
     <title>La Casita de Yeya | Downtown</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Nunito+Sans:wght@400;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Bree+Serif&family=Nunito+Sans:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../../shared/css/main.css?v=20260224i18n2" />
+    <link rel="stylesheet" href="../../shared/css/main.css?v=20260227locd1" />
   </head>
-  <body>
+  <body class="village-view">
     <header class="topbar">
       <div class="container topbar-inner">
         <a href="../../index.html" class="brand" aria-label="Ir a inicio">
@@ -55,36 +55,101 @@
     </header>
 
     <main>
-      <section class="container section-block locality-detail locality-detail-right">
+      <section class="container section-block locality-detail locality-detail-left locality-detail-village">
         <div class="locality-hero">
-          <div class="locality-hero-copy">
-            <h1>Downtown</h1>
-            <p>Sucursal orientada a ritmo urbano, alta rotación y experiencia rápida de servicio.</p>
-          </div>
           <figure class="locality-hero-media">
             <img src="img/downtown.webp?v=20260220opt1" alt="Espacio de La Casita de Yeya en Downtown" />
           </figure>
+          <div class="locality-hero-copy village-hero-copy">
+            <h1 class="village-title">
+              <span class="village-title-welcome">Bienvenidos a</span>
+              <span class="village-title-name">Downtown</span>
+            </h1>
+            <p>Ambiente urbano para compartir comida dominicana con servicio ágil y cercano.</p>
+          </div>
         </div>
 
         <div class="grid">
           <article class="card">
-            <h3>Horario sugerido</h3>
-            <p>Lunes a domingo: 9:00 AM - 11:00 PM</p>
+            <h3>Horario</h3>
+            <p class="village-hours-list">
+              <span>Lunes a jueves: 9:00 AM - 10:00 PM</span>
+              <span>Viernes y sábado: 9:00 AM - 11:00 PM</span>
+              <span>Domingos: 9:00 AM - 10:00 PM</span>
+              <span>Días festivos: Los Horarios Pueden Variar</span>
+            </p>
           </article>
-          <article class="card">
-            <h3>Dirección</h3>
-            <p>Zona Downtown Punta Cana, área gastronómica principal.</p>
+          <article
+            class="card"
+            data-weather-card
+            data-weather-lat="18.6350091"
+            data-weather-lon="-68.3951702"
+            data-weather-timezone="America/Santo_Domingo"
+            data-weather-place="Downtown Punta Cana"
+            data-weather-endpoint="https://lacasita-reservations-api.lacasita-yeya.workers.dev/api/weather/current"
+          >
+            <h3 class="village-weather-title">
+              <span>Clima</span>
+              <span class="village-weather-readout" aria-live="polite">
+                <span class="village-weather-icon" data-weather-icon aria-hidden="true">🌧</span>
+                <span class="village-weather-status" data-weather-status>--%</span>
+              </span>
+            </h3>
+            <p class="village-weather-details" data-weather-details>Zona: Downtown Punta Cana</p>
           </article>
-          <article class="card">
+          <article class="card village-contact-card">
             <h3>Contacto</h3>
-            <p>Canal de pedidos para pickup y reservas de grupos.</p>
+            <p class="village-contact-list">
+              <span>Teléfono restaurante: <a href="tel:+18093991979">(809) 399-1979</a></span>
+              <span>Correo: pendiente</span>
+              <span>WhatsApp: pendiente</span>
+            </p>
           </article>
+        </div>
+
+        <div class="home-food-showcase village-food-showcase" aria-label="Galería destacada de La Casita de Yeya">
+          <div class="home-food-showcase-grid village-food-showcase-grid">
+            <figure class="home-food-item village-food-item item-1">
+              <img src="img/9.webp?v=20260227locd1" alt="Galería destacada de La Casita de Yeya Downtown" loading="eager" decoding="sync" />
+            </figure>
+            <figure class="home-food-item village-food-item item-2">
+              <img src="img/10.webp?v=20260227locd1" alt="Galería destacada de La Casita de Yeya Downtown" loading="eager" decoding="sync" />
+            </figure>
+            <figure class="home-food-item village-food-item item-3">
+              <img src="img/11.webp?v=20260227locd1" alt="Galería destacada de La Casita de Yeya Downtown" loading="eager" decoding="sync" />
+            </figure>
+            <figure class="home-food-item village-food-item item-4">
+              <img src="img/12.webp?v=20260227locd1" alt="Galería destacada de La Casita de Yeya Downtown" loading="eager" decoding="sync" />
+            </figure>
+          </div>
         </div>
 
         <div class="actions">
           <a class="btn btn-primary" href="../../reserva/index.html">Reservar en Downtown</a>
           <a class="btn btn-secondary" href="../../menu/index.html">Ver menú</a>
         </div>
+
+        <section class="village-map-section" aria-labelledby="downtown-map-heading">
+          <div class="container">
+            <h2 id="downtown-map-heading" class="instagram-title village-map-title">Ubicanos aquí</h2>
+          </div>
+          <div class="village-map-frame-wrap">
+            <iframe
+              title="Ubicación de La Casita de Yeya Downtown en Google Maps"
+              src="https://www.google.com/maps?q=18.6350091,-68.3951702&z=17&output=embed"
+              loading="lazy"
+              allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+            <a
+              class="village-map-link"
+              href="https://www.google.com/maps/dir/?api=1&destination=18.6350091,-68.3951702&travelmode=driving"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Abrir ubicacion de La Casita de Yeya Downtown en Google Maps"
+            ></a>
+          </div>
+        </section>
       </section>
     </main>
 
@@ -106,8 +171,6 @@
         </div>
       </div>
     </footer>
-
-
 
     <script src="../../shared/js/i18n.js?v=20260227i18n7"></script>
     <script src="../../shared/js/main.js?v=20260227main7"></script>
