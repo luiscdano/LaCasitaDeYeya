@@ -840,12 +840,12 @@ body.home-view .section-block {
   line-height: 1.4;
 }
 
-.locality-detail-village .village-contact-list {
-  margin-top: 0.08rem;
+.locality-detail-village .village-contact-card > h3 {
+  min-height: 0;
 }
 
 .locality-detail-village .village-contact-card .village-contact-list {
-  margin-top: -0.16rem;
+  margin-top: 0;
 }
 
 .locality-detail-village .village-hours-list span,
