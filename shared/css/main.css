@@ -833,7 +833,19 @@ body.home-view .section-block {
 }
 
 .locality-detail.locality-detail-village.locality-detail-left .locality-hero-media img {
-  transform: translateX(clamp(1.2rem, 2.2vw, 2.8rem));
+  transform: translateX(clamp(2.2rem, 3.7vw, 4.8rem));
+}
+
+.locality-detail.locality-detail-village.locality-detail-downtown .locality-hero {
+  gap: clamp(0.3rem, 0.95vw, 0.9rem);
+}
+
+.locality-detail.locality-detail-village.locality-detail-downtown .locality-hero-media {
+  justify-self: start;
+}
+
+.locality-detail.locality-detail-village.locality-detail-downtown .locality-hero-media img {
+  transform: translateX(clamp(0.25rem, 0.95vw, 1rem));
 }
 
 .locality-detail.locality-detail-village > .grid {
