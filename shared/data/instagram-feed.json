@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-02-27T19:03:31Z",
+  "fetched_at": "2026-02-28T02:39:59Z",
   "posts": [
+    {
+      "id": "3841983670558781247",
+      "shortcode": "DVRd8rsge8_",
+      "permalink": "https://www.instagram.com/reel/DVRd8rsge8_/",
+      "image": "shared/data/instagram/DVRd8rsge8_.jpg",
+      "caption": "Disfruta un 2x1 en el trago la pasión de quisqueya🇩🇴🍹\nCon @ronbrugalrd en nuestra casita del village y Chinola.\n\n#ronbrugalrd @thevillagepuntacana",
+      "is_video": true,
+      "taken_at_timestamp": 1772220430
+    },
     {
       "id": "3841854037423888111",
       "shortcode": "DVRAeRbjRbv",
@@ -83,15 +92,6 @@
       "caption": "Un buen tajo’ de carne, como manda la casa🥩🔥",
       "is_video": false,
       "taken_at_timestamp": 1769538697
-    },
-    {
-      "id": "3817284483197037022",
-      "shortcode": "DT5uAM7kene",
-      "permalink": "https://www.instagram.com/p/DT5uAM7kene/",
-      "image": "shared/data/instagram/DT5uAM7kene.jpg",
-      "caption": "Nuestra mesa celebra el verdadero sabor dominicano🇩🇴 | #puntacanasabeayeya",
-      "is_video": false,
-      "taken_at_timestamp": 1769275793
     }
   ]
 }
