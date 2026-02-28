@@ -837,7 +837,8 @@ body.home-view .section-block {
 }
 
 .locality-detail.locality-detail-village.locality-detail-downtown .locality-hero {
-  gap: clamp(0.08rem, 0.5vw, 0.45rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(0rem, 0.2vw, 0.18rem);
 }
 
 .locality-detail.locality-detail-village.locality-detail-downtown .locality-hero-media {
@@ -845,12 +846,12 @@ body.home-view .section-block {
 }
 
 .locality-detail.locality-detail-village.locality-detail-downtown .locality-hero-media img {
-  transform: translateX(clamp(0.95rem, 1.6vw, 1.9rem));
+  transform: translateX(clamp(2.35rem, 3.8vw, 4.2rem));
 }
 
 .locality-detail.locality-detail-village.locality-detail-downtown .village-hero-copy {
   justify-self: start;
-  transform: translateX(clamp(-1rem, -1.6vw, -0.35rem));
+  transform: translateX(clamp(-2.2rem, -3.4vw, -1.05rem));
 }
 
 .locality-detail.locality-detail-village > .grid {
@@ -1994,6 +1995,10 @@ body.menu-view .menu-book-controls-bottom {
   }
 
   .locality-detail.locality-detail-village.locality-detail-left .locality-hero-media img {
+    transform: none;
+  }
+
+  .locality-detail.locality-detail-village.locality-detail-downtown .village-hero-copy {
     transform: none;
   }
 
