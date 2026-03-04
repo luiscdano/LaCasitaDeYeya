@@ -1,5 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 
+const chromeBgStart = 'rgba(247, 233, 181, 0.96)';
+const chromeBgEnd = 'rgba(236, 217, 147, 0.96)';
+const chromeText = '#4f3b14';
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -43,7 +47,8 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          background: 'linear-gradient(120deg, rgba(8, 32, 119, 0.96), rgba(15, 86, 174, 0.96))',
+          background: `linear-gradient(120deg, ${chromeBgStart}, ${chromeBgEnd})`,
+          color: chromeText,
         },
       },
     },
