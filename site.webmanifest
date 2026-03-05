@@ -1,0 +1,30 @@
+{
+  "name": "La Casita de Yeya",
+  "short_name": "La Casita de Yeya",
+  "description": "Sitio oficial de La Casita de Yeya.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f7e9b5",
+  "icons": [
+    {
+      "src": "/shared/img/favicon-192x192.png?v=20260304fav2",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/shared/img/favicon-512x512.png?v=20260304fav2",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/shared/img/favicon-512x512.png?v=20260304fav2",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
