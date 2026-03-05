@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Internal/admin paths
+Disallow: /reserva/panel/
+Disallow: /reserva/panel-react/
+Disallow: /apps/admin-panel/
+
+Sitemap: https://lacasitadeyeya.com.do/sitemap.xml
