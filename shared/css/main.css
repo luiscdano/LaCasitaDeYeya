@@ -15,8 +15,11 @@
   --ink-700: #4e5f78;
   --surface: #ffffff;
   --surface-soft: #edf2f7;
-  --chrome-bg-start: rgba(247, 233, 181, 0.96);
-  --chrome-bg-end: rgba(236, 217, 147, 0.96);
+  /* Single control point for header/footer color updates requested by client. */
+  --client-chrome-bg-start: rgba(247, 233, 181, 0.96);
+  --client-chrome-bg-end: rgba(236, 217, 147, 0.96);
+  --chrome-bg-start: var(--client-chrome-bg-start);
+  --chrome-bg-end: var(--client-chrome-bg-end);
   --chrome-text: #4f3b14;
   --chrome-border: rgba(125, 98, 36, 0.36);
   --chrome-control-border: rgba(125, 98, 36, 0.38);
@@ -1224,6 +1227,22 @@ body.home-view .section-block {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.footer-contact-row {
+  font-size: 0.84rem;
+  font-weight: 700;
+  max-width: 100%;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.35;
+}
+
+.footer-contact-row a {
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .footer-social {

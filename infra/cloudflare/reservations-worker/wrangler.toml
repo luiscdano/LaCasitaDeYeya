@@ -5,7 +5,7 @@ workers_dev = true
 preview_urls = true
 
 [vars]
-ALLOWED_ORIGINS = "https://lacasitadeyeya.com,https://www.lacasitadeyeya.com,https://luiscdano.github.io,http://localhost:8080,http://127.0.0.1:8080"
+ALLOWED_ORIGINS = "https://lacasitadeyeya.com.do,https://www.lacasitadeyeya.com.do,https://lacasitadeyeya.com,https://www.lacasitadeyeya.com,https://luiscdano.github.io,http://localhost:8080,http://127.0.0.1:8080"
 RATE_LIMIT_WINDOW_SECONDS = "600"
 RATE_LIMIT_MAX_PER_IP = "4"
 RATE_LIMIT_MAX_PER_EMAIL_DAY = "8"
@@ -19,7 +19,7 @@ NOTIFY_OPERATIONS_ON_CATERING_CREATE = "true"
 EMAIL_DELIVERY_MODE = "mock"
 WHATSAPP_DELIVERY_MODE = "mock"
 WABA_API_VERSION = "v21.0"
-INTERNAL_ALLOWED_ORIGINS = "https://lacasitadeyeya.com,https://www.lacasitadeyeya.com,https://luiscdano.github.io,http://localhost:8080,http://127.0.0.1:8080"
+INTERNAL_ALLOWED_ORIGINS = "https://lacasitadeyeya.com.do,https://www.lacasitadeyeya.com.do,https://lacasitadeyeya.com,https://www.lacasitadeyeya.com,https://luiscdano.github.io,http://localhost:8080,http://127.0.0.1:8080"
 LOG_LEVEL = "info"
 DEBUG_INTERNAL_ERRORS = "false"
 WEATHER_CACHE_TTL_SECONDS = "600"

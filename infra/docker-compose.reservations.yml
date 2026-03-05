@@ -29,7 +29,7 @@ services:
       NODE_ENV: ${NODE_ENV:-development}
       PORT: 8789
       DATABASE_URL: ${DATABASE_URL:-postgresql://lacasita:lacasita_dev_password@reservations-db:5432/lacasita_reservations}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://127.0.0.1:8080,https://luiscdano.github.io}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://lacasitadeyeya.com.do,https://www.lacasitadeyeya.com.do,http://localhost:8080,http://127.0.0.1:8080,https://luiscdano.github.io}
       EMAIL_NOTIFICATIONS_ENABLED: ${EMAIL_NOTIFICATIONS_ENABLED:-false}
       EMAIL_FROM: ${EMAIL_FROM:-}
       EMAIL_TO: ${EMAIL_TO:-}
