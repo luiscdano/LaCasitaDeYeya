@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-03-08T13:10:47Z",
+  "fetched_at": "2026-03-09T03:15:29Z",
   "posts": [
+    {
+      "id": "3848543047969242436",
+      "shortcode": "DVoxYL9AX1E",
+      "permalink": "https://www.instagram.com/p/DVoxYL9AX1E/",
+      "image": "shared/data/instagram/DVoxYL9AX1E.jpg",
+      "caption": "Crujiente por fuera, deliciosa por dentro… Nuestras empanadas, rellénalas a tu gusto🇩🇴\n\n#empanadasdominicanas",
+      "is_video": false,
+      "taken_at_timestamp": 1773002153
+    },
     {
       "id": "3844083155003876344",
       "shortcode": "DVY7UM9EaP4",
@@ -83,15 +92,6 @@
       "caption": "Noticia de último minuto🚨🗞️😱 \nTransmisión en vivo desde el punto con los mejores caldos de Punta Cana 🏠🔥\nLa Casita de Yeya tiene el remedio oficial contra el frío. \n\n#puntacana #sancocho",
       "is_video": true,
       "taken_at_timestamp": 1770130443
-    },
-    {
-      "id": "3823796050004640993",
-      "shortcode": "DUQ2j-GEYTh",
-      "permalink": "https://www.instagram.com/p/DUQ2j-GEYTh/",
-      "image": "shared/data/instagram/DUQ2j-GEYTh.jpg",
-      "caption": "Febrero llegó con lluvia y Yeya trajo el caldo 🍲☔️ #sancochodominicano",
-      "is_video": false,
-      "taken_at_timestamp": 1770052118
     }
   ]
 }
