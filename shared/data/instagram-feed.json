@@ -1,8 +1,26 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-03-10T13:38:32Z",
+  "fetched_at": "2026-03-10T19:09:18Z",
   "posts": [
+    {
+      "id": "3849845368649781835",
+      "shortcode": "DVtZfcmjZJL",
+      "permalink": "https://www.instagram.com/reel/DVtZfcmjZJL/",
+      "image": "shared/data/instagram/DVtZfcmjZJL.jpg",
+      "caption": "Ya entendieron?! #platanopower 🇩🇴⚾️\n-\n\nCréditos del video: MLB Dominicana. \n#respost",
+      "is_video": true,
+      "taken_at_timestamp": 1773157519
+    },
+    {
+      "id": "3849841106188341278",
+      "shortcode": "DVtYha4DZAe",
+      "permalink": "https://www.instagram.com/p/DVtYha4DZAe/",
+      "image": "shared/data/instagram/DVtYha4DZAe.jpg",
+      "caption": "Plátano Power 🇩🇴💪🏽⚾️\n¡En Yeya estamos gozando viendo lo duro que está nuestro equipo en la @wbcbaseball !\nVamo’ arriba!! \n-\n@mlbdominicana",
+      "is_video": false,
+      "taken_at_timestamp": 1773156975
+    },
     {
       "id": "3848543047969242436",
       "shortcode": "DVoxYL9AX1E",
@@ -74,24 +92,6 @@
       "caption": "Ossobuco al vino con puré de cepa de apio, uno de los especiales de nuestro menú del Amor y la Amistad.\nDisponible desde hoy hasta el domingo en el Village.\nVen a compartir el amor… y el sabor. ❤️🥂\nDei’ campo a la mesa. \n\n#LaCasitaDeYeya #DelCampoALaMesa #cepadeapio #constanza",
       "is_video": true,
       "taken_at_timestamp": 1770920047
-    },
-    {
-      "id": "3828159387584792985",
-      "shortcode": "DUgWq44kYmZ",
-      "permalink": "https://www.instagram.com/p/DUgWq44kYmZ/",
-      "image": "shared/data/instagram/DUgWq44kYmZ.jpg",
-      "caption": "Celebrando el día nacional del: MANGÚ🇩🇴\n-\nEl segundo Domingo de febrero conmemoramos este día con los 3 golpes, disponibles todos los días en todas nuestras casitas todo el día.",
-      "is_video": false,
-      "taken_at_timestamp": 1770572274
-    },
-    {
-      "id": "3824452179550079871",
-      "shortcode": "DUTLv6WjQt_",
-      "permalink": "https://www.instagram.com/reel/DUTLv6WjQt_/",
-      "image": "shared/data/instagram/DUTLv6WjQt_.jpg",
-      "caption": "Noticia de último minuto🚨🗞️😱 \nTransmisión en vivo desde el punto con los mejores caldos de Punta Cana 🏠🔥\nLa Casita de Yeya tiene el remedio oficial contra el frío. \n\n#puntacana #sancocho",
-      "is_video": true,
-      "taken_at_timestamp": 1770130443
     }
   ]
 }
