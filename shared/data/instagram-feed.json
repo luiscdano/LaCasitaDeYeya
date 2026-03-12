@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-03-12T13:36:45Z",
+  "fetched_at": "2026-03-12T19:12:12Z",
   "posts": [
+    {
+      "id": "3851321166430826164",
+      "shortcode": "DVypDIZDW60",
+      "permalink": "https://www.instagram.com/p/DVypDIZDW60/",
+      "image": "shared/data/instagram/DVypDIZDW60.jpg",
+      "caption": "Picante hecho en casa con ají tití 🌶️🔥\nDisponible en nuestras casitas y también en venta.\n\n ¡El que sabe, sabe! \n#picantedominicano #ajititi",
+      "is_video": false,
+      "taken_at_timestamp": 1773333423
+    },
     {
       "id": "3849845368649781835",
       "shortcode": "DVtZfcmjZJL",
@@ -83,15 +92,6 @@
       "caption": "El Meloso: Arroz meloso de guandules con chicharrón de cerdo, un tropiezo de platano maduro al caldero\ny águacate.\n\nDisponible en la casita de Yeya del village. \n#dominicanfood",
       "is_video": false,
       "taken_at_timestamp": 1771433125
-    },
-    {
-      "id": "3831077157418902876",
-      "shortcode": "DUquGBzESVc",
-      "permalink": "https://www.instagram.com/reel/DUquGBzESVc/",
-      "image": "shared/data/instagram/DUquGBzESVc.jpg",
-      "caption": "Ossobuco al vino con puré de cepa de apio, uno de los especiales de nuestro menú del Amor y la Amistad.\nDisponible desde hoy hasta el domingo en el Village.\nVen a compartir el amor… y el sabor. ❤️🥂\nDei’ campo a la mesa. \n\n#LaCasitaDeYeya #DelCampoALaMesa #cepadeapio #constanza",
-      "is_video": true,
-      "taken_at_timestamp": 1770920047
     }
   ]
 }
