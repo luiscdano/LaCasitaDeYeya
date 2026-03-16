@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-03-16T13:55:26Z",
+  "fetched_at": "2026-03-16T19:20:30Z",
   "posts": [
+    {
+      "id": "3854198498384507156",
+      "shortcode": "DV83R0mDXEU",
+      "permalink": "https://www.instagram.com/p/DV83R0mDXEU/",
+      "image": "shared/data/instagram/DV83R0mDXEU.jpg",
+      "caption": "La Pailita de Yeya🇩🇴\nCon arroz, habichuelas, concon, arepitas de yuca y aguacate. \nElige la proteína de tu preferencia: Pollo guisado, cerdo o ropa vieja (res). \nUno de los plato típico favoritos en nuestras casitas. \n\n#dominicanfood #puntacanarestaurant",
+      "is_video": false,
+      "taken_at_timestamp": 1773676286
+    },
     {
       "id": "3851321166430826164",
       "shortcode": "DVypDIZDW60",
@@ -83,15 +92,6 @@
       "caption": "Full con to’: Hamburgersa con aguacate, plátano maduro y hasta un huevito Pa’ rematar. \n\n#domincanfood #dominicanburger",
       "is_video": false,
       "taken_at_timestamp": 1771862414
-    },
-    {
-      "id": "3835380375170949611",
-      "shortcode": "DU6AiFokaHr",
-      "permalink": "https://www.instagram.com/p/DU6AiFokaHr/",
-      "image": "shared/data/instagram/DU6AiFokaHr.jpg",
-      "caption": "El Meloso: Arroz meloso de guandules con chicharrón de cerdo, un tropiezo de platano maduro al caldero\ny águacate.\n\nDisponible en la casita de Yeya del village. \n#dominicanfood",
-      "is_video": false,
-      "taken_at_timestamp": 1771433125
     }
   ]
 }
