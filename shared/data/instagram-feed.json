@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-03-24T13:51:39Z",
+  "fetched_at": "2026-03-24T19:30:07Z",
   "posts": [
+    {
+      "id": "3860026233954868906",
+      "shortcode": "DWRkWiSkZ6q",
+      "permalink": "https://www.instagram.com/p/DWRkWiSkZ6q/",
+      "image": "shared/data/instagram/DWRkWiSkZ6q.jpg",
+      "caption": "Donde el sabor tiene nombre: Yeya 🇩🇴\n¡Ven a conocer todas nuestras casitas llenas del mejor sabor! \n\n#dominicanfood",
+      "is_video": false,
+      "taken_at_timestamp": 1774371210
+    },
     {
       "id": "3857982424784906986",
       "shortcode": "DWKTpMrASrq",
@@ -83,15 +92,6 @@
       "caption": "Dominicanos de pura cepa🇩🇴 | Hoy celebramos con orgullo el 182 aniversario de la indecencia dominicana. ¡Feliz día de la independencia!\n\nLos esperamos con la mejor comida típica dominicana y un 2 x 1 en el trago pasión de quisqueya con @ronbrugalrd en @thevillagepuntacana",
       "is_video": true,
       "taken_at_timestamp": 1772204855
-    },
-    {
-      "id": "3839761164008522957",
-      "shortcode": "DVJkm9LEYTN",
-      "permalink": "https://www.instagram.com/p/DVJkm9LEYTN/",
-      "image": "shared/data/instagram/DVJkm9LEYTN.jpg",
-      "caption": "Pescado frito: Del Mar Pa’ Yeya 🐟🇩🇴 | Los esperamos en nuestras casitas para vivir la verdadera experiencia dominicana en Punta Cana. \n\n#dominicanfood",
-      "is_video": false,
-      "taken_at_timestamp": 1771955285
     }
   ]
 }
