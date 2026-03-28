@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-03-27T07:35:39Z",
+  "fetched_at": "2026-03-28T07:14:30Z",
   "posts": [
+    {
+      "id": "3862166336877699222",
+      "shortcode": "DWZK9IdESCW",
+      "permalink": "https://www.instagram.com/p/DWZK9IdESCW/",
+      "image": "shared/data/instagram/DWZK9IdESCW.jpg",
+      "caption": "Los quipes con la receta de doña Nelly♥️🇩🇴 \nDe nuestra decendencia libanesa disponible en nuestras casitas. \n\n#dominicanfood",
+      "is_video": false,
+      "taken_at_timestamp": 1774626180
+    },
     {
       "id": "3860677916883756983",
       "shortcode": "DWT4hxUDSe3",
@@ -83,15 +92,6 @@
       "caption": "Pechuga rellena de plátano maduro con queso y tocineta… | ¿Quién se antoja? 🍗🧀🥓\n\n#dominicanfood #dominicanrestaurant",
       "is_video": false,
       "taken_at_timestamp": 1772470560
-    },
-    {
-      "id": "3841983670558781247",
-      "shortcode": "DVRd8rsge8_",
-      "permalink": "https://www.instagram.com/reel/DVRd8rsge8_/",
-      "image": "shared/data/instagram/DVRd8rsge8_.jpg",
-      "caption": "Disfruta un 2x1 en el trago la pasión de quisqueya🇩🇴🍹\nCon @ronbrugalrd en nuestra casita del village y Chinola.\n\n#ronbrugalrd @thevillagepuntacana",
-      "is_video": true,
-      "taken_at_timestamp": 1772220430
     }
   ]
 }
