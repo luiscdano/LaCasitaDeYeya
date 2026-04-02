@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-04-01T07:54:32Z",
+  "fetched_at": "2026-04-02T07:41:43Z",
   "posts": [
+    {
+      "id": "3865868105571080720",
+      "shortcode": "DWmUo9NE5oQ",
+      "permalink": "https://www.instagram.com/p/DWmUo9NE5oQ/",
+      "image": "shared/data/instagram/DWmUo9NE5oQ.jpg",
+      "caption": "Llegaron las habichuelas con dulce a todas las casitas 🏡 \n¡Como las del campo! Con batata, carnation, un chin de pasas y galletas🇩🇴",
+      "is_video": false,
+      "taken_at_timestamp": 1775067491
+    },
     {
       "id": "3865096731709537001",
       "shortcode": "DWjlP_UEfrp",
@@ -83,15 +92,6 @@
       "caption": "Plátano Power 🇩🇴💪🏽⚾️\n¡En Yeya estamos gozando viendo lo duro que está nuestro equipo en la @wbcbaseball !\nVamo’ arriba!! \n-\n@mlbdominicana",
       "is_video": false,
       "taken_at_timestamp": 1773156975
-    },
-    {
-      "id": "3848543047969242436",
-      "shortcode": "DVoxYL9AX1E",
-      "permalink": "https://www.instagram.com/p/DVoxYL9AX1E/",
-      "image": "shared/data/instagram/DVoxYL9AX1E.jpg",
-      "caption": "Crujiente por fuera, deliciosa por dentro… Nuestras empanadas, rellénalas a tu gusto🇩🇴\n\n#empanadasdominicanas",
-      "is_video": false,
-      "taken_at_timestamp": 1773002153
     }
   ]
 }
