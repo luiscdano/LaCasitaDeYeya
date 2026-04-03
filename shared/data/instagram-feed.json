@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-04-03T13:38:41Z",
+  "fetched_at": "2026-04-03T19:05:59Z",
   "posts": [
+    {
+      "id": "3867197901760215071",
+      "shortcode": "DWrDACajbgf",
+      "permalink": "https://www.instagram.com/p/DWrDACajbgf/",
+      "image": "shared/data/instagram/DWrDACajbgf.jpg",
+      "caption": "La Pailita de semana santa 🐟 | Bacalao guisado con todo lo rico 🇩🇴\n\nDisponible en todas nuestras casitas.\n#casitadeyeya",
+      "is_video": false,
+      "taken_at_timestamp": 1775225993
+    },
     {
       "id": "3865868105571080720",
       "shortcode": "DWmUo9NE5oQ",
@@ -83,15 +92,6 @@
       "caption": "Ya entendieron?! #platanopower 🇩🇴⚾️\n-\n\nCréditos del video: MLB Dominicana. \n#respost",
       "is_video": true,
       "taken_at_timestamp": 1773157519
-    },
-    {
-      "id": "3849841106188341278",
-      "shortcode": "DVtYha4DZAe",
-      "permalink": "https://www.instagram.com/p/DVtYha4DZAe/",
-      "image": "shared/data/instagram/DVtYha4DZAe.jpg",
-      "caption": "Plátano Power 🇩🇴💪🏽⚾️\n¡En Yeya estamos gozando viendo lo duro que está nuestro equipo en la @wbcbaseball !\nVamo’ arriba!! \n-\n@mlbdominicana",
-      "is_video": false,
-      "taken_at_timestamp": 1773156975
     }
   ]
 }
