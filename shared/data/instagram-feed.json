@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-04-14T08:04:09Z",
+  "fetched_at": "2026-04-14T19:41:27Z",
   "posts": [
+    {
+      "id": "3875221616578100237",
+      "shortcode": "DXHjYdKDXwN",
+      "permalink": "https://www.instagram.com/p/DXHjYdKDXwN/",
+      "image": "shared/data/instagram/DXHjYdKDXwN.jpg",
+      "caption": "Nuestro salmón se cocina al punto perfecto, con sabores fresco🇩🇴🎏\n-\nDisponible en nuestras casitas #dominicanfood",
+      "is_video": false,
+      "taken_at_timestamp": 1776182491
+    },
     {
       "id": "3867197901760215071",
       "shortcode": "DWrDACajbgf",
@@ -83,15 +92,6 @@
       "caption": "Picante hecho en casa con ají tití 🌶️🔥\nDisponible en nuestras casitas y también en venta.\n\n ¡El que sabe, sabe! \n#picantedominicano #ajititi",
       "is_video": false,
       "taken_at_timestamp": 1773333423
-    },
-    {
-      "id": "3849845368649781835",
-      "shortcode": "DVtZfcmjZJL",
-      "permalink": "https://www.instagram.com/reel/DVtZfcmjZJL/",
-      "image": "shared/data/instagram/DVtZfcmjZJL.jpg",
-      "caption": "Ya entendieron?! #platanopower 🇩🇴⚾️\n-\n\nCréditos del video: MLB Dominicana. \n#respost",
-      "is_video": true,
-      "taken_at_timestamp": 1773157519
     }
   ]
 }
