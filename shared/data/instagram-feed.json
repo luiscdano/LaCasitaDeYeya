@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-04-20T14:13:09Z",
+  "fetched_at": "2026-04-20T19:33:51Z",
   "posts": [
+    {
+      "id": "3879584936366262754",
+      "shortcode": "DXXDfHYEUni",
+      "permalink": "https://www.instagram.com/p/DXXDfHYEUni/",
+      "image": "shared/data/instagram/DXXDfHYEUni.jpg",
+      "caption": "Hoy tenemos moro de guandules 🇩🇴 | Te lo recomendamos con nuestro chivo guisao’ \n\nDisponible en nuestra casita del village. \n¡Los esperamos!",
+      "is_video": false,
+      "taken_at_timestamp": 1776702664
+    },
     {
       "id": "3879507385916391462",
       "shortcode": "DXWx2m5DQAm",
@@ -83,15 +92,6 @@
       "caption": "Piña cola’ con el mejor Ron dominicano 🇩🇴🍍 #pinacolada",
       "is_video": false,
       "taken_at_timestamp": 1774127406
-    },
-    {
-      "id": "3854198498384507156",
-      "shortcode": "DV83R0mDXEU",
-      "permalink": "https://www.instagram.com/p/DV83R0mDXEU/",
-      "image": "shared/data/instagram/DV83R0mDXEU.jpg",
-      "caption": "La Pailita de Yeya🇩🇴\nCon arroz, habichuelas, concon, arepitas de yuca y aguacate. \nElige la proteína de tu preferencia: Pollo guisado, cerdo o ropa vieja (res). \nUno de los plato típico favoritos en nuestras casitas. \n\n#dominicanfood #puntacanarestaurant",
-      "is_video": false,
-      "taken_at_timestamp": 1773676286
     }
   ]
 }
