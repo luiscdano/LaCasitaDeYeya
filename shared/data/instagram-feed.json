@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-04-20T08:27:25Z",
+  "fetched_at": "2026-04-20T14:13:09Z",
   "posts": [
+    {
+      "id": "3879507385916391462",
+      "shortcode": "DXWx2m5DQAm",
+      "permalink": "https://www.instagram.com/p/DXWx2m5DQAm/",
+      "image": "shared/data/instagram/DXWx2m5DQAm.jpg",
+      "caption": "La mordida perfecta para empezar la semana | Queso frito con salami de nuestro desayuno [ Los tres golpes 🇩🇴 ] \n\nDisponible en todas nuestras casitas. \n#lostresgolpes",
+      "is_video": false,
+      "taken_at_timestamp": 1776693398
+    },
     {
       "id": "3875221616578100237",
       "shortcode": "DXHjYdKDXwN",
@@ -83,15 +92,6 @@
       "caption": "La Pailita de Yeya🇩🇴\nCon arroz, habichuelas, concon, arepitas de yuca y aguacate. \nElige la proteína de tu preferencia: Pollo guisado, cerdo o ropa vieja (res). \nUno de los plato típico favoritos en nuestras casitas. \n\n#dominicanfood #puntacanarestaurant",
       "is_video": false,
       "taken_at_timestamp": 1773676286
-    },
-    {
-      "id": "3851321166430826164",
-      "shortcode": "DVypDIZDW60",
-      "permalink": "https://www.instagram.com/p/DVypDIZDW60/",
-      "image": "shared/data/instagram/DVypDIZDW60.jpg",
-      "caption": "Picante hecho en casa con ají tití 🌶️🔥\nDisponible en nuestras casitas y también en venta.\n\n ¡El que sabe, sabe! \n#picantedominicano #ajititi",
-      "is_video": false,
-      "taken_at_timestamp": 1773333423
     }
   ]
 }
