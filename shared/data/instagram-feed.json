@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-04-21T14:08:37Z",
+  "fetched_at": "2026-04-21T19:37:50Z",
   "posts": [
+    {
+      "id": "3880287767977107537",
+      "shortcode": "DXZjSqUkaBR",
+      "permalink": "https://www.instagram.com/p/DXZjSqUkaBR/",
+      "image": "shared/data/instagram/DXZjSqUkaBR.jpg",
+      "caption": "Pulpo fresquecito de nuestras playas🐙🇩🇴 | Lo recomendamos con plátanos maduros.\n\n#dominicanfood #puntacanarestaurant",
+      "is_video": false,
+      "taken_at_timestamp": 1776786476
+    },
     {
       "id": "3879584936366262754",
       "shortcode": "DXXDfHYEUni",
@@ -83,15 +92,6 @@
       "caption": "Donde el sabor tiene nombre: Yeya 🇩🇴\n¡Ven a conocer todas nuestras casitas llenas del mejor sabor! \n\n#dominicanfood",
       "is_video": false,
       "taken_at_timestamp": 1774371210
-    },
-    {
-      "id": "3857982424784906986",
-      "shortcode": "DWKTpMrASrq",
-      "permalink": "https://www.instagram.com/p/DWKTpMrASrq/",
-      "image": "shared/data/instagram/DWKTpMrASrq.jpg",
-      "caption": "Piña cola’ con el mejor Ron dominicano 🇩🇴🍍 #pinacolada",
-      "is_video": false,
-      "taken_at_timestamp": 1774127406
     }
   ]
 }
