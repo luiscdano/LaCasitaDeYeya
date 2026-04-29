@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-04-28T19:56:41Z",
+  "fetched_at": "2026-04-29T04:03:14Z",
   "posts": [
+    {
+      "id": "3885519337708152883",
+      "shortcode": "DXsI0BUAWgz",
+      "permalink": "https://www.instagram.com/reel/DXsI0BUAWgz/",
+      "image": "shared/data/instagram/DXsI0BUAWgz.jpg",
+      "caption": "10 años de historia, sabor y momentos inolvidables en Downtown Punta Cana🎉\nMañana las primeras 10 personas que lleguen disfrutarán de nuestro delicioso sancocho por solo 10 pesos 🤯 🇩🇴\nGracias por crecer junto a nosotros. ¡Esto apenas comienza! \n\n📍 Downtown Punta Cana",
+      "is_video": true,
+      "taken_at_timestamp": 1777410149
+    },
     {
       "id": "3884687913628277061",
       "shortcode": "DXpLxNTERlF",
@@ -83,15 +92,6 @@
       "caption": "Si eres team plátano… esto es para ti 👀🔥\nVen a probar nuestras canastas rellenas. \n( Pollo, chivo, camarones o to Que tú quieras)",
       "is_video": false,
       "taken_at_timestamp": 1774975545
-    },
-    {
-      "id": "3862166336877699222",
-      "shortcode": "DWZK9IdESCW",
-      "permalink": "https://www.instagram.com/p/DWZK9IdESCW/",
-      "image": "shared/data/instagram/DWZK9IdESCW.jpg",
-      "caption": "Los quipes con la receta de doña Nelly♥️🇩🇴 \nDe nuestra decendencia libanesa disponible en nuestras casitas. \n\n#dominicanfood",
-      "is_video": false,
-      "taken_at_timestamp": 1774626180
     }
   ]
 }
