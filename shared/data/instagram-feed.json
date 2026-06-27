@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-06-26T20:09:49Z",
+  "fetched_at": "2026-06-27T04:16:20Z",
   "posts": [
+    {
+      "id": "3928355869402415226",
+      "shortcode": "DaEUtmTDUB6",
+      "permalink": "https://www.instagram.com/p/DaEUtmTDUB6/",
+      "image": "shared/data/instagram/DaEUtmTDUB6.jpg",
+      "caption": "It’s confirmed⚠️😱: we serve the BEST Dominican fried chicken in Punta Cana 🇩🇴🍗\n\nWARNING IT MAY CAUSE ADDICTION!! \n\n#dominicanfood #puntacanarestaurant",
+      "is_video": false,
+      "taken_at_timestamp": 1782516534
+    },
     {
       "id": "3924502985883165775",
       "shortcode": "DZ2oqw5hqRP",
@@ -83,15 +92,6 @@
       "caption": "Antojado de una YEYADILLA🧀🥑\n-\nTastes like home but better, see you in our Dominican house. \n#puntacanarestaurant",
       "is_video": false,
       "taken_at_timestamp": 1778168382
-    },
-    {
-      "id": "3890391324058706182",
-      "shortcode": "DX9ckwLx-EG",
-      "permalink": "https://www.instagram.com/p/DX9ckwLx-EG/",
-      "image": "shared/data/instagram/DX9ckwLx-EG.jpg",
-      "caption": "Buenos días familia, la greca ya está puesta ☕️",
-      "is_video": false,
-      "taken_at_timestamp": 1777990841
     }
   ]
 }
