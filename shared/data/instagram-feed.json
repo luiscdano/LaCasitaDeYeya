@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-07-01T15:12:09Z",
+  "fetched_at": "2026-07-01T20:14:50Z",
   "posts": [
+    {
+      "id": "3931737419497652989",
+      "shortcode": "DaQVloPRML9",
+      "permalink": "https://www.instagram.com/reel/DaQVloPRML9/",
+      "image": "shared/data/instagram/DaQVloPRML9.jpg",
+      "caption": "Así de rico suenan nuestras jugos naturales con frutas frescas🍓| ¡Y si quieres divertirte los tragos son el final!\n\n#dominicanrestaurant #dominicanfood #puntacanarestaurant",
+      "is_video": true,
+      "taken_at_timestamp": 1782919792
+    },
     {
       "id": "3928355869402415226",
       "shortcode": "DaEUtmTDUB6",
@@ -83,15 +92,6 @@
       "caption": "Mariscos frescos y sabor dominicano 🦑🌊 Así se vive en Punta Cana. \n\n¡Prueba nuestros famosos calamares fritos! #SeafoodRestaurant #PuntaCanaEats #DominicanRestaurant #FriedCalamari",
       "is_video": false,
       "taken_at_timestamp": 1778597735
-    },
-    {
-      "id": "3891880405247292557",
-      "shortcode": "DYCvJvHEXSN",
-      "permalink": "https://www.instagram.com/p/DYCvJvHEXSN/",
-      "image": "shared/data/instagram/DYCvJvHEXSN.jpg",
-      "caption": "Antojado de una YEYADILLA🧀🥑\n-\nTastes like home but better, see you in our Dominican house. \n#puntacanarestaurant",
-      "is_video": false,
-      "taken_at_timestamp": 1778168382
     }
   ]
 }
