@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-07-07T10:00:32Z",
+  "fetched_at": "2026-07-07T15:14:57Z",
   "posts": [
+    {
+      "id": "3936046971215757485",
+      "shortcode": "Dafpd3CkUCt",
+      "permalink": "https://www.instagram.com/p/Dafpd3CkUCt/",
+      "image": "shared/data/instagram/Dafpd3CkUCt.jpg",
+      "caption": "El Meloso🇩🇴 Arroz meloso de guandules al coco con chicharrón de cerdo, un tropiezo de plátano maduro al\ncaldero y aguacate.\n\nDisponible en todas nuestras casitas en #puntacana",
+      "is_video": false,
+      "taken_at_timestamp": 1783433384
+    },
     {
       "id": "3931737419497652989",
       "shortcode": "DaQVloPRML9",
@@ -83,15 +92,6 @@
       "caption": "No estás viendo triple 👀 | Hoy tenemos las coronas a 3x2 🍻\n\nLos esperábamos junto a @cervezacorona_rd",
       "is_video": false,
       "taken_at_timestamp": 1778686254
-    },
-    {
-      "id": "3895482132252084091",
-      "shortcode": "DYPiFwxxEd7",
-      "permalink": "https://www.instagram.com/p/DYPiFwxxEd7/",
-      "image": "shared/data/instagram/DYPiFwxxEd7.jpg",
-      "caption": "Mariscos frescos y sabor dominicano 🦑🌊 Así se vive en Punta Cana. \n\n¡Prueba nuestros famosos calamares fritos! #SeafoodRestaurant #PuntaCanaEats #DominicanRestaurant #FriedCalamari",
-      "is_video": false,
-      "taken_at_timestamp": 1778597735
     }
   ]
 }
