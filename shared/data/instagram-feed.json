@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-07-24T14:12:40Z",
+  "fetched_at": "2026-07-24T19:46:54Z",
   "posts": [
+    {
+      "id": "3948493609007768341",
+      "shortcode": "DbL3gRyzuMV",
+      "permalink": "https://www.instagram.com/p/DbL3gRyzuMV/",
+      "image": "shared/data/instagram/DbL3gRyzuMV.jpg",
+      "caption": "Pecao’ frito al estilo Boca Chica 🇩🇴🐟-\nRICURA TOTAL!!",
+      "is_video": false,
+      "taken_at_timestamp": 1784917206
+    },
     {
       "id": "3941225680012312241",
       "shortcode": "DayC9_cx_6x",
@@ -83,15 +92,6 @@
       "caption": "Fuera de liga 💥🇩🇴\nLos nachos aplatanao’ con plátano maduro, aguacate y habichuelas negras. \nAcompáñalos de tu carne preferida en todas nuestras casitas.\n\n#lacasitadeyeya",
       "is_video": false,
       "taken_at_timestamp": 1781362733
-    },
-    {
-      "id": "3912860793150260056",
-      "shortcode": "DZNRij_RkNY",
-      "permalink": "https://www.instagram.com/p/DZNRij_RkNY/",
-      "image": "shared/data/instagram/DZNRij_RkNY.jpg",
-      "caption": "Piña colada pa’ refrescar el viernes🍍",
-      "is_video": false,
-      "taken_at_timestamp": 1780669517
     }
   ]
 }
