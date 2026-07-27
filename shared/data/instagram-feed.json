@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-07-27T15:13:36Z",
+  "fetched_at": "2026-07-27T19:54:41Z",
   "posts": [
+    {
+      "id": "3950625922000277905",
+      "shortcode": "DbTcVhBRtGR",
+      "permalink": "https://www.instagram.com/reel/DbTcVhBRtGR/",
+      "image": "shared/data/instagram/DbTcVhBRtGR.jpg",
+      "caption": "You have not been to Punta Cana if you haven’t tried Yeya’a authentic Dominican food!! 🙂‍↔️🇩🇴\n\nWith more than 10 years in town, we truly know the secret of the authentic Dominican flavors. \n\n#puntacanarestaurant #dominicanfood",
+      "is_video": true,
+      "taken_at_timestamp": 1785171491
+    },
     {
       "id": "3948493609007768341",
       "shortcode": "DbL3gRyzuMV",
@@ -83,15 +92,6 @@
       "caption": "Seguimos trabajando en horario regular con nuestro delicioso sazón 🇩🇴 | ¡ Los esperamos ! \n📍Downtown Punta Cana",
       "is_video": false,
       "taken_at_timestamp": 1781535556
-    },
-    {
-      "id": "3918676296418511744",
-      "shortcode": "DZh71RdxMuA",
-      "permalink": "https://www.instagram.com/p/DZh71RdxMuA/",
-      "image": "shared/data/instagram/DZh71RdxMuA.jpg",
-      "caption": "Fuera de liga 💥🇩🇴\nLos nachos aplatanao’ con plátano maduro, aguacate y habichuelas negras. \nAcompáñalos de tu carne preferida en todas nuestras casitas.\n\n#lacasitadeyeya",
-      "is_video": false,
-      "taken_at_timestamp": 1781362733
     }
   ]
 }
