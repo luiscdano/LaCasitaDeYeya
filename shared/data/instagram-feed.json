@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-08-07T19:16:58Z",
+  "fetched_at": "2026-08-08T02:21:23Z",
   "posts": [
+    {
+      "id": "3958665061622249737",
+      "shortcode": "DbwAOZOvnkJ",
+      "permalink": "https://www.instagram.com/reel/DbwAOZOvnkJ/",
+      "image": "shared/data/instagram/DbwAOZOvnkJ.jpg",
+      "caption": "We finally sat down for a proper Dominican meal! 🇩🇴 How did we do? Anything we have to order next time?\n\nI loved every single bite of this meal.\n\nIf I had to rank my favorites:\n🥇 Sancocho\n🥈 Mangú\n🥉 Pailita\n\nNot pictured: the ceviche… because we devoured it before I could even take a photo.\n\nWhat else belongs on our list for the next visit?\n\n#DominicanRepublic #ComidaDominicana #SantoDomingo #DominicanFood #santodomingo2026",
+      "is_video": true,
+      "taken_at_timestamp": 1786129795
+    },
     {
       "id": "3950625922000277905",
       "shortcode": "DbTcVhBRtGR",
@@ -83,15 +92,6 @@
       "caption": "1,2,3 pobrando🤤 ¿Que dicen si volvemos a pobrar al negrito salseao’?\n\n#dominicanfood",
       "is_video": false,
       "taken_at_timestamp": 1781810358
-    },
-    {
-      "id": "3920126221492841660",
-      "shortcode": "DZnFgdaxmy8",
-      "permalink": "https://www.instagram.com/p/DZnFgdaxmy8/",
-      "image": "shared/data/instagram/DZnFgdaxmy8.jpg",
-      "caption": "Seguimos trabajando en horario regular con nuestro delicioso sazón 🇩🇴 | ¡ Los esperamos ! \n📍Downtown Punta Cana",
-      "is_video": false,
-      "taken_at_timestamp": 1781535556
     }
   ]
 }
