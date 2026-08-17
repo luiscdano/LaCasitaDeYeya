@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-08-17T13:05:51Z",
+  "fetched_at": "2026-08-17T18:57:36Z",
   "posts": [
+    {
+      "id": "3965821531971818083",
+      "shortcode": "DcJbavnxpJj",
+      "permalink": "https://www.instagram.com/p/DcJbavnxpJj/",
+      "image": "shared/data/instagram/DcJbavnxpJj.jpg",
+      "caption": "Un rinconcito en Punta Cana Village para disfrutar nuestros sabores de siempre, comida típica dominicana y ese ambiente que se siente como en casa❤️\n\n📍 La Casita de Yeya · Punta Cana Village",
+      "is_video": false,
+      "taken_at_timestamp": 1786982963
+    },
     {
       "id": "3958665061622249737",
       "shortcode": "DbwAOZOvnkJ",
@@ -83,15 +92,6 @@
       "caption": "We had a fantastic evening at @lacasitadeyeya painting our majestic Muñeca's with @pizquidecora \n\nThe setting was perfect for a creative evening, meeting people and having a good laugh!\n\nPlus, we all loved the sancocho!\n\nThank you to @lacasitadeyeya for hosting us and @pizquidecora for bringing the colour.",
       "is_video": true,
       "taken_at_timestamp": 1782057260
-    },
-    {
-      "id": "3922431160663982039",
-      "shortcode": "DZvRlvTTL_X",
-      "permalink": "https://www.instagram.com/p/DZvRlvTTL_X/",
-      "image": "shared/data/instagram/DZvRlvTTL_X.jpg",
-      "caption": "1,2,3 pobrando🤤 ¿Que dicen si volvemos a pobrar al negrito salseao’?\n\n#dominicanfood",
-      "is_video": false,
-      "taken_at_timestamp": 1781810358
     }
   ]
 }
