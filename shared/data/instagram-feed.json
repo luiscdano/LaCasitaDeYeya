@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-08-19T13:08:48Z",
+  "fetched_at": "2026-08-19T18:53:08Z",
   "posts": [
+    {
+      "id": "3967221840447909902",
+      "shortcode": "DcOZz6hEbAO",
+      "permalink": "https://www.instagram.com/p/DcOZz6hEbAO/",
+      "image": "shared/data/instagram/DcOZz6hEbAO.jpg",
+      "caption": "¡Este premio es de ustedes ✨🏆!\nLa Casita de Yeya fue reconocida con el Premio Preferencia de los Comensales de Restaurant Week 2025 y no podemos estar más felices!!\n\nSaber que este reconocimiento viene de quienes nos visitan, disfrutan nuestros platos y vuelven a nuestra mesa lo hace todavía más especial.\n\nGracias por elegir el sabor de nuestra cocina dominicana, por cada visita y por tanto cariño. 🇩🇴🫶🏼\nRestaurant Week 2026… ¡allá vamos! 🍽️✨",
+      "is_video": false,
+      "taken_at_timestamp": 1787149718
+    },
     {
       "id": "3966667279425124793",
       "shortcode": "DcMbt_UTLm5",
@@ -83,15 +92,6 @@
       "caption": "El Meloso🇩🇴 Arroz meloso de guandules al coco con chicharrón de cerdo, un tropiezo de plátano maduro al\ncaldero y aguacate.\n\nDisponible en todas nuestras casitas en #puntacana",
       "is_video": false,
       "taken_at_timestamp": 1783433384
-    },
-    {
-      "id": "3931737419497652989",
-      "shortcode": "DaQVloPRML9",
-      "permalink": "https://www.instagram.com/reel/DaQVloPRML9/",
-      "image": "shared/data/instagram/DaQVloPRML9.jpg",
-      "caption": "Así de rico suenan nuestras jugos naturales con frutas frescas🍓| ¡Y si quieres divertirte los tragos son el final!\n\n#dominicanrestaurant #dominicanfood #puntacanarestaurant",
-      "is_video": true,
-      "taken_at_timestamp": 1782919792
     }
   ]
 }
