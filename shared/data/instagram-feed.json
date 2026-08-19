@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-08-18T18:56:34Z",
+  "fetched_at": "2026-08-19T01:52:48Z",
   "posts": [
+    {
+      "id": "3966667279425124793",
+      "shortcode": "DcMbt_UTLm5",
+      "permalink": "https://www.instagram.com/reel/DcMbt_UTLm5/",
+      "image": "shared/data/instagram/DcMbt_UTLm5.jpg",
+      "caption": "¿Estás listo para volver a vivir la mejor semana de la gastronomía en República Dominicana? \nNuevos sabores, combinaciones y platos que te van a sorprender 💥🇩🇴\n\n📍 @thevillagepuntacana \n⏱️ 1 Al 6 de septiembre.\n¿Con quién vienes a probarlo?",
+      "is_video": true,
+      "taken_at_timestamp": 1787083917
+    },
     {
       "id": "3966519779334268822",
       "shortcode": "DcL6LlJx6eW",
@@ -83,15 +92,6 @@
       "caption": "Así de rico suenan nuestras jugos naturales con frutas frescas🍓| ¡Y si quieres divertirte los tragos son el final!\n\n#dominicanrestaurant #dominicanfood #puntacanarestaurant",
       "is_video": true,
       "taken_at_timestamp": 1782919792
-    },
-    {
-      "id": "3928355869402415226",
-      "shortcode": "DaEUtmTDUB6",
-      "permalink": "https://www.instagram.com/p/DaEUtmTDUB6/",
-      "image": "shared/data/instagram/DaEUtmTDUB6.jpg",
-      "caption": "It’s confirmed⚠️😱: we serve the BEST Dominican fried chicken in Punta Cana 🇩🇴🍗\n\nWARNING IT MAY CAUSE ADDICTION!! \n\n#dominicanfood #puntacanarestaurant",
-      "is_video": false,
-      "taken_at_timestamp": 1782516534
     }
   ]
 }
