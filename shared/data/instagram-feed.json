@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-08-21T18:56:03Z",
+  "fetched_at": "2026-08-22T01:50:08Z",
   "posts": [
+    {
+      "id": "3968816060551898707",
+      "shortcode": "DcUES3sD6ZT",
+      "permalink": "https://www.instagram.com/p/DcUES3sD6ZT/",
+      "image": "shared/data/instagram/DcUES3sD6ZT.jpg",
+      "caption": "El final que toda buena comida dominicana se merece🇩🇴🍮✨\nNuestro flan: cremosito, dulce y con mucho sabor a La Casita de Yeya.",
+      "is_video": false,
+      "taken_at_timestamp": 1787339765
+    },
     {
       "id": "3967221840447909902",
       "shortcode": "DcOZz6hEbAO",
@@ -83,15 +92,6 @@
       "caption": "Así se ve nuestra cocina mientras hacemos: La Pailita de Yeya. \nCon arroz blanco, habichuelas rojas, pollo guisado, concon, aguacate y arepitas de yuca.\n\n#comidadominicana #puntacanaresturants",
       "is_video": false,
       "taken_at_timestamp": 1783956092
-    },
-    {
-      "id": "3936046971215757485",
-      "shortcode": "Dafpd3CkUCt",
-      "permalink": "https://www.instagram.com/p/Dafpd3CkUCt/",
-      "image": "shared/data/instagram/Dafpd3CkUCt.jpg",
-      "caption": "El Meloso🇩🇴 Arroz meloso de guandules al coco con chicharrón de cerdo, un tropiezo de plátano maduro al\ncaldero y aguacate.\n\nDisponible en todas nuestras casitas en #puntacana",
-      "is_video": false,
-      "taken_at_timestamp": 1783433384
     }
   ]
 }
