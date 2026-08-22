@@ -1,8 +1,17 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-08-22T13:00:53Z",
+  "fetched_at": "2026-08-22T18:48:54Z",
   "posts": [
+    {
+      "id": "3969412111667282120",
+      "shortcode": "DcWL0jjD8DI",
+      "permalink": "https://www.instagram.com/p/DcWL0jjD8DI/",
+      "image": "shared/data/instagram/DcWL0jjD8DI.jpg",
+      "caption": "Crujienticas por fuera, rellenas de queso y con ese sabor dominicano que nos encanta🤤🧀🇩🇴",
+      "is_video": false,
+      "taken_at_timestamp": 1787410819
+    },
     {
       "id": "3968816060551898707",
       "shortcode": "DcUES3sD6ZT",
@@ -83,15 +92,6 @@
       "caption": "No hay nada como el calor de la gente dominicana🇩🇴❤️\n\nEn La Casita de Yeya, cada sonrisa, cada recomendación y cada “buen provecho” hacen que te sientas como en casa. Nuestro equipo es el corazón de todo lo que hacemos, porque servir con cariño también es parte de nuestra cultura.\n\n¡Los esperamos! ✨",
       "is_video": false,
       "taken_at_timestamp": 1784050850
-    },
-    {
-      "id": "3940431760093983285",
-      "shortcode": "DavOc76EbI1",
-      "permalink": "https://www.instagram.com/p/DavOc76EbI1/",
-      "image": "shared/data/instagram/DavOc76EbI1.jpg",
-      "caption": "Así se ve nuestra cocina mientras hacemos: La Pailita de Yeya. \nCon arroz blanco, habichuelas rojas, pollo guisado, concon, aguacate y arepitas de yuca.\n\n#comidadominicana #puntacanaresturants",
-      "is_video": false,
-      "taken_at_timestamp": 1783956092
     }
   ]
 }
