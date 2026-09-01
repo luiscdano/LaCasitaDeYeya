@@ -1,7 +1,7 @@
 {
   "username": "lacasitadeyeya",
   "profile_url": "https://www.instagram.com/lacasitadeyeya/?hl=es",
-  "fetched_at": "2026-09-01T11:40:09Z",
+  "fetched_at": "2026-09-01T16:40:50Z",
   "posts": [
     {
       "id": "3967221840447909902",
@@ -11,6 +11,15 @@
       "caption": "¡Este premio es de ustedes ✨🏆!\nLa Casita de Yeya fue reconocida con el Premio Preferencia de los Comensales de Restaurant Week 2025 y no podemos estar más felices!!\n\nSaber que este reconocimiento viene de quienes nos visitan, disfrutan nuestros platos y vuelven a nuestra mesa lo hace todavía más especial.\n\nGracias por elegir el sabor de nuestra cocina dominicana, por cada visita y por tanto cariño. 🇩🇴🫶🏼\nRestaurant Week 2026… ¡allá vamos! 🍽️✨",
       "is_video": false,
       "taken_at_timestamp": 1787149718
+    },
+    {
+      "id": "3976637266096727243",
+      "shortcode": "Dcv2oY-RqTL",
+      "permalink": "https://www.instagram.com/reel/Dcv2oY-RqTL/",
+      "image": "shared/data/instagram/Dcv2oY-RqTL.jpg",
+      "caption": "¡Volvió #RestaurantWeekRD2026! 🍴✨\n\nDel 1 al 6 de septiembre, disfruta nuestro menú especial en @thevillagepuntacana 🇩🇴\n\n🏆 Ya fuimos ganadores… Ven a probar porque!? 👀❤️\n\n¡Los esperamos en La Casita de Yeya!",
+      "is_video": true,
+      "taken_at_timestamp": 1788272326
     },
     {
       "id": "3973066130029394561",
@@ -83,15 +92,6 @@
       "caption": "We finally sat down for a proper Dominican meal! 🇩🇴 How did we do? Anything we have to order next time?\n\nI loved every single bite of this meal.\n\nIf I had to rank my favorites:\n🥇 Sancocho\n🥈 Mangú\n🥉 Pailita\n\nNot pictured: the ceviche… because we devoured it before I could even take a photo.\n\nWhat else belongs on our list for the next visit?\n\n#DominicanRepublic #ComidaDominicana #SantoDomingo #DominicanFood #santodomingo2026",
       "is_video": true,
       "taken_at_timestamp": 1786129795
-    },
-    {
-      "id": "3950625922000277905",
-      "shortcode": "DbTcVhBRtGR",
-      "permalink": "https://www.instagram.com/reel/DbTcVhBRtGR/",
-      "image": "shared/data/instagram/DbTcVhBRtGR.jpg",
-      "caption": "You have not been to Punta Cana if you haven’t tried Yeya’a authentic Dominican food!! 🙂‍↔️🇩🇴\n\nWith more than 10 years in town, we truly know the secret of the authentic Dominican flavors. \n\n#puntacanarestaurant #dominicanfood",
-      "is_video": true,
-      "taken_at_timestamp": 1785171491
     }
   ]
 }
